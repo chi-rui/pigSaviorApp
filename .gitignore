@@ -1,0 +1,9 @@
+# pigsavior gitignore
+
+# meta file
+*.meta
+
+# library folder
+./Library
+./ProjectSettings
+./UnityPackageManager
