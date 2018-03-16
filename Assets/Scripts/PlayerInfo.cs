@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class PlayerInfo : MonoBehaviour {
 
 	// Account info
@@ -37,24 +37,31 @@ public class PlayerInfo : MonoBehaviour {
 	}
 
 
+	public GameObject Character, W;
 
 	// Use this for initialization
 	void Start () {
-		// nowStage = progress;
+
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
-
+		if(Input.GetMouseButtonDown(0)){
+	        if (W.GetComponent<RectTransform>().rect.Contains(Input.mousePosition)){//(0)
+	        	print("In workspace, nothing will happened");
+	        }else if(Input.mousePosition.x < (Screen.width / 2)){
+	        	print("Left: " + Input.mousePosition);
+	        }else if(Input.mousePosition.x > (Screen.width / 2)){
+	        	print("Right: " + Input.mousePosition);        	
+	        }else{
+	        	print("Maybe center???");
+	        }
+		}
 	}
 
-	public GameObject C;
 	public void setProgress(int value){
 		progress = value;
-		print("Progress already change to " + progress + ".");
-		// print(C.transform.position);
-		// C.transform.position = new Vector2(-1000,-1400);
-		// print(C.transform.position);		
+		print("Progress already change to " + progress + ".");	
 	}
 
 }
