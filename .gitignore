@@ -7,3 +7,7 @@
 ./Library
 ./ProjectSettings
 ./UnityPackageManager
+
+# temp files
+*~
+
