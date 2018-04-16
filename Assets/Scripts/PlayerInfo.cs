@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-public class PlayerInfo : MonoBehaviour {
+public class GameEvents : MonoBehaviour {
 
 	// Account info
 	private string account = null;
