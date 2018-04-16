@@ -51,14 +51,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\DataController.cs" />
-     <Compile Include="Assets\Scripts\GameEvent.cs" />
-     <Compile Include="Assets\Scripts\InfinityBackground.cs" />
-     <Compile Include="Assets\Scripts\NpcClicked.cs" />
-     <Compile Include="Assets\Scripts\PlayerInfo.cs" />
-     <Compile Include="Assets\Scripts\RPGPlot.cs" />
-     <Compile Include="Assets\Scripts\StageGameEvent.cs" />
-     <Compile Include="Assets\Scripts\StageInfo.cs" />
+     <Compile Include="Assets\Scripts\Game\ChapterEvents.cs" />
+     <Compile Include="Assets\Scripts\Game\GameDatasControl.cs" />
+     <Compile Include="Assets\Scripts\Game\Npc.cs" />
+     <Compile Include="Assets\Scripts\Game\Stage.cs" />
+     <Compile Include="Assets\Scripts\Game\StageEvents.cs" />
+     <Compile Include="Assets\Scripts\Math\MathDatasControl.cs" />
+     <Compile Include="Assets\Scripts\Other\Datas.cs" />
+     <Compile Include="Assets\Scripts\Other\InfinityBackground.cs" />
+     <Compile Include="Assets\Scripts\User\UserDatasControl.cs" />
  <Reference Include="UnityEngine.UIAutomation">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UIAutomation/UnityEngine.UIAutomation.dll</HintPath>
  </Reference>
