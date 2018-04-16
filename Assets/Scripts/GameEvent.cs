@@ -43,9 +43,9 @@ public class GameEvent : MonoBehaviour {
 	public void nextClicked(){
 		string stageName;
 		StartCoroutine(lockObject(true, 0f));
-		if(PlayerInfo.nowStage < PlayerInfo.progress){
-			// stageName = "Button_points_" + PlayerInfo.nowStage.ToString();
-			stageName = "Image_points" + PlayerInfo.nowStage.ToString();
+		if(GameEvents.nowStage < GameEvents.progress){
+			// stageName = "Button_points_" + GameEvents.nowStage.ToString();
+			stageName = "Image_points" + GameEvents.nowStage.ToString();
 			print(stageName);
 			StageInfo stage = GameObject.Find(stageName).GetComponent<StageInfo>();
 
@@ -63,18 +63,18 @@ public class GameEvent : MonoBehaviour {
 				StartCoroutine(move(stage.next));
 				StartCoroutine(lockObject(false, 0.8f));
 			}
-			PlayerInfo.nowStage++;
+			GameEvents.nowStage++;
 		}else{
-			Debug.Log("error : Can't over progress.(" + PlayerInfo.nowStage + ")");			
+			Debug.Log("error : Can't over progress.(" + GameEvents.nowStage + ")");			
 		}
 	}
 
 	public void lastClicked(){
 		string stageName;
 		StartCoroutine(lockObject(true, 0f));
-		if(PlayerInfo.nowStage > 1){
-			// stageName = "Button_points_" + PlayerInfo.nowStage.ToString();
-			stageName = "Image_points" + PlayerInfo.nowStage.ToString();
+		if(GameEvents.nowStage > 1){
+			// stageName = "Button_points_" + GameEvents.nowStage.ToString();
+			stageName = "Image_points" + GameEvents.nowStage.ToString();
 			StageInfo stage = GameObject.Find(stageName).GetComponent<StageInfo>();
 
 			if(stage.isLastNeedTurn){
@@ -91,9 +91,9 @@ public class GameEvent : MonoBehaviour {
 				StartCoroutine(move(stage.last));
 				StartCoroutine(lockObject(false, 0.8f));
 			}
-			PlayerInfo.nowStage--;
+			GameEvents.nowStage--;
 		}else{
-			Debug.Log("error : Already the first stage.(" + PlayerInfo.nowStage + ")");
+			Debug.Log("error : Already the first stage.(" + GameEvents.nowStage + ")");
 		}
 	}
 
