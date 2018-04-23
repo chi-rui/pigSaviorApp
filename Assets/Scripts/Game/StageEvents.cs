@@ -56,7 +56,7 @@ public class StageEvents : MonoBehaviour {
 		userProgress += 1;
 	}
 
-	void challengeStart( string challenges ){
+	void taskStart( string challenges ){
 		// ...
 	}
 }
