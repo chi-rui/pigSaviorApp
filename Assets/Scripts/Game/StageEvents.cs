@@ -7,7 +7,6 @@ using UnityEngine.EventSystems;
 public class StageEvents : MonoBehaviour {
 
 	public float speed;
-	public Animator characterAnim;
 	public GameObject mainCharacter, mainCamera, TalkWindow;
 	private Vector3 newPosition, newCameraPosition;
 	public int userProgress;
@@ -43,13 +42,6 @@ public class StageEvents : MonoBehaviour {
 		}
 		mainCharacter.transform.position = Vector3.Lerp(mainCharacter.transform.position, newPosition, speed * Time.deltaTime);
 		mainCamera.transform.position = Vector3.Lerp(mainCamera.transform.position, newCameraPosition, speed * Time.deltaTime);
-	}
-
-	void OnTriggerEnter2D(Collider2D collider) {
-		if (collider.gameObject.tag == "npc") {
-			print("碰到npc了！");
-			characterAnim.Play("Image_character meet npc", -1, float.NegativeInfinity);
-		}
 	}
 
 	public void nextProgress(){

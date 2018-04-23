@@ -57,6 +57,7 @@
      <Compile Include="Assets\Scripts\Game\Stage.cs" />
      <Compile Include="Assets\Scripts\Game\StageEvents.cs" />
      <Compile Include="Assets\Scripts\Math\MathDatasControl.cs" />
+     <Compile Include="Assets\Scripts\Other\Collision.cs" />
      <Compile Include="Assets\Scripts\Other\Datas.cs" />
      <Compile Include="Assets\Scripts\Other\InfinityBackground.cs" />
      <Compile Include="Assets\Scripts\User\UserDatasControl.cs" />
