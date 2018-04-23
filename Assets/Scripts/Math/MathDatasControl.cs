@@ -6,13 +6,9 @@ using UnityEngine;
 
 public class MathDatasControl : MonoBehaviour {
 
-	private QuesObj quesObj;
-	private List<AnsObj> answerList = new List<AnsObj>();
-	private List<AnsObj> answerTemp = new List<AnsObj>();
-
 	// Use this for initialization
 	void Start () {
-		quesObj = getQuestion( 200, "A+B+C+D");
+		// quesObj = getQuestion( 200, "A+B+C+D");
 	}
 	
 	// Update is called once per frame
@@ -21,7 +17,7 @@ public class MathDatasControl : MonoBehaviour {
 	}
 
 	public QuesObj getQuestion( int maxNum, string template ){
-		quesObj = questionGenerator( 1, maxNum, template);
+		QuesObj quesObj = questionGenerator( 1, maxNum, template);
 		while(quesObj.answer[quesObj.answer.Count-1].partAns < 0){
 			quesObj = questionGenerator( 1, maxNum, template);
 		}
@@ -30,7 +26,7 @@ public class MathDatasControl : MonoBehaviour {
 
 
 	private QuesObj questionGenerator( int miniNum, int maxNum, string template ){		
-		quesObj = new QuesObj();
+		QuesObj quesObj = new QuesObj();
 		string[] question;
 		List<char> numbers = new List<char>();
 		char[] formula = template.ToCharArray();
