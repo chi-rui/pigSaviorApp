@@ -3,12 +3,15 @@
 # meta file
 *.meta
 
-# library folder
-./Library
-./ProjectSettings
-./UnityPackageManager
-./Temp
+# files in folders
+Library
+ProjectSettings
+UnityPackageManager
+Temp
 
 # temp files
 *~
 .DS_Store
+
+# exclude files.
+!.gitignore
