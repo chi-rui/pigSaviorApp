@@ -6,13 +6,11 @@ using UnityEngine.UI;
 
 public class Npc : MonoBehaviour {
 
+	public NpcInfo npcInfo;
 	public GameObject TalkWindow;
 	public Text title;
-	public List<string> correctPlot;
-	public List<string> wrongPlot;
-	public string npc;
-	public List<RPGPlot> plots;
-	public StageEvents stageEvents;
+	private StageEvents stageEvents;
+
 	// Use this for initialization
 	void Start () {
 		stageEvents = GameObject.Find("EventSystem").GetComponent<StageEvents>();
@@ -25,22 +23,22 @@ public class Npc : MonoBehaviour {
 
 	void npcClicked(){
 		TalkWindow.SetActive(true);
-		TalkWindow.transform.GetChild(1).GetComponentInChildren<Text>().text =  this.npc;
-		for(int i = 0; i < plots.Count; i++){
-			if(stageEvents.userProgress+1 > plots[i].sequence){
-				print("this plot is finished.");
-				TalkWindow.transform.GetChild(2).GetComponentInChildren<Text>().text = this.wrongPlot[0];
-				break;
-			}else if(stageEvents.userProgress+1 == plots[i].sequence){
+		TalkWindow.transform.GetChild(0).GetChild(0).GetComponentInChildren<Image>().sprite = this.npcInfo.npcHeader;
+		TalkWindow.transform.GetChild(1).GetComponentInChildren<Text>().text =  this.npcInfo.npcName + " :";
+		for(int i = 0; i < this.npcInfo.plots.Count; i++){
+			if(this.npcInfo.plots[i].isFinished)
+				continue;
+			if(stageEvents.userProgress+1 == this.npcInfo.plots[i].sequence){
 				print("now plot.");
-				TalkWindow.transform.GetChild(2).GetComponentInChildren<Text>().text = this.correctPlot[plots[i].plotNumber];
+				TalkWindow.transform.GetChild(2).GetComponentInChildren<Text>().text = this.npcInfo.trueContents[this.npcInfo.plots[i].plotNumber];
+				// events here.
 				stageEvents.nextProgress();
+				this.npcInfo.plots[i].isFinished = true;
 				break;
 			}else{
 				print("not finish");
-				TalkWindow.transform.GetChild(2).GetComponentInChildren<Text>().text = this.wrongPlot[0];
+				TalkWindow.transform.GetChild(2).GetComponentInChildren<Text>().text = this.npcInfo.falseContents[0];
 			}
 		}
-
 	} 
 }
