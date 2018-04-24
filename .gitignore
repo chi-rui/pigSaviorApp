@@ -4,6 +4,7 @@
 *.meta
 
 # files in folders
+Library
 ProjectSettings
 Temp
 
