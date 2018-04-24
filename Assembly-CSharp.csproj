@@ -54,6 +54,7 @@
      <Compile Include="Assets\Scripts\Game\ChapterEvents.cs" />
      <Compile Include="Assets\Scripts\Game\GameDatasControl.cs" />
      <Compile Include="Assets\Scripts\Game\Npc.cs" />
+     <Compile Include="Assets\Scripts\Game\RhythmMode.cs" />
      <Compile Include="Assets\Scripts\Game\Stage.cs" />
      <Compile Include="Assets\Scripts\Game\StageEvents.cs" />
      <Compile Include="Assets\Scripts\Math\MathDatasControl.cs" />
