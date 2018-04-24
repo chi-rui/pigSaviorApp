@@ -4,9 +4,7 @@
 *.meta
 
 # files in folders
-Library
 ProjectSettings
-UnityPackageManager
 Temp
 
 # temp files
