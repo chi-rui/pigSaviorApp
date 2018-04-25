@@ -17,13 +17,13 @@ public class Collision : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D collider) {
 		if (collider.gameObject.tag == "npc") {
-			print("碰到npc了！");
+			// print("碰到npc了！");
 			characterAnim.Play("Image_character meet npc");
 		}
 	}
 
 	void OnTriggerExit2D(Collider2D collider) {
-		print("離開npc了！");
+		// print("離開npc了！");
 		characterAnim.Play("Image_character stage");
     }
 }
