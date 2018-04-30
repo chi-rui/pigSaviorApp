@@ -31,10 +31,10 @@ public class StageInfo
 	public bool isLastHorizontalFirst;
 	public bool isNextNeedTurn;
 	public bool isNextHorizontalFirst;
-	public int stageNum;
-	public string sceneName;
-	public GameObject stageImg;
-	public string[] spritesName;
+	public int stageNum;		// progress of the stage.
+	public string sceneName;	// scenes of entering the stage. 
+	public GameObject stageImg;	// initial image according to the stage.
+	public GameObject stageFin;	// the image after finish the stage.
 }
 
 // Stage data

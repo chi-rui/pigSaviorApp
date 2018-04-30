@@ -20,7 +20,7 @@ public class ChapterEvents : MonoBehaviour {
 	}
 
 	IEnumerator move( Vector2 position ){
-		speed = 0.05f;
+		speed = 0.01f;
 		fspeed = Vector2.Distance(character.transform.position, position) * speed;
 		while(speed != 0){
 			character.transform.position = Vector2.Lerp(character.transform.position, position, speed);
@@ -46,18 +46,18 @@ public class ChapterEvents : MonoBehaviour {
 			print(stageName);
 			Stage stage = GameObject.Find(stageName).GetComponent<Stage>();
 
-			if(stage.isNextNeedTurn){
-				if(stage.isNextHorizontalFirst){
+			if(stage.stageInfo.isNextNeedTurn){
+				if(stage.stageInfo.isNextHorizontalFirst){
 					// print("先水平要轉彎");
-					StartCoroutine(move(new Vector2(stage.next.x, character.transform.position.y)));
+					StartCoroutine(move(new Vector2(stage.stageInfo.next.x, character.transform.position.y)));
 				}else{
 					// print("先垂直要轉彎");
-					StartCoroutine(move(new Vector2(character.transform.position.x, stage.next.y)));
+					StartCoroutine(move(new Vector2(character.transform.position.x, stage.stageInfo.next.y)));
 				}
-				StartCoroutine(nextMove(0.8f, stage.next));
+				StartCoroutine(nextMove(0.8f, stage.stageInfo.next));
 				StartCoroutine(lockObject(false, 1.3f));
 			}else{
-				StartCoroutine(move(stage.next));
+				StartCoroutine(move(stage.stageInfo.next));
 				StartCoroutine(lockObject(false, 0.8f));
 			}
 			UserDatasControl.nowStage++;
@@ -74,18 +74,18 @@ public class ChapterEvents : MonoBehaviour {
 			stageName = "Image_points" + UserDatasControl.nowStage.ToString();
 			Stage stage = GameObject.Find(stageName).GetComponent<Stage>();
 
-			if(stage.isLastNeedTurn){
-				if(stage.isLastHorizontalFirst){
+			if(stage.stageInfo.isLastNeedTurn){
+				if(stage.stageInfo.isLastHorizontalFirst){
 					// print("先水平要轉彎");	
-					StartCoroutine(move(new Vector2(stage.last.x, character.transform.position.y)));
+					StartCoroutine(move(new Vector2(stage.stageInfo.last.x, character.transform.position.y)));
 				}else{
 					// print("先垂直要轉彎");
-					StartCoroutine(move(new Vector2(character.transform.position.x, stage.last.y)));
+					StartCoroutine(move(new Vector2(character.transform.position.x, stage.stageInfo.last.y)));
 				}
-				StartCoroutine(nextMove(0.8f, stage.last));
+				StartCoroutine(nextMove(0.8f, stage.stageInfo.last));
 				StartCoroutine(lockObject(false, 1.3f));
 			}else{
-				StartCoroutine(move(stage.last));
+				StartCoroutine(move(stage.stageInfo.last));
 				StartCoroutine(lockObject(false, 0.8f));
 			}
 			UserDatasControl.nowStage--;
