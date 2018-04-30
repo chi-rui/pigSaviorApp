@@ -7,9 +7,10 @@ using UnityEngine.EventSystems;
 public class StageEvents : MonoBehaviour {
 
 	public float speed;
-	public GameObject mainCharacter, mainCamera, TalkWindow;
+	public GameObject mainCharacter, mainCamera, TalkWindow, gamePanel;
 	private Vector3 newPosition, newCameraPosition;
 	public int userProgress;
+	bool isGameStart = false;
 	// Use this for initialization
 	void Start () {
 		userProgress = 0;
@@ -17,7 +18,7 @@ public class StageEvents : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if(Input.GetMouseButton(0)){
+		if(Input.GetMouseButton(0) && !isGameStart){
 			if(EventSystem.current.currentSelectedGameObject == null && !TalkWindow.activeInHierarchy){
 				characterMove();
 			}
@@ -46,9 +47,22 @@ public class StageEvents : MonoBehaviour {
 
 	public void nextProgress(){
 		userProgress += 1;
+		isGameStart = false;
+		gamePanel.SetActive(false);
 	}
 
-	void taskStart( string challenges ){
-		// ...
+	public void setGamePanel( GameObject game ){
+		this.gamePanel = game;
+	}
+
+	public void taskStart(){
+		if(gamePanel != null){
+			print("enter game");
+			this.gamePanel.SetActive(true);
+			isGameStart = true;
+		}else{
+			print("nothing happened");
+			userProgress += 1;
+		}
 	}
 }

@@ -10,6 +10,7 @@ public class Npc : MonoBehaviour {
 	public GameObject TalkWindow;
 	public Text title;
 	private StageEvents stageEvents;
+	public Button enterGame;
 
 	// Use this for initialization
 	void Start () {
@@ -22,6 +23,7 @@ public class Npc : MonoBehaviour {
 	}
 
 	void npcClicked(){
+		// need to set npc.interactable = false;
 		TalkWindow.SetActive(true);
 		TalkWindow.transform.GetChild(0).GetChild(0).GetComponentInChildren<Image>().sprite = this.npcInfo.npcHeader;
 		TalkWindow.transform.GetChild(1).GetComponentInChildren<Text>().text =  this.npcInfo.npcName + " :";
@@ -32,8 +34,13 @@ public class Npc : MonoBehaviour {
 				print("now plot.");
 				TalkWindow.transform.GetChild(2).GetComponentInChildren<Text>().text = this.npcInfo.trueContents[this.npcInfo.plots[i].plotNumber];
 				// events here.
-				stageEvents.nextProgress();
-				this.npcInfo.plots[i].isFinished = true;
+				
+				if(this.npcInfo.plots[i].gamePanel != null){
+					stageEvents.setGamePanel(this.npcInfo.plots[i].gamePanel);
+				}else{
+					stageEvents.setGamePanel(null);
+				}
+				// this.npcInfo.plots[i].isFinished = true;
 				break;
 			}else{
 				print("not finish");
@@ -41,4 +48,6 @@ public class Npc : MonoBehaviour {
 			}
 		}
 	} 
+
+
 }

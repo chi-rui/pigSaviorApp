@@ -53,7 +53,7 @@ public class Plot
 {
 	public int sequence;		// 劇情事件的次序
 	public int plotNumber;		// 劇情對應的正確回應索引
-	public string gamePanel;	// 劇情對應的遊戲名稱
+	public GameObject gamePanel;	// 劇情對應的遊戲名稱
 	public bool isFinished;		// 劇情是否已完成
 	public bool isStageEnd;		// 該劇情是否為最後劇情
 }
