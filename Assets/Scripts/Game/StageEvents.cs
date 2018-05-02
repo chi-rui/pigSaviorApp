@@ -8,8 +8,10 @@ public class StageEvents : MonoBehaviour {
 
 	public float speed;
 	public GameObject mainCharacter, mainCamera, TalkWindow;
-	private Vector3 newPosition, newCameraPosition;
 	public int userProgress;
+
+	private Vector3 newPosition, newCameraPosition;
+	
 	// Use this for initialization
 	void Start () {
 		userProgress = 0;
@@ -48,7 +50,7 @@ public class StageEvents : MonoBehaviour {
 		userProgress += 1;
 	}
 
-	void taskStart( string challenges ){
-		// ...
-	}
+	// void taskStart( string tasks ){
+		
+	// }
 }
