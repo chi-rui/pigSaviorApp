@@ -61,6 +61,7 @@
      <Compile Include="Assets\Scripts\Math\MathDatasControl.cs" />
      <Compile Include="Assets\Scripts\Other\Collision.cs" />
      <Compile Include="Assets\Scripts\Other\Datas.cs" />
+     <Compile Include="Assets\Scripts\Other\GameSetting.cs" />
      <Compile Include="Assets\Scripts\Other\InfinityBackground.cs" />
      <Compile Include="Assets\Scripts\User\UserDatasControl.cs" />
  <Reference Include="UnityEngine.UI">
