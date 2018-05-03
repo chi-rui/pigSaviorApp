@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class Stage : MonoBehaviour {
 
-	public Vector3 last = new Vector3();
-	public Vector3 next = new Vector3();
-	public bool isLastNeedTurn = false;
-	public bool isNextNeedTurn = false;
-	public bool isLastHorizontalFirst = false;
-	public bool isNextHorizontalFirst = false;
-	public int stageProgress;
+	// public Vector3 last = new Vector3();
+	// public Vector3 next = new Vector3();
+	// public bool isLastNeedTurn = false;
+	// public bool isNextNeedTurn = false;
+	// public bool isLastHorizontalFirst = false;
+	// public bool isNextHorizontalFirst = false;
+	// public int stageProgress;
 	
 	public StageInfo stageInfo;
 	
