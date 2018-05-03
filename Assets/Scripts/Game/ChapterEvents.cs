@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class ChapterEvents : MonoBehaviour {
 
+	private GameDatasControl dataControl;
+
 	public GameObject character, nextArrow, lastArrow;
 	public float speed, fspeed;
 	public bool goNext = true;
 
 	// Use this for initialization
 	void Start () {
+		dataControl = GameObject.Find("Datas").GetComponent<GameDatasControl>();
 		speed = 0f;
 		character.transform.position = new Vector2(-2000f, -1400f);
 	}
@@ -113,7 +116,7 @@ public class ChapterEvents : MonoBehaviour {
 	}
 
 	public void enterStage(){
-		// ...
+		dataControl.LoadingScene("stage" + UserDatasControl.nowStage.ToString());
 	}
 
 	public void changeImage(){

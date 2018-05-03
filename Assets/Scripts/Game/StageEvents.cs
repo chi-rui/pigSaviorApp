@@ -6,13 +6,16 @@ using UnityEngine.EventSystems;
 
 public class StageEvents : MonoBehaviour {
 
+	private GameDatasControl dataControl;
+	
 	public float speed;
-	public GameObject mainCharacter, mainCamera, TalkWindow, gamePanel;
+	public GameObject mainCharacter, mainCamera, TalkWindow, gamePanel, correctPanel, wrongPanel;
 	private Vector3 newPosition, newCameraPosition;
 	public int userProgress;
 	bool isGameStart = false;
 	// Use this for initialization
 	void Start () {
+		dataControl = GameObject.Find("Datas").GetComponent<GameDatasControl>();
 		userProgress = 0;
 	}
 
@@ -62,7 +65,22 @@ public class StageEvents : MonoBehaviour {
 			isGameStart = true;
 		}else{
 			print("nothing happened");
-			userProgress += 1;
+			userProgress += 1; // wrong click will also make progress increase.
 		}
 	}
+
+	public void showFeedBack( bool ans ){
+		if(ans)
+			StartCoroutine(Feedback(correctPanel));
+		else
+			StartCoroutine(Feedback(wrongPanel));
+		// ... set wrong panel hints.
+	}
+
+	public IEnumerator Feedback( GameObject imageFeedBack ){
+		imageFeedBack.SetActive(true);
+		yield return new WaitForSeconds(2f);
+		imageFeedBack.SetActive(false);
+	}
+
 }

@@ -15,9 +15,9 @@ public class GameDatasControl : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		userData.account = "test account";
-		userData.passwd = "test passwd";
-		userData.gameProgress = 0;
+		// userData.account = "test account";
+		// userData.passwd = "test passwd";
+		// userData.gameProgress = 0;
 	}
 	
 	// Update is called once per frame
