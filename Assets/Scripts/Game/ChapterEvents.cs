@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ChapterEvents : MonoBehaviour {
 
-	private GameDatasControl dataControl;
+	private DatasControl dataControl;
 
 	public GameObject character, nextArrow, lastArrow;
 	public float speed, fspeed;
@@ -12,9 +12,11 @@ public class ChapterEvents : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		dataControl = GameObject.Find("Datas").GetComponent<GameDatasControl>();
+		dataControl = GameObject.Find("Datas").GetComponent<DatasControl>();
 		speed = 0f;
 		character.transform.position = new Vector2(-2000f, -1400f);
+		if(dataControl.loadingPanel == null)
+			dataControl.setGameObjects();
 	}
 	
 	// Update is called once per frame
@@ -44,8 +46,8 @@ public class ChapterEvents : MonoBehaviour {
 	public void nextClicked(){
 		string stageName;
 		StartCoroutine(lockObject(true, 0f));
-		if(UserDatasControl.nowStage < UserDatasControl.progress){
-			stageName = "Image_points" + UserDatasControl.nowStage.ToString();
+		if(ChapterDatas.nowStage < ChapterDatas.progress){
+			stageName = "Image_points" + ChapterDatas.nowStage.ToString();
 			print(stageName);
 			Stage stage = GameObject.Find(stageName).GetComponent<Stage>();
 
@@ -63,18 +65,18 @@ public class ChapterEvents : MonoBehaviour {
 				StartCoroutine(move(stage.stageInfo.next));
 				StartCoroutine(lockObject(false, 0.8f));
 			}
-			UserDatasControl.nowStage++;
+			ChapterDatas.nowStage++;
 		}else{
-			Debug.Log("error : Can't over progress.(" + UserDatasControl.nowStage + ")");			
+			Debug.Log("error : Can't over progress.(" + ChapterDatas.nowStage + ")");			
 		}
 	}
 
 	public void lastClicked(){
 		string stageName;
 		StartCoroutine(lockObject(true, 0f));
-		if(UserDatasControl.nowStage > 1){
-			// stageName = "Button_points_" + UserDatasControl.nowStage.ToString();
-			stageName = "Image_points" + UserDatasControl.nowStage.ToString();
+		if(ChapterDatas.nowStage > 1){
+			// stageName = "Button_points_" + ChapterDatas.nowStage.ToString();
+			stageName = "Image_points" + ChapterDatas.nowStage.ToString();
 			Stage stage = GameObject.Find(stageName).GetComponent<Stage>();
 
 			if(stage.stageInfo.isLastNeedTurn){
@@ -91,9 +93,9 @@ public class ChapterEvents : MonoBehaviour {
 				StartCoroutine(move(stage.stageInfo.last));
 				StartCoroutine(lockObject(false, 0.8f));
 			}
-			UserDatasControl.nowStage--;
+			ChapterDatas.nowStage--;
 		}else{
-			Debug.Log("error : Already the first stage.(" + UserDatasControl.nowStage + ")");
+			Debug.Log("error : Already the first stage.(" + ChapterDatas.nowStage + ")");
 		}
 	}
 
@@ -116,7 +118,7 @@ public class ChapterEvents : MonoBehaviour {
 	}
 
 	public void enterStage(){
-		dataControl.LoadingScene("stage" + UserDatasControl.nowStage.ToString());
+		dataControl.LoadingScene("stage" + ChapterDatas.nowStage.ToString());
 	}
 
 	public void changeImage(){

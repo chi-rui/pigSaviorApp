@@ -6,16 +6,17 @@ using UnityEngine.EventSystems;
 
 public class StageEvents : MonoBehaviour {
 
-	private GameDatasControl dataControl;
-	
+	private DatasControl dataControl;
+
 	public float speed;
 	public GameObject mainCharacter, mainCamera, TalkWindow, gamePanel, correctPanel, wrongPanel;
 	private Vector3 newPosition, newCameraPosition;
 	public int userProgress;
 	bool isGameStart = false;
+	
 	// Use this for initialization
 	void Start () {
-		dataControl = GameObject.Find("Datas").GetComponent<GameDatasControl>();
+		dataControl = GameObject.Find("Datas").GetComponent<DatasControl>();
 		userProgress = 0;
 	}
 
@@ -31,6 +32,7 @@ public class StageEvents : MonoBehaviour {
 	void characterMove () {
 		if (Input.mousePosition.x < (Screen.width / 2)) {
 			// change character image "left move" here.
+			mainCharacter.transform.eulerAngles = new Vector3(0,180,0);
 			newPosition = new Vector3(Mathf.Clamp(mainCharacter.transform.position.x - 50f, -1750f, 1750f), mainCharacter.transform.position.y, 0f);
 			if(newPosition.x < 1150f)
 				newCameraPosition = new Vector3(Mathf.Clamp(mainCamera.transform.position.x - 50f, -1200f, 1200f), mainCamera.transform.position.y, mainCamera.transform.position.z);
@@ -38,6 +40,7 @@ public class StageEvents : MonoBehaviour {
 				newCameraPosition = mainCamera.transform.position;
 		} else if (Input.mousePosition.x > (Screen.width / 2)) {
 			// change character image "right move" here.
+			mainCharacter.transform.eulerAngles = new Vector3(0,0,0);
 			newPosition = new Vector3(Mathf.Clamp(mainCharacter.transform.position.x + 50f, -1750f, 1750f), mainCharacter.transform.position.y, 0f);
 			if(newPosition.x > -1150f)
 				newCameraPosition = new Vector3(Mathf.Clamp(mainCamera.transform.position.x + 50f, -1200f, 1200f), mainCamera.transform.position.y, mainCamera.transform.position.z);
