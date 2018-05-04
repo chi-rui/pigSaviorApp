@@ -1,17 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ChapterEvents : MonoBehaviour {
 
-	public GameObject character, nextArrow, lastArrow;
+	private DatasControl gameDatas;
+	public Stage stage;
+	public GameObject character;
+	public Button nextArrow, lastArrow;
 	public float speed, fspeed;
 	public bool goNext = true;
 
+
 	// Use this for initialization
 	void Start () {
+		// initialization
+		gameDatas = GameObject.Find("Datas").GetComponent<DatasControl>();
+		stage = GameObject.Find("Image_points1").GetComponent<Stage>();
 		speed = 0f;
 		character.transform.position = new Vector2(-2000f, -1400f);
+		
+		// set game datas.
+		if(gameDatas.loadingPanel == null)
+			gameDatas.setGameObjects();
+		gameDatas.stageGoal = 0;
+		// set the situation of return from the stage scenes.
 	}
 	
 	// Update is called once per frame
@@ -27,6 +41,7 @@ public class ChapterEvents : MonoBehaviour {
 			speed = calculateNewSpeed(position);
 			yield return 0;
 		}
+		lockObject(false);
 	}
 
 	private float calculateNewSpeed( Vector2 target ){
@@ -40,11 +55,11 @@ public class ChapterEvents : MonoBehaviour {
 
 	public void nextClicked(){
 		string stageName;
-		StartCoroutine(lockObject(true, 0f));
-		if(UserDatasControl.nowStage < UserDatasControl.progress){
-			stageName = "Image_points" + UserDatasControl.nowStage.ToString();
-			print(stageName);
-			Stage stage = GameObject.Find(stageName).GetComponent<Stage>();
+		lockObject(true);
+		if(gameDatas.nowStage+1 <= gameDatas.progress){
+			stageName = "Image_points" + gameDatas.nowStage.ToString();
+			// print(stageName);
+			stage = GameObject.Find(stageName).GetComponent<Stage>();
 
 			if(stage.stageInfo.isNextNeedTurn){
 				if(stage.stageInfo.isNextHorizontalFirst){
@@ -55,24 +70,24 @@ public class ChapterEvents : MonoBehaviour {
 					StartCoroutine(move(new Vector2(character.transform.position.x, stage.stageInfo.next.y)));
 				}
 				StartCoroutine(nextMove(0.8f, stage.stageInfo.next));
-				StartCoroutine(lockObject(false, 1.3f));
+				// StartCoroutine(lockObject(false, 1.3f));
 			}else{
 				StartCoroutine(move(stage.stageInfo.next));
-				StartCoroutine(lockObject(false, 0.8f));
+				// StartCoroutine(lockObject(false, 0.8f));
 			}
-			UserDatasControl.nowStage++;
+			gameDatas.nowStage++;
 		}else{
-			Debug.Log("error : Can't over progress.(" + UserDatasControl.nowStage + ")");			
+			Debug.Log("error : Can't over progress.(" + gameDatas.nowStage + ")");
+			lockObject(false);
 		}
 	}
 
 	public void lastClicked(){
 		string stageName;
-		StartCoroutine(lockObject(true, 0f));
-		if(UserDatasControl.nowStage > 1){
-			// stageName = "Button_points_" + UserDatasControl.nowStage.ToString();
-			stageName = "Image_points" + UserDatasControl.nowStage.ToString();
-			Stage stage = GameObject.Find(stageName).GetComponent<Stage>();
+		lockObject(true);
+		if(gameDatas.nowStage > 1){
+			stageName = "Image_points" + gameDatas.nowStage.ToString();
+			stage = GameObject.Find(stageName).GetComponent<Stage>();
 
 			if(stage.stageInfo.isLastNeedTurn){
 				if(stage.stageInfo.isLastHorizontalFirst){
@@ -83,14 +98,13 @@ public class ChapterEvents : MonoBehaviour {
 					StartCoroutine(move(new Vector2(character.transform.position.x, stage.stageInfo.last.y)));
 				}
 				StartCoroutine(nextMove(0.8f, stage.stageInfo.last));
-				StartCoroutine(lockObject(false, 1.3f));
 			}else{
 				StartCoroutine(move(stage.stageInfo.last));
-				StartCoroutine(lockObject(false, 0.8f));
 			}
-			UserDatasControl.nowStage--;
+			gameDatas.nowStage--;
 		}else{
-			Debug.Log("error : Already the first stage.(" + UserDatasControl.nowStage + ")");
+			Debug.Log("error : Already the first stage.(" + gameDatas.nowStage + ")");
+			lockObject(false);
 		}
 	}
 
@@ -99,24 +113,20 @@ public class ChapterEvents : MonoBehaviour {
 		StartCoroutine(move(position));
 	}
 
-	IEnumerator lockObject(bool l, float time){
-		yield return new WaitForSeconds(time);
-		if(l){
-			// print("lock");
-			nextArrow.SetActive(false);
-			lastArrow.SetActive(false);
-		}else{
-			// print("open");
-			nextArrow.SetActive(true);
-			lastArrow.SetActive(true);
-		}
+	private void lockObject(bool l){
+		nextArrow.interactable = lastArrow.interactable = !l;
 	}
 
 	public void enterStage(){
-		// ...
+		gameDatas.stageGoal = stage.stageInfo.stageGoal;
+		gameDatas.LoadingScene("stage" + gameDatas.nowStage.ToString());
 	}
 
 	public void changeImage(){
 		// ...
+	}
+
+	public void setProgress(){
+		gameDatas.cheat(5);
 	}
 }

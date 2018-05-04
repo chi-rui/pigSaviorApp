@@ -62,14 +62,18 @@ public class PickMode : MonoBehaviour {
 		wait = false;
 	}
 
+	IEnumerator gameFinish( float time ){
+		yield return new WaitForSeconds(time);
+		this.GamePanel.SetActive(false);
+	}
+
 	public void checkAns(){
 		if(this.itemsPicked == this.answer){
-			print("correct!");
-			// GamePanel.SetActive(false);
-			stageEvents.nextProgress();
-
+			StartCoroutine(gameFinish(2f));
+			stageEvents.showFeedBack(true);
 		}else{
-			print("wrong");
+			stageEvents.showFeedBack(false);
+			initial();
 		}
 	}
 
