@@ -6,20 +6,19 @@ using UnityEngine.EventSystems;
 
 // , IPointerClickHandler
 public class RhythmMode : MonoBehaviour {
-	public GameObject pointer, characterAction, Panel_challengeFailed;
+	public GameObject pointer, characterAction, challengeFailedPanel, calculatePanel, perfectScenario, remainingText, hitResultText;
 	public Image[] hitbarArr;
 	public float speed;
-	public Animator Anim_characterAction;
+	public Animator Anim_characterAction, Anim_characterActionPerfect, Anim_onion, Anim_onionPerfect;
 	public Sprite Sprite_characterGrab;
-	public Image Image_characterAction;
-	public Text Text_remainCounts, Text_perfectCounts, Text_missCounts, Text_userans;
+	public Image Image_characterAction; 
+	public Text Text_remainCounts, Text_hitResult, Text_userans;
 	
 	private Vector3 pos_L, pos_R;
-	private int remainCounts, perfectCounts, missCounts;
-	// private int[] hitBarsIndexArr = new int[7];
+	private int remainCounts;
 	private List<int> tmpSortingList = new List<int>();
 	private List<int> hitBarsIndexList = new List<int>();
-	private bool isPerfectHit, isChallengeFailed;
+	private bool isRhythmStart, isPerfectHit, isChallengeFailed;
 
 	// Use this for initialization
 	void Start () {
@@ -29,6 +28,7 @@ public class RhythmMode : MonoBehaviour {
 		remainCounts = 10;
 		isChallengeFailed = false;
 		isPerfectHit = false;
+		isRhythmStart = true;
 		generateHitBars(1);
 	}
 	
@@ -36,24 +36,28 @@ public class RhythmMode : MonoBehaviour {
 	// -530 -1860
 	// Mathf.PingPong(speed * Time.time, 1.0f)
 	void Update () {
-		pointer.transform.position = Vector3.Lerp(pos_L, pos_R, Mathf.PingPong(speed * Time.time, 1.0f));
+		if (isRhythmStart) {
+			pointer.transform.position = Vector3.Lerp(pos_L, pos_R, Mathf.PingPong(speed * Time.time, 1.0f));
 
-		if (Input.GetMouseButtonDown(0)) {
-			if (isPerfectHit)
-				clickPerfectHit();
-			else
-				clickMissHit();
-			clickInRhythm();
+			// set roles' action
+			characterAction.transform.position = new Vector3(characterAction.transform.position.x, 60, characterAction.transform.position.z);
+			Anim_characterAction.enabled = true;
+
+			if (Input.GetMouseButtonDown(0)) {
+				if (isPerfectHit)
+					StartCoroutine(clickInRhythm(1.3f));
+				else
+					StartCoroutine(clickInRhythm(1f));
+			}
 		}
 
 		if (isChallengeFailed)
-			Panel_challengeFailed.SetActive(true);
+			challengeFailedPanel.SetActive(true);
 
 		// test
 		if (Input.GetKeyDown(KeyCode.Space)) {
 
 		}
-            
 	}
 
 	void generateHitBars (int times) {
@@ -62,8 +66,10 @@ public class RhythmMode : MonoBehaviour {
 				ranNum(3);
 				break;
 			case 2:
+				ranNum(2);
 				break;
 			case 3:
+				ranNum(1);
 				break;
 			default:
 				break;
@@ -87,57 +93,89 @@ public class RhythmMode : MonoBehaviour {
 		// print(hitBarsIndexList.Count + " " + tmpSortingList.Count);
 		for (int i = 0; i < counts; i++) {
 			// print(hitBarsIndexList[i]);
-			hitbarArr[hitBarsIndexList[i]].color = new Color32(255, 137, 30, 255);
+			hitbarArr[hitBarsIndexList[i]].color = new Color32(41, 149, 255, 255);
 			hitbarArr[hitBarsIndexList[i]].gameObject.tag = "hitbar";
 		}
 	}
 
-	void clickInRhythm () {
-		// StartCoroutine(waitForClick(1f));
-
+	IEnumerator clickInRhythm (float time) {
+		isRhythmStart = false;
+		
 		// set roles' action
-		characterAction.transform.position = new Vector3(characterAction.transform.position.x, 30, characterAction.transform.position.z);
+		characterAction.transform.position = new Vector3(characterAction.transform.position.x, 40, characterAction.transform.position.z);
 		Anim_characterAction.enabled = false;
 		Image_characterAction.sprite = Sprite_characterGrab;
 
-		// set hint text
+		// show hint result and Perfect hit scenario
+		remainingText.SetActive(false);
+		hitResultText.SetActive(true);
+
+		if (isPerfectHit) {
+			Text_hitResult.text = "Perfect";
+			Anim_onion.enabled = false;
+			perfectScenario.SetActive(true);
+			Anim_characterActionPerfect.Play("character game action_grab");
+			Anim_onionPerfect.Play("onion grabbed");
+			// Image_onionM.rectTransform.sizeDelta = new Vector2(250, 300);
+		}
+		else
+			Text_hitResult.text = "Miss";
+
+		yield return new WaitForSeconds(time);
+
+		// set remain counts text
 		remainCounts--;
 		Text_remainCounts.text = remainCounts.ToString();
+
+		if (isPerfectHit)
+			clickPerfectHit();
+		else {
+			isRhythmStart = true;
+			// show remain counts text
+			remainingText.SetActive(true);
+			hitResultText.SetActive(false);
+		}
+
 		if (remainCounts == 0) {
+			isRhythmStart = false;
 			isChallengeFailed = true;
 		}
 	}
 
-	// IEnumerator waitForClick (float time) {
-	// 	yield return new WaitForSeconds(time);
-	// }
-
-	void clickPerfectHit() {
-		// set hint text
-		perfectCounts++;
-		Text_perfectCounts.text = perfectCounts.ToString();
+	void clickPerfectHit () {
 		print("isPerfectHit: " + isPerfectHit);
-	}
 
-	void clickMissHit() {
-		// set hint text
-		missCounts++;
-		Text_missCounts.text = missCounts.ToString();
-		print("isPerfectHit: " + isPerfectHit);
+		perfectScenario.SetActive(false);
+
+		// show calculate panel
+		calculatePanel.SetActive(true);
 	}
 
 	// Collision
-	void OnTriggerEnter2D(Collider2D collider) {
+	void OnTriggerEnter2D (Collider2D collider) {
 		if (collider.gameObject.tag == "hitbar") {
 			isPerfectHit = true;
-			// print("isPerfectHit: " + isPerfectHit);
+			print("isPerfectHit: " + isPerfectHit);
 		} else if (collider.gameObject.tag == "rhythmbar") {
 			isPerfectHit = false;
-			// print("isPerfectHit: " + isPerfectHit);
+			print("isPerfectHit: " + isPerfectHit);
 		} else {
+			isPerfectHit = false;
 			print("Error for collision");
 		}
 	}
 
-	
+	public void clickNumBtn (int num) {
+		if (Text_userans.text == "ANS") {
+			Text_userans.text = "";
+			Text_userans.text += num.ToString();
+		} else {
+			Text_userans.text += num.ToString();
+		}
+	}
+
+	public void clearAnsNum () {
+		Text_userans.text = "";
+	}
+
 }

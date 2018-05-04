@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Collision : MonoBehaviour {
-	public Animator characterAnim;
+	public Animator Anim_character;
 
 	// Use this for initialization
 	void Start () {
@@ -18,12 +18,12 @@ public class Collision : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D collider) {
 		if (collider.gameObject.tag == "npc") {
 			// print("碰到npc了！");
-			characterAnim.Play("Image_character meet npc");
+			Anim_character.Play("Image_character meet npc");
 		}
 	}
 
 	void OnTriggerExit2D(Collider2D collider) {
 		// print("離開npc了！");
-		characterAnim.Play("Image_character stage");
+		Anim_character.Play("Image_character stage");
     }
 }
