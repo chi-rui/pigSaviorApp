@@ -9,7 +9,6 @@ public class Npc : MonoBehaviour {
 	public NpcInfo npcInfo;
 	public Text title;
 	private StageEvents stageEvents;
-	public Button enterGame;
 
 	// Use this for initialization
 	void Start () {
@@ -21,7 +20,7 @@ public class Npc : MonoBehaviour {
 		
 	}
 
-	void npcClicked(){
+	public void npcClicked(){
 		for(int i = 0; i < this.npcInfo.plots.Count; i++){
 			if(stageEvents.userProgress+1 == this.npcInfo.plots[i].sequence){
 				stageEvents.setGameInfo(this.npcInfo.plots[i].gamePanel, this.npcInfo.npcHeader, this.npcInfo.npcName + " :", this.npcInfo.trueContents[this.npcInfo.plots[i].plotNumber], true);

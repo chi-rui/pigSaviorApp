@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ChapterEvents : MonoBehaviour {
 
 	private DatasControl gameDatas;
 	public Stage stage;
-	public GameObject character, nextArrow, lastArrow;
+	public GameObject character;
+	public Button nextArrow, lastArrow;
 	public float speed, fspeed;
 	public bool goNext = true;
 
@@ -39,6 +41,7 @@ public class ChapterEvents : MonoBehaviour {
 			speed = calculateNewSpeed(position);
 			yield return 0;
 		}
+		lockObject(false);
 	}
 
 	private float calculateNewSpeed( Vector2 target ){
@@ -52,7 +55,7 @@ public class ChapterEvents : MonoBehaviour {
 
 	public void nextClicked(){
 		string stageName;
-		// StartCoroutine(lockObject(true, 0f));
+		lockObject(true);
 		if(gameDatas.nowStage+1 <= gameDatas.progress){
 			stageName = "Image_points" + gameDatas.nowStage.ToString();
 			// print(stageName);
@@ -74,13 +77,14 @@ public class ChapterEvents : MonoBehaviour {
 			}
 			gameDatas.nowStage++;
 		}else{
-			Debug.Log("error : Can't over progress.(" + gameDatas.nowStage + ")");			
+			Debug.Log("error : Can't over progress.(" + gameDatas.nowStage + ")");
+			lockObject(false);
 		}
 	}
 
 	public void lastClicked(){
 		string stageName;
-		// StartCoroutine(lockObject(true, 0f));
+		lockObject(true);
 		if(gameDatas.nowStage > 1){
 			stageName = "Image_points" + gameDatas.nowStage.ToString();
 			stage = GameObject.Find(stageName).GetComponent<Stage>();
@@ -94,14 +98,13 @@ public class ChapterEvents : MonoBehaviour {
 					StartCoroutine(move(new Vector2(character.transform.position.x, stage.stageInfo.last.y)));
 				}
 				StartCoroutine(nextMove(0.8f, stage.stageInfo.last));
-				// StartCoroutine(lockObject(false, 1.3f));
 			}else{
 				StartCoroutine(move(stage.stageInfo.last));
-				// StartCoroutine(lockObject(false, 0.8f));
 			}
 			gameDatas.nowStage--;
 		}else{
 			Debug.Log("error : Already the first stage.(" + gameDatas.nowStage + ")");
+			lockObject(false);
 		}
 	}
 
@@ -110,17 +113,8 @@ public class ChapterEvents : MonoBehaviour {
 		StartCoroutine(move(position));
 	}
 
-	IEnumerator lockObject(bool l, float time){
-		yield return new WaitForSeconds(time);
-		if(l){
-			// print("lock");
-			nextArrow.SetActive(false);
-			lastArrow.SetActive(false);
-		}else{
-			// print("open");
-			nextArrow.SetActive(true);
-			lastArrow.SetActive(true);
-		}
+	private void lockObject(bool l){
+		nextArrow.interactable = lastArrow.interactable = !l;
 	}
 
 	public void enterStage(){
