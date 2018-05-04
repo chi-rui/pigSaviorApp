@@ -64,15 +64,13 @@ public class PickMode : MonoBehaviour {
 
 	IEnumerator gameFinish( float time ){
 		yield return new WaitForSeconds(time);
-		stageEvents.nextProgress();
-		GamePanel.SetActive(false);
+		this.GamePanel.SetActive(false);
 	}
 
 	public void checkAns(){
 		if(this.itemsPicked == this.answer){
-			stageEvents.showFeedBack(true);
 			StartCoroutine(gameFinish(2f));
-			
+			stageEvents.showFeedBack(true);
 		}else{
 			stageEvents.showFeedBack(false);
 			initial();

@@ -4,19 +4,26 @@ using UnityEngine;
 
 public class ChapterEvents : MonoBehaviour {
 
-	private DatasControl dataControl;
-
+	private DatasControl gameDatas;
+	public Stage stage;
 	public GameObject character, nextArrow, lastArrow;
 	public float speed, fspeed;
 	public bool goNext = true;
 
+
 	// Use this for initialization
 	void Start () {
-		dataControl = GameObject.Find("Datas").GetComponent<DatasControl>();
+		// initialization
+		gameDatas = GameObject.Find("Datas").GetComponent<DatasControl>();
+		stage = GameObject.Find("Image_points1").GetComponent<Stage>();
 		speed = 0f;
 		character.transform.position = new Vector2(-2000f, -1400f);
-		if(dataControl.loadingPanel == null)
-			dataControl.setGameObjects();
+		
+		// set game datas.
+		if(gameDatas.loadingPanel == null)
+			gameDatas.setGameObjects();
+		gameDatas.stageGoal = 0;
+		// set the situation of return from the stage scenes.
 	}
 	
 	// Update is called once per frame
@@ -45,11 +52,11 @@ public class ChapterEvents : MonoBehaviour {
 
 	public void nextClicked(){
 		string stageName;
-		StartCoroutine(lockObject(true, 0f));
-		if(ChapterDatas.nowStage < ChapterDatas.progress){
-			stageName = "Image_points" + ChapterDatas.nowStage.ToString();
-			print(stageName);
-			Stage stage = GameObject.Find(stageName).GetComponent<Stage>();
+		// StartCoroutine(lockObject(true, 0f));
+		if(gameDatas.nowStage+1 <= gameDatas.progress){
+			stageName = "Image_points" + gameDatas.nowStage.ToString();
+			// print(stageName);
+			stage = GameObject.Find(stageName).GetComponent<Stage>();
 
 			if(stage.stageInfo.isNextNeedTurn){
 				if(stage.stageInfo.isNextHorizontalFirst){
@@ -60,24 +67,23 @@ public class ChapterEvents : MonoBehaviour {
 					StartCoroutine(move(new Vector2(character.transform.position.x, stage.stageInfo.next.y)));
 				}
 				StartCoroutine(nextMove(0.8f, stage.stageInfo.next));
-				StartCoroutine(lockObject(false, 1.3f));
+				// StartCoroutine(lockObject(false, 1.3f));
 			}else{
 				StartCoroutine(move(stage.stageInfo.next));
-				StartCoroutine(lockObject(false, 0.8f));
+				// StartCoroutine(lockObject(false, 0.8f));
 			}
-			ChapterDatas.nowStage++;
+			gameDatas.nowStage++;
 		}else{
-			Debug.Log("error : Can't over progress.(" + ChapterDatas.nowStage + ")");			
+			Debug.Log("error : Can't over progress.(" + gameDatas.nowStage + ")");			
 		}
 	}
 
 	public void lastClicked(){
 		string stageName;
-		StartCoroutine(lockObject(true, 0f));
-		if(ChapterDatas.nowStage > 1){
-			// stageName = "Button_points_" + ChapterDatas.nowStage.ToString();
-			stageName = "Image_points" + ChapterDatas.nowStage.ToString();
-			Stage stage = GameObject.Find(stageName).GetComponent<Stage>();
+		// StartCoroutine(lockObject(true, 0f));
+		if(gameDatas.nowStage > 1){
+			stageName = "Image_points" + gameDatas.nowStage.ToString();
+			stage = GameObject.Find(stageName).GetComponent<Stage>();
 
 			if(stage.stageInfo.isLastNeedTurn){
 				if(stage.stageInfo.isLastHorizontalFirst){
@@ -88,14 +94,14 @@ public class ChapterEvents : MonoBehaviour {
 					StartCoroutine(move(new Vector2(character.transform.position.x, stage.stageInfo.last.y)));
 				}
 				StartCoroutine(nextMove(0.8f, stage.stageInfo.last));
-				StartCoroutine(lockObject(false, 1.3f));
+				// StartCoroutine(lockObject(false, 1.3f));
 			}else{
 				StartCoroutine(move(stage.stageInfo.last));
-				StartCoroutine(lockObject(false, 0.8f));
+				// StartCoroutine(lockObject(false, 0.8f));
 			}
-			ChapterDatas.nowStage--;
+			gameDatas.nowStage--;
 		}else{
-			Debug.Log("error : Already the first stage.(" + ChapterDatas.nowStage + ")");
+			Debug.Log("error : Already the first stage.(" + gameDatas.nowStage + ")");
 		}
 	}
 
@@ -118,10 +124,15 @@ public class ChapterEvents : MonoBehaviour {
 	}
 
 	public void enterStage(){
-		dataControl.LoadingScene("stage" + ChapterDatas.nowStage.ToString());
+		gameDatas.stageGoal = stage.stageInfo.stageGoal;
+		gameDatas.LoadingScene("stage" + gameDatas.nowStage.ToString());
 	}
 
 	public void changeImage(){
 		// ...
+	}
+
+	public void setProgress(){
+		gameDatas.cheat(5);
 	}
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class StageEvents : MonoBehaviour {
 
@@ -13,6 +14,7 @@ public class StageEvents : MonoBehaviour {
 	private Vector3 newPosition, newCameraPosition;
 	public int userProgress;
 	bool isGameStart = false;
+	bool isProgressIncrease = false;
 	
 	// Use this for initialization
 	void Start () {
@@ -29,17 +31,16 @@ public class StageEvents : MonoBehaviour {
 		}
 	}
 
+	// Control the move of the main character.
 	void characterMove () {
-		if (Input.mousePosition.x < (Screen.width / 2)) {
-			// change character image "left move" here.
+		if(Input.mousePosition.x < (Screen.width / 2)){
 			mainCharacter.transform.eulerAngles = new Vector3(0,180,0);
 			newPosition = new Vector3(Mathf.Clamp(mainCharacter.transform.position.x - 50f, -1750f, 1750f), mainCharacter.transform.position.y, 0f);
 			if(newPosition.x < 1150f)
 				newCameraPosition = new Vector3(Mathf.Clamp(mainCamera.transform.position.x - 50f, -1200f, 1200f), mainCamera.transform.position.y, mainCamera.transform.position.z);
 			else
 				newCameraPosition = mainCamera.transform.position;
-		} else if (Input.mousePosition.x > (Screen.width / 2)) {
-			// change character image "right move" here.
+		}else if (Input.mousePosition.x > (Screen.width / 2)){
 			mainCharacter.transform.eulerAngles = new Vector3(0,0,0);
 			newPosition = new Vector3(Mathf.Clamp(mainCharacter.transform.position.x + 50f, -1750f, 1750f), mainCharacter.transform.position.y, 0f);
 			if(newPosition.x > -1150f)
@@ -51,39 +52,62 @@ public class StageEvents : MonoBehaviour {
 		mainCamera.transform.position = Vector3.Lerp(mainCamera.transform.position, newCameraPosition, speed * Time.deltaTime);
 	}
 
-	public void nextProgress(){
-		userProgress += 1;
-		isGameStart = false;
-		gamePanel.SetActive(false);
+	// Set the game info of the plots.
+	public void setGameInfo( GameObject game, Sprite header, string title, string npcPlots, bool isCorrectPlot ){
+		TalkWindow.SetActive(true);
+		TalkWindow.transform.GetChild(0).GetChild(0).GetComponentInChildren<Image>().sprite = header;
+		TalkWindow.transform.GetChild(1).GetComponentInChildren<Text>().text = title;
+		TalkWindow.transform.GetChild(2).GetComponentInChildren<Text>().text = npcPlots;
+		gamePanel = game;
+		isProgressIncrease = isCorrectPlot;
 	}
+	
+	// public void setGamePanel( GameObject game ){
+	// 	gamePanel = game;
+	// }
 
-	public void setGamePanel( GameObject game ){
-		this.gamePanel = game;
-	}
-
+	// Show the game panel and start the game.
 	public void taskStart(){
-		if(gamePanel != null){
-			print("enter game");
-			this.gamePanel.SetActive(true);
-			isGameStart = true;
+		if(isProgressIncrease){
+			if(gamePanel == null)
+				checkStageProgress();	// increase while the plot doesn't need to operate.
+			else{
+				gamePanel.SetActive(true);
+				isGameStart = true;
+			}
 		}else{
-			print("nothing happened");
-			userProgress += 1; // wrong click will also make progress increase.
+			print("wrong talk.");
 		}
 	}
 
+	// Show the suit feedback after check the result of the game.(check is in game script)
 	public void showFeedBack( bool ans ){
-		if(ans)
+		if(ans){
 			StartCoroutine(Feedback(correctPanel));
-		else
+			checkStageProgress();
+		}else{
 			StartCoroutine(Feedback(wrongPanel));
-		// ... set wrong panel hints.
+			// ... set wrong panel hints.
+		}
 	}
 
 	public IEnumerator Feedback( GameObject imageFeedBack ){
 		imageFeedBack.SetActive(true);
 		yield return new WaitForSeconds(2f);
 		imageFeedBack.SetActive(false);
+	}
+
+	// Increase the stage progress and check if the stage is finish.
+	public void checkStageProgress(){
+		userProgress += 1;
+		// print(userProgress);
+		isGameStart = false;
+		if(userProgress == dataControl.stageGoal){
+			// show stage finish animation.
+			print("stage finish.");
+			dataControl.progress += 1;
+			SceneManager.LoadScene("Chapter"+dataControl.chapter.ToString());
+		}
 	}
 
 }

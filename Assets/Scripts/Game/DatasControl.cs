@@ -8,15 +8,19 @@ public class DatasControl : MonoBehaviour {
 
 	// User
 	private static DatasControl datas;
-	private UserDatas userData;	// account, passwd, gameProgress, achievement, timer.
+	// private UserDatas userData;	// account, passwd, gameProgress, achievement, timer.
 
 	// Game Information
-	public static int chapter;	// keep the data of the moment user's chapter.
-	public static int stage;	// keep the data of the moment user's stage in the chapter.
-	public static Vector3 characterPosition;	// character's position when come back to the Chapter scene.
+	// Chapter infomation saves.
+	public int chapter;		// keep the data of the moment user's chapter.
+	public int progress;	// keep the game progress of the user. 
+	public int nowStage;	// keep the data of the moment user's stage in the chapter.
+	public Vector3 characterPosition;	// character's position when come back to the Chapter scene.
+	// Stage information saves.
+	public int stageGoal = 0;	// keep the data of the max stage plots number. 
 
 	// Game setting
-	// ...
+	// music...etc
 
 	// Loading Image
 	public GameObject loadingPanel;
@@ -25,14 +29,11 @@ public class DatasControl : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		// userData.account = "test account";
-		// userData.passwd = "test passwd";
-		// userData.gameProgress = 0;
-
-		// loadingPanel = GameObject.Find("Panel_loading");
-		// loadingBar = loadingPanel.transform.GetChild(0).GetComponentInChildren<Slider>();
-		// loadingPanel.SetActive(false);
-
+		// get the save of the user.
+		// progress = userData.gameProgress;
+		chapter = 1;
+		progress = 1;
+		nowStage = 1;
 		setGameObjects();
 	}
 	
@@ -63,16 +64,16 @@ public class DatasControl : MonoBehaviour {
 		Destroy(this.gameObject);
 	}
 
-	private void setUserData( string userAccount, string userPassword ){
-		// check database if account is exist.
-		// if()
-			this.userData.account = userAccount;
-			this.userData.passwd = userPassword;
-		// else
-			// ...
+	// private void setUserData( string userAccount, string userPassword ){
+	// 	// check database if account is exist.
+	// 	// if()
+	// 		this.userData.account = userAccount;
+	// 		this.userData.passwd = userPassword;
+	// 	// else
+	// 		// ...
 
-		print(this.userData.account + " / " + this.userData.passwd);
-	}
+	// 	print(this.userData.account + " / " + this.userData.passwd);
+	// }
 
 	public void LoadingScene( string scene ){
 		loadingPanel.SetActive(true);
@@ -96,5 +97,10 @@ public class DatasControl : MonoBehaviour {
 				yield return 0;
 		}
 		async.allowSceneActivation = true;
-	} 
+	}
+
+	public void cheat(int value){
+		this.progress = value;
+		print("Progress already change to " + progress + ".");	
+	}
 }
