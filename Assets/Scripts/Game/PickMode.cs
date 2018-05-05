@@ -16,6 +16,7 @@ public class PickMode : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		stageEvents = GameObject.Find("EventSystem").GetComponent<StageEvents>();
+
 	}
 
 	// execute when gameobject is Active. 
@@ -45,6 +46,7 @@ public class PickMode : MonoBehaviour {
 		float y = UnityEngine.Random.Range(this.transform.GetChild(2).position.y-200, this.transform.GetChild(2).position.y+200);
 		var b = Instantiate(this.transform.GetChild(2).GetChild(1),new Vector3(x, y, 0), Quaternion.identity, this.transform.GetChild(2));
 		b.gameObject.tag = "clone";
+		// b.gameObject.GetComponent<Image>().alphaHitTestMinimumThreshold = 1f;
 		this.sumofitems++;
 		item.SetActive(false);
 	}
