@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Game\ChapterEvents.cs" />
+     <Compile Include="Assets\Scripts\Game\ColorMode.cs" />
      <Compile Include="Assets\Scripts\Game\DatasControl.cs" />
      <Compile Include="Assets\Scripts\Game\Npc.cs" />
      <Compile Include="Assets\Scripts\Game\PickMode.cs" />
