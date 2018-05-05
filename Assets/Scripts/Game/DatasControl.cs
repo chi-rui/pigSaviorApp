@@ -55,6 +55,7 @@ public class DatasControl : MonoBehaviour {
 
 	public void setGameObjects(){
 		// set loading images. 
+		print("set loading panel.");
 		loadingPanel = GameObject.Find("Panel_loading");
 		loadingBar = loadingPanel.transform.GetChild(0).GetComponentInChildren<Slider>();
 		loadingPanel.SetActive(false);

@@ -10,16 +10,18 @@ public class ChapterEvents : MonoBehaviour {
 	public GameObject character;
 	public Button nextArrow, lastArrow;
 	public float speed, fspeed;
-	public bool goNext = true;
-
+	public bool goNext;
+	// public int offset;
+	public Vector2 startPoint;
 
 	// Use this for initialization
 	void Start () {
 		// initialization
 		gameDatas = GameObject.Find("Datas").GetComponent<DatasControl>();
-		stage = GameObject.Find("Image_points1").GetComponent<Stage>();
+		stage = GameObject.Find("Image_points" + gameDatas.nowStage.ToString()).GetComponent<Stage>();
 		speed = 0f;
-		character.transform.position = new Vector2(-2000f, -1400f);
+		goNext = true;
+		character.transform.position = new Vector3(stage.transform.position.x, stage.transform.position.y+100f, 0);
 		
 		// set game datas.
 		if(gameDatas.loadingPanel == null)
@@ -83,28 +85,33 @@ public class ChapterEvents : MonoBehaviour {
 	}
 
 	public void lastClicked(){
-		string stageName;
-		lockObject(true);
-		if(gameDatas.nowStage > 1){
-			stageName = "Image_points" + gameDatas.nowStage.ToString();
-			stage = GameObject.Find(stageName).GetComponent<Stage>();
-
-			if(stage.stageInfo.isLastNeedTurn){
-				if(stage.stageInfo.isLastHorizontalFirst){
-					// print("先水平要轉彎");	
-					StartCoroutine(move(new Vector2(stage.stageInfo.last.x, character.transform.position.y)));
-				}else{
-					// print("先垂直要轉彎");
-					StartCoroutine(move(new Vector2(character.transform.position.x, stage.stageInfo.last.y)));
-				}
-				StartCoroutine(nextMove(0.8f, stage.stageInfo.last));
-			}else{
-				StartCoroutine(move(stage.stageInfo.last));
-			}
-			gameDatas.nowStage--;
+		if(gameDatas.nowStage == 6){
+			print("go back");
+			goBack();
 		}else{
-			Debug.Log("error : Already the first stage.(" + gameDatas.nowStage + ")");
-			lockObject(false);
+			string stageName;
+			lockObject(true);
+			if(gameDatas.nowStage > 1){
+				stageName = "Image_points" + gameDatas.nowStage.ToString();
+				stage = GameObject.Find(stageName).GetComponent<Stage>();
+
+				if(stage.stageInfo.isLastNeedTurn){
+					if(stage.stageInfo.isLastHorizontalFirst){
+						// print("先水平要轉彎");	
+						StartCoroutine(move(new Vector2(stage.stageInfo.last.x, character.transform.position.y)));
+					}else{
+						// print("先垂直要轉彎");
+						StartCoroutine(move(new Vector2(character.transform.position.x, stage.stageInfo.last.y)));
+					}
+					StartCoroutine(nextMove(0.8f, stage.stageInfo.last));
+				}else{
+					StartCoroutine(move(stage.stageInfo.last));
+				}
+				gameDatas.nowStage--;
+			}else{
+				Debug.Log("error : Already the first stage.(" + gameDatas.nowStage + ")");
+				lockObject(false);
+			}
 		}
 	}
 
@@ -118,8 +125,20 @@ public class ChapterEvents : MonoBehaviour {
 	}
 
 	public void enterStage(){
-		gameDatas.stageGoal = stage.stageInfo.stageGoal;
-		gameDatas.LoadingScene("stage" + gameDatas.nowStage.ToString());
+		if(gameDatas.nowStage == 5 || gameDatas.nowStage == 16){
+			gameDatas.nowStage++;
+			gameDatas.chapter++;
+			gameDatas.LoadingScene("Chapter" + gameDatas.chapter.ToString());
+		}else{
+			gameDatas.stageGoal = stage.stageInfo.stageGoal;
+			gameDatas.LoadingScene("stage" + gameDatas.nowStage.ToString());
+		}
+	}
+
+	public void goBack(){
+		gameDatas.nowStage--;
+		gameDatas.chapter--;
+		gameDatas.LoadingScene("Chapter" + gameDatas.chapter.ToString());
 	}
 
 	public void changeImage(){
@@ -127,6 +146,6 @@ public class ChapterEvents : MonoBehaviour {
 	}
 
 	public void setProgress(){
-		gameDatas.cheat(5);
+		gameDatas.cheat(16);
 	}
 }
