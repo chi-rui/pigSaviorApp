@@ -7,8 +7,8 @@ using UnityEngine.UI;
 public class Npc : MonoBehaviour {
 
 	public NpcInfo npcInfo;
-	public Text title;
 	private StageEvents stageEvents;
+	private bool isTalked = false;
 
 	// Use this for initialization
 	void Start () {
@@ -31,5 +31,13 @@ public class Npc : MonoBehaviour {
 		}
 	} 
 
-
+	public void specialTalk(){
+		if(!this.isTalked){
+			stageEvents.setGameInfo( null, this.npcInfo.npcHeader, this.npcInfo.npcName + " :", this.npcInfo.trueContents[0], false);
+			this.isTalked = true;
+		}else{
+			stageEvents.setGameInfo( null, this.npcInfo.npcHeader, this.npcInfo.npcName + " :", this.npcInfo.falseContents[0], false);
+		}
+	}
+	
 }
