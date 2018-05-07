@@ -5,14 +5,15 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 // , IPointerClickHandler
+// only onion npc problem
 public class RhythmMode : MonoBehaviour {
 	public GameObject pointer, characterAction, challengeFailedPanel, chooseOperatorPanel, calculatePanel, perfectScenario, remainingText, hitResultText;
-	public Image[] hitbarArr;
-	public float speed;
 	public Animator Anim_characterAction, Anim_characterActionPerfect, Anim_onion, Anim_onionPerfect;
 	public Sprite Sprite_characterGrab;
-	public Image Image_characterAction; 
+	public Image Image_characterAction;
+	public Image[] hitbarArr;
 	public Text Text_remainCounts, Text_hitResult;
+	public float speed;
 	
 	private Vector3 pos_L, pos_R;
 	private int remainCounts;
@@ -164,21 +165,4 @@ public class RhythmMode : MonoBehaviour {
 			// print("Error for collision");
 		}
 	}
-
-	// write outside
-	public Text Text_userans;
-	
-	public void clickNumBtn (int num) {
-		if (Text_userans.text == "ANS") {
-			Text_userans.text = "";
-			Text_userans.text += num.ToString();
-		} else {
-			Text_userans.text += num.ToString();
-		}
-	}
-
-	public void clearAnsNum () {
-		Text_userans.text = "";
-	}
-
 }

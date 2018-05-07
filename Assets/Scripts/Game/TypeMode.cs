@@ -4,34 +4,41 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class TypeMode : MonoBehaviour {
-	public GameObject warningPanel, showTeamBeforeFighting, fightingPanel, fightingResult, calculatePanel;
-	public Image[] teamMemberArr, playerDefiniteTeamArr, playerTeamMemberArr;
-	public Image fightResultHint;
+	public GameObject warningPanel, showTeamBeforeFighting, fightingPanel, fightingResult, calculatePanel, clickAnyPositionImage;
 	public Animator Anim_characterAction, Anim_npcType, Anim_npcTypeinFighting, Anim_operatorFighting;
 	public Sprite[] typeArr, fightResultHintArr;
+	public Image[] teamMemberArr, playerDefiniteTeamArr, playerTeamMemberArr;
+	public Image Image_fightResultHint;
+	public Text Text_warning;
+	public string npc;
 
 	private int memberNum;
-	private bool isWin, isDraw;
+	private bool isWin, isDraw, isAttackFailed;
 	private string animationPlay;
 	private List<string> chooseTypeList = new List<string>();
-	private List<string> enemyTypeList = new List<string>();
+	private List<string> operatorTypeList = new List<string>();
 
 	// Use this for initialization
 	void Start () {
 		Anim_characterAction.Play("character game action_fighting");
 		isWin = false;
 		isDraw = false;
+		isAttackFailed = false;
 
-		enemyTypeList.Add("water");
-		enemyTypeList.Add("wind");
-		enemyTypeList.Add("fire");
-		for (int i = 0; i < enemyTypeList.Count; i++)
-			print(enemyTypeList[i]);
+// fake data
+		operatorTypeList.Add("water");
+		print(operatorTypeList[0]);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
+		if (isAttackFailed) {
+			if (Input.GetMouseButtonDown(0)) {
+				restartTypeMode();
+				clickAnyPositionImage.SetActive(false);
+				isAttackFailed = false;
+			}
+		}
 	}
 
 	public void clickTypeBtns (string type) {
@@ -62,21 +69,14 @@ public class TypeMode : MonoBehaviour {
 			}
 			memberNum++;
 		} else {
-			print("超過組員數目");
+			print("超過隊友數目");
 			warningPanel.SetActive(true);
+			Text_warning.text = "你派出的隊友數已經超過3個了喔！";
 		}
-	}
-
-	// warnings confirm btn
-	public void clickConfirmBtn () {
-		warningPanel.SetActive(false);
 	}
 
 	public void clickClearTeam () {
-		for (int i = 0; i < 3; i++) {
-			memberNum = 0;
-			teamMemberArr[i].sprite = typeArr[4];
-		}
+		restartTypeMode();
 	}
 
 	public void clickFightingStart () {
@@ -122,60 +122,55 @@ public class TypeMode : MonoBehaviour {
 		}
 	}
 
-	// only cauliflower now, and need to change operator sprite with type and symbol(+-x÷)
-	public void clickAttack (string npc) {
-		// npc = "Cauliflower";
+	// need to change operator sprite with type and symbol(+-x÷)
+	public void clickAttack () {
 		fightingResult.SetActive(true);
 		switch (chooseTypeList[0]) {
 			case "wind":
-				if (enemyTypeList[0] == "ground") {
+				if (operatorTypeList[0] == "ground") {
 					isWin = true;
 					animationPlay = npc + " Wind Win";
-				} else if (enemyTypeList[0] == "fire") {
+				} else if (operatorTypeList[0] == "fire") {
 					isWin = false;
 				} else {
 					isWin = false;
 					isDraw = true;
-					animationPlay = npc + " Wind";
 				}
 				changeNpcFightingAnim(animationPlay);
 			break;
 			case "fire": 
-				if (enemyTypeList[0] == "wind") {
+				if (operatorTypeList[0] == "wind") {
 					isWin = true;
 					animationPlay = npc + " Fire Win";
-				} else if (enemyTypeList[0] == "water") {
+				} else if (operatorTypeList[0] == "water") {
 					isWin = false;
 				} else {
 					isWin = false;
 					isDraw = true;
-					animationPlay = npc + " Fire";
 				}
 				changeNpcFightingAnim(animationPlay);
 			break;
 			case "water":
-				if (enemyTypeList[0] == "fire") {
+				if (operatorTypeList[0] == "fire") {
 					isWin = true;
 					animationPlay = npc + " Water Win";
-				} else if (enemyTypeList[0] == "ground") {
+				} else if (operatorTypeList[0] == "ground") {
 					isWin = false;
 				} else {
 					isWin = false;
 					isDraw = true;
-					animationPlay = npc + " Water";
 				}
 				changeNpcFightingAnim(animationPlay);
 			break;
 			case "ground":
-				if (enemyTypeList[0] == "water") {
+				if (operatorTypeList[0] == "water") {
 					isWin = true;
 					animationPlay = npc + " Ground Win";
-				} else if (enemyTypeList[0] == "wind") {
+				} else if (operatorTypeList[0] == "wind") {
 					isWin = false;
 				} else {
 					isWin = false;
 					isDraw = true;
-					animationPlay = npc + " Ground";
 				}
 			break;
 			default:
@@ -183,19 +178,20 @@ public class TypeMode : MonoBehaviour {
 		}
 
 		if (isWin) {
-			fightResultHint.sprite = fightResultHintArr[0];
+			Image_fightResultHint.sprite = fightResultHintArr[0];
 			Anim_operatorFighting.Play("Operator Lose");
-			StartCoroutine(showCalculatePanel(1.5f));
 		} else {
-			fightResultHint.sprite = fightResultHintArr[1];
-			if (isDraw)
-				Anim_operatorFighting.Play("Operator Original");
-			else {
+			Image_fightResultHint.sprite = fightResultHintArr[1];
+			if (isDraw) {
+				animationPlay = npc + " Draw";
+				Anim_operatorFighting.Play("Operator Draw");
+			} else {
 				animationPlay = npc + " Lose Die";
 				Anim_operatorFighting.Play("Operator Win");
 			}
+			isAttackFailed = true;
 		}
-
+		StartCoroutine(showTypeModeFeedback(1.5f));
 		changeNpcFightingAnim(animationPlay);
 	}
 
@@ -204,10 +200,24 @@ public class TypeMode : MonoBehaviour {
 		Anim_npcTypeinFighting.Play(animation);
 	}
 
-	IEnumerator showCalculatePanel (float time) {
+	IEnumerator showTypeModeFeedback (float time) {
 		yield return new WaitForSeconds(time);
 
+		if (isWin) {
+			fightingResult.SetActive(false);
+			calculatePanel.SetActive(true);
+		} else
+			clickAnyPositionImage.SetActive(true);
+	}
+
+	void restartTypeMode () {
 		fightingResult.SetActive(false);
-		calculatePanel.SetActive(true);
+		fightingPanel.SetActive(false);
+		isWin = false;
+		isDraw = false;
+		memberNum = 0;
+		chooseTypeList.Clear();
+		for (int i = 0; i < 3; i++)
+			teamMemberArr[i].sprite = typeArr[4];
 	}
 }
