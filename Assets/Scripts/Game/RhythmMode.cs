@@ -5,14 +5,15 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 // , IPointerClickHandler
+// only onion npc problem
 public class RhythmMode : MonoBehaviour {
-	public GameObject pointer, characterAction, challengeFailedPanel, calculatePanel, perfectScenario, remainingText, hitResultText;
-	public Image[] hitbarArr;
-	public float speed;
+	public GameObject pointer, characterAction, challengeFailedPanel, chooseOperatorPanel, calculatePanel, perfectScenario, remainingText, hitResultText;
 	public Animator Anim_characterAction, Anim_characterActionPerfect, Anim_onion, Anim_onionPerfect;
 	public Sprite Sprite_characterGrab;
-	public Image Image_characterAction; 
-	public Text Text_remainCounts, Text_hitResult, Text_userans;
+	public Image Image_characterAction;
+	public Image[] hitbarArr;
+	public Text Text_remainCounts, Text_hitResult;
+	public float speed;
 	
 	private Vector3 pos_L, pos_R;
 	private int remainCounts;
@@ -47,7 +48,7 @@ public class RhythmMode : MonoBehaviour {
 				if (isPerfectHit)
 					StartCoroutine(clickInRhythm(1.3f));
 				else
-					StartCoroutine(clickInRhythm(1f));
+					StartCoroutine(clickInRhythm(0.8f));
 			}
 		}
 
@@ -147,35 +148,21 @@ public class RhythmMode : MonoBehaviour {
 
 		perfectScenario.SetActive(false);
 
-		// show calculate panel
-		calculatePanel.SetActive(true);
+		// show choose operator panel
+		chooseOperatorPanel.SetActive(true);
 	}
 
 	// Collision
 	void OnTriggerEnter2D (Collider2D collider) {
 		if (collider.gameObject.tag == "hitbar") {
 			isPerfectHit = true;
-			print("isPerfectHit: " + isPerfectHit);
+			// print("isPerfectHit: " + isPerfectHit);
 		} else if (collider.gameObject.tag == "rhythmbar") {
 			isPerfectHit = false;
-			print("isPerfectHit: " + isPerfectHit);
+			// print("isPerfectHit: " + isPerfectHit);
 		} else {
 			isPerfectHit = false;
-			print("Error for collision");
+			// print("Error for collision");
 		}
 	}
-
-	public void clickNumBtn (int num) {
-		if (Text_userans.text == "ANS") {
-			Text_userans.text = "";
-			Text_userans.text += num.ToString();
-		} else {
-			Text_userans.text += num.ToString();
-		}
-	}
-
-	public void clearAnsNum () {
-		Text_userans.text = "";
-	}
-
 }

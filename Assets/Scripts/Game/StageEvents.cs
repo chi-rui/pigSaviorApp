@@ -10,12 +10,12 @@ public class StageEvents : MonoBehaviour {
 	private DatasControl dataControl;
 
 	public float speed;
-	public GameObject mainCharacter, mainCamera, TalkWindow, gamePanel, correctPanel, wrongPanel;
+	public GameObject mainCharacter, mainCamera, TalkWindow, gamePanel, correctPanel, wrongPanel, warningPanel;
 	private Vector3 newPosition, newCameraPosition;
 	public int userProgress;
 	bool isGameStart = false;
 	bool isProgressIncrease = false;
-	
+
 	// Use this for initialization
 	void Start () {
 		dataControl = GameObject.Find("Datas").GetComponent<DatasControl>();
@@ -108,6 +108,29 @@ public class StageEvents : MonoBehaviour {
 			dataControl.progress += 1;
 			SceneManager.LoadScene("Chapter"+dataControl.chapter.ToString());
 		}
+	}
+
+
+//game mode
+	// warnings confirm btn
+	public void clickWarningConfirmBtn () {
+		warningPanel.SetActive(false);
+	}
+
+	// calculate panel
+	public Text Text_userans;
+
+	public void clickNumBtn (int num) {
+		if (Text_userans.text == "ANS") {
+			Text_userans.text = "";
+			Text_userans.text += num.ToString();
+		} else {
+			Text_userans.text += num.ToString();
+		}
+	}
+
+	public void clickClearAnsNum () {
+		Text_userans.text = "";
 	}
 
 }

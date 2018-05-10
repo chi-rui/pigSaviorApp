@@ -1,17 +1,20 @@
 # pigsavior gitignore
 
-# meta file
+# unity ignore dir 
+/[Bb]in/
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+
+# unity ignore file
+*.csproj
+*.userprefs
+*.sln
+*.unityproj
+*.user
 *.meta
-
-# files in folders
-Library
-ProjectSettings
-Temp
-
-# temp files
-*~
-.DS_Store
+*.tmp
 
 # exclude files.
 !.gitignore
-!Library/assetsDatabase3
+!*.*.meta
