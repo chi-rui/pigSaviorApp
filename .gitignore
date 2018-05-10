@@ -14,6 +14,13 @@
 *.user
 *.meta
 *.tmp
+*.svd
+
+# Builds
+*.apk
+*.unitypackage
+
+.DS_Store
 
 # exclude files.
 !.gitignore
