@@ -60,7 +60,7 @@ public class Plot
 [System.Serializable]
 public class QuesObj
 {
-	public string question;
+	public List<string> question;
 	public List<AnsObj> answer;
 	public bool isBracket;
 	public bool isPM;

@@ -50,7 +50,7 @@ public class MathDatasControl : MonoBehaviour {
 					if(!quesObj.isPM)
 						quesObj.isPM = true;
 					break;
-				case '✕':case '*':case '÷':case '/':
+				case 'x':case '*':case '÷':case '/':
 					ansObj = new AnsObj();
 					ansObj.index = i;
 					ansObj.operators = formula[i];
@@ -79,7 +79,7 @@ public class MathDatasControl : MonoBehaviour {
 		// sort the list by operator.
 		for(i = 0; i < answerList.Count; i++){
 			switch(answerList[i].operators){
-				case '✕':case '÷': case '*': case '/':
+				case 'x':case '÷': case '*': case '/':
 					answerTemp.Add(answerList[i]);
 					answerList.RemoveAt(i);
 					break;
@@ -142,7 +142,7 @@ public class MathDatasControl : MonoBehaviour {
 				case '-':
 					answerList[i].partAns = stackNum[i] - stackNum[i-1];
 					break;					
-				case '✕':case '*':
+				case 'x':case '*':
 					answerList[i].partAns = stackNum[i] * stackNum[i-1];
 					break;
 				case '÷':case '/':
@@ -160,7 +160,7 @@ public class MathDatasControl : MonoBehaviour {
 					answerList[i].partAns = UnityEngine.Random.Range(miniNum, (int)maxNum/3);
 					num = answerList[i].partAns + stackNum[i];
 					break;					
-				case '✕':case '*':
+				case 'x':case '*':
 					num = UnityEngine.Random.Range(miniNum,(int)Mathf.Sqrt(maxNum));
 					answerList[i].partAns = stackNum[i] * num;
 					break;
@@ -190,7 +190,7 @@ public class MathDatasControl : MonoBehaviour {
 					num = UnityEngine.Random.Range(miniNum,stackNum[i]);
 					answerList[i].partAns = stackNum[i] - num;
 					break;					
-				case '✕':case '*':
+				case 'x':case '*':
 					num = UnityEngine.Random.Range(miniNum,(int)Mathf.Sqrt(maxNum));
 					answerList[i].partAns = stackNum[i] * num;
 					break;
@@ -220,7 +220,7 @@ public class MathDatasControl : MonoBehaviour {
 					num = UnityEngine.Random.Range(miniNum,stackNum[i]);
 					answerList[i].partAns = stackNum[i] - num;
 					break;					
-				case '✕':case '*':
+				case 'x':case '*':
 					num = UnityEngine.Random.Range(miniNum,(int)Mathf.Sqrt(maxNum));
 					answerList[i].partAns = stackNum[i] * num;;
 					break;
@@ -255,9 +255,10 @@ public class MathDatasControl : MonoBehaviour {
 			isBefore = false;
 			isAfter = false;
 		}
-		for(j = 0; j < question.Length; j++){
-			quesObj.question += question[j];
-		}
+		// for(j = 0; j < question.Length; j++){
+		// 	quesObj.questionList.Add(question[j]);
+		// }
+		quesObj.question = question.ToList();
 		quesObj.answer = answerList;
 		return quesObj;
 	}

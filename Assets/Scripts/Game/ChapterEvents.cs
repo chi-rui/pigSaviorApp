@@ -7,7 +7,7 @@ public class ChapterEvents : MonoBehaviour {
 
 	private DatasControl gameDatas;
 	public Stage stage;
-	public GameObject character;
+	public GameObject character, GoBackPrompt;
 	public Button nextArrow, lastArrow;
 	public float speed, fspeed;
 	public bool goNext;
@@ -87,7 +87,8 @@ public class ChapterEvents : MonoBehaviour {
 	public void lastClicked(){
 		if(gameDatas.nowStage == 6){
 			print("go back");
-			goBack();
+			GoBackPrompt.SetActive(true);
+			// goBack();
 		}else{
 			string stageName;
 			lockObject(true);
@@ -136,6 +137,7 @@ public class ChapterEvents : MonoBehaviour {
 	}
 
 	public void goBack(){
+		
 		gameDatas.nowStage--;
 		gameDatas.chapter--;
 		gameDatas.LoadingScene("Chapter" + gameDatas.chapter.ToString());
