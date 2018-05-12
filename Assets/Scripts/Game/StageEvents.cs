@@ -117,20 +117,4 @@ public class StageEvents : MonoBehaviour {
 		warningPanel.SetActive(false);
 	}
 
-	// calculate panel
-	public Text Text_userans;
-
-	public void clickNumBtn (int num) {
-		if (Text_userans.text == "ANS") {
-			Text_userans.text = "";
-			Text_userans.text += num.ToString();
-		} else {
-			Text_userans.text += num.ToString();
-		}
-	}
-
-	public void clickClearAnsNum () {
-		Text_userans.text = "";
-	}
-
 }

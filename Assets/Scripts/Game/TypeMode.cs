@@ -5,89 +5,102 @@ using UnityEngine.UI;
 
 public class TypeMode : MonoBehaviour {
 	public GameObject warningPanel, showTeamBeforeFighting, fightingPanel, fightingResult, calculatePanel, clickAnyPositionImage;
-	public Animator Anim_characterAction, Anim_npcType, Anim_npcTypeinFighting, Anim_operatorFighting;
-	public Sprite[] typeArr, fightResultHintArr;
-	public Image[] teamMemberArr, playerDefiniteTeamArr, playerTeamMemberArr;
-	public Image Image_fightResultHint;
-	public Text Text_warning;
+	public GameObject[] operTeamMemberArr, chooseOperMemberArr, definiteOperTeamArr, operTeamInFightingArr, operTeamFailedArr;
+	public Animator Anim_characterAction, Anim_npcFightingType, Anim_npcFightingResult, Anim_operFightingResult;
+	public Sprite transparentSprite;
+	public Sprite[] fightResultHintArr;
+	public Image[] Image_operTeamMemberArr, Image_chooseOperMemberArr, Image_definiteOperTeamArr, Image_operTeamInFightingArr;
+	public Image Image_firstOperMember, Image_fightResultHint, Image_operFightingResult;
+	public Text Text_warning, Text_userans;
 	public string npc;
 
-	private int memberNum;
+	private int operCount, operMemberCount, operFailedCount;
 	private bool isWin, isDraw, isAttackFailed;
-	private string animationPlay;
-	private List<string> chooseTypeList = new List<string>();
+	private string chooseNpcType;
 	private List<string> operatorTypeList = new List<string>();
 
 	// Use this for initialization
 	void Start () {
 		Anim_characterAction.Play("character game action_fighting");
-		isWin = false;
-		isDraw = false;
-		isAttackFailed = false;
 
 // fake data
+		operatorTypeList.Add("ground");
+		operatorTypeList.Add("fire");
 		operatorTypeList.Add("water");
-		print(operatorTypeList[0]);
+		print(operatorTypeList[0]); 
+		operCount = 3;
+
+		// setting member fields position according to operator counts
+		switch (operCount) {
+			case 2:
+				operTeamMemberArr[0].transform.position += new Vector3 (90f, 0, 0);
+				chooseOperMemberArr[0].transform.position += new Vector3 (90f, 0, 0);
+				operTeamMemberArr[1].transform.position += new Vector3 (140f, 0, 0);
+				chooseOperMemberArr[1].transform.position += new Vector3 (140f, 0, 0);
+			break;
+			case 1:
+				operTeamMemberArr[0].transform.position += new Vector3 (190f, 0, 0);
+				chooseOperMemberArr[0].transform.position += new Vector3 (190f, 0, 0);
+			break;
+			default:
+			break;
+		}
+		for (int i = 0; i < operCount; i++) {
+			operTeamMemberArr[i].SetActive(true);
+			chooseOperMemberArr[i].SetActive(true);
+		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (isAttackFailed) {
 			if (Input.GetMouseButtonDown(0)) {
-				restartTypeMode();
-				clickAnyPositionImage.SetActive(false);
 				isAttackFailed = false;
+				restartTypeModeFighting();
+				clickAnyPositionImage.SetActive(false);
 			}
 		}
 	}
 
-	public void clickTypeBtns (string type) {
-		if (memberNum < 3) {
-			switch (type) {
-				case "wind":
-					print("click wind type");
-					teamMemberArr[memberNum].sprite = typeArr[0];
-					chooseTypeList.Add("wind");
-					break;
-				case "fire":
-					print("click fire type");
-					teamMemberArr[memberNum].sprite = typeArr[1];
-					chooseTypeList.Add("fire");
-					break;
-				case "water":
-					print("click water type");
-					teamMemberArr[memberNum].sprite = typeArr[2];
-					chooseTypeList.Add("water");
-					break;
-				case "ground":
-					print("click ground type");
-					teamMemberArr[memberNum].sprite = typeArr[3];
-					chooseTypeList.Add("ground");
-					break;
-				default:
-					break;
-			}
-			memberNum++;
+	// operatorTypeList.Add(type);
+	public void chooseOperatorMember (int num) {
+		if (operMemberCount < operCount) {
+			for (int i = 0; i < operCount; i++)
+				Image_operTeamMemberArr[operMemberCount].sprite = Image_chooseOperMemberArr[num].sprite;
 		} else {
-			print("超過隊友數目");
 			warningPanel.SetActive(true);
-			Text_warning.text = "你派出的隊友數已經超過3個了喔！";
+			Text_warning.text = "你指定的運算符號數目已超過"+operCount+"個了喔！";
 		}
+		operMemberCount++;
 	}
 
 	public void clickClearTeam () {
-		restartTypeMode();
+		operMemberCount = 0;
+		for (int i = 0; i < operCount; i++)
+			Image_operTeamMemberArr[i].sprite = transparentSprite;
 	}
 
 	public void clickFightingStart () {
-		for (int i = 0; i < chooseTypeList.Count; i++)
-			print(chooseTypeList[i]);
-
-		showTeamBeforeFighting.SetActive(true);
-		for (int i = 0; i < chooseTypeList.Count; i++)
-			playerDefiniteTeamArr[i].sprite = teamMemberArr[i].sprite;
-
-		StartCoroutine(showFightingPanel(2.8f));
+		switch (operMemberCount) {
+			case 2:
+				for (int i = 0; i < 2; i++)
+					definiteOperTeamArr[i].transform.position += new Vector3 (80f, 0, 0);
+			break;
+			case 1:
+				definiteOperTeamArr[0].transform.position += new Vector3 (140f, 0, 0);
+			break;
+		}
+		for (int i = 0; i < operMemberCount; i++) {
+			definiteOperTeamArr[i].SetActive(true);
+			Image_definiteOperTeamArr[i].sprite = Image_operTeamMemberArr[i].sprite;
+		}
+		if (operMemberCount == 0) {
+			warningPanel.SetActive(true);
+			Text_warning.text = "你尚未指定運算符號攻擊順序";
+		} else {
+			showTeamBeforeFighting.SetActive(true);
+			StartCoroutine(showFightingPanel(2.8f));
+		}
 	}
 
 	IEnumerator showFightingPanel (float time) {
@@ -96,128 +109,158 @@ public class TypeMode : MonoBehaviour {
 		showTeamBeforeFighting.SetActive(false);
 		fightingPanel.SetActive(true);
 
-		for (int i = 0; i < chooseTypeList.Count; i++)
-			playerTeamMemberArr[i].sprite = teamMemberArr[i].sprite;
-
-		changeNpcTypeAnim (chooseTypeList[0]);
+		for (int i = 0; i < operMemberCount; i++) {
+			operTeamInFightingArr[i].SetActive(true);
+			Image_operTeamInFightingArr[i].sprite = Image_operTeamMemberArr[i].sprite;
+		}
+		Image_firstOperMember.sprite = Image_operTeamMemberArr[0].sprite;
 	}
 
-	void changeNpcTypeAnim (string type) {
-		// if finish attacking, remove chooseTypeList[0]
+	public void changeNpcFightingType (string type) {
+		chooseNpcType = type;
+		print(chooseNpcType);
 		switch (type) {
 			case "wind":
-				Anim_npcType.Play("Cauliflower Wind");
+				Anim_npcFightingType.Play(npc + " Wind");
+				chooseNpcType = "wind";
 				break;
 			case "fire":
-				Anim_npcType.Play("Cauliflower Fire");
+				Anim_npcFightingType.Play(npc + " Fire");
+				chooseNpcType = "fire";
 				break;
 			case "water":
-				Anim_npcType.Play("Cauliflower Water");
+				Anim_npcFightingType.Play(npc + " Water");
+				chooseNpcType = "water";
 				break;
 			case "ground":
-				Anim_npcType.Play("Cauliflower Ground");
+				Anim_npcFightingType.Play(npc + " Ground");
+				chooseNpcType = "ground";
 				break;
 			default:
 				break;
 		}
 	}
 
-	// need to change operator sprite with type and symbol(+-x÷)
 	public void clickAttack () {
-		fightingResult.SetActive(true);
-		switch (chooseTypeList[0]) {
-			case "wind":
-				if (operatorTypeList[0] == "ground") {
-					isWin = true;
-					animationPlay = npc + " Wind Win";
-				} else if (operatorTypeList[0] == "fire") {
-					isWin = false;
-				} else {
-					isWin = false;
-					isDraw = true;
-				}
-				changeNpcFightingAnim(animationPlay);
-			break;
-			case "fire": 
-				if (operatorTypeList[0] == "wind") {
-					isWin = true;
-					animationPlay = npc + " Fire Win";
-				} else if (operatorTypeList[0] == "water") {
-					isWin = false;
-				} else {
-					isWin = false;
-					isDraw = true;
-				}
-				changeNpcFightingAnim(animationPlay);
-			break;
-			case "water":
-				if (operatorTypeList[0] == "fire") {
-					isWin = true;
-					animationPlay = npc + " Water Win";
-				} else if (operatorTypeList[0] == "ground") {
-					isWin = false;
-				} else {
-					isWin = false;
-					isDraw = true;
-				}
-				changeNpcFightingAnim(animationPlay);
-			break;
-			case "ground":
-				if (operatorTypeList[0] == "water") {
-					isWin = true;
-					animationPlay = npc + " Ground Win";
-				} else if (operatorTypeList[0] == "wind") {
-					isWin = false;
-				} else {
-					isWin = false;
-					isDraw = true;
-				}
-			break;
-			default:
-			break;
-		}
-
-		if (isWin) {
-			Image_fightResultHint.sprite = fightResultHintArr[0];
-			Anim_operatorFighting.Play("Operator Lose");
+		print(chooseNpcType);
+		if (chooseNpcType == null) {
+			warningPanel.SetActive(true);
+			Text_warning.text = "你尚未指定npc屬性";
 		} else {
-			Image_fightResultHint.sprite = fightResultHintArr[1];
-			if (isDraw) {
-				animationPlay = npc + " Draw";
-				Anim_operatorFighting.Play("Operator Draw");
-			} else {
-				animationPlay = npc + " Lose Die";
-				Anim_operatorFighting.Play("Operator Win");
+			fightingResult.SetActive(true);
+			Image_operFightingResult.sprite = Image_firstOperMember.sprite;
+			switch (chooseNpcType) {
+				case "wind":
+					if (operatorTypeList[0] == "ground") {
+						isWin = true;
+						Anim_npcFightingResult.Play(npc + " Wind Win");
+					} else {
+						isWin = false;
+						if (operatorTypeList[0] != "fire")
+							isDraw = true;
+					}
+				break;
+				case "fire": 
+					if (operatorTypeList[0] == "wind") {
+						isWin = true;
+						Anim_npcFightingResult.Play(npc + " Fire Win");
+					} else {
+						isWin = false;
+						if (operatorTypeList[0] != "water")
+							isDraw = true;
+					}
+				break;
+				case "water":
+					if (operatorTypeList[0] == "fire") {
+						isWin = true;
+						Anim_npcFightingResult.Play(npc + " Water Win");
+					} else {
+						isWin = false;
+						if (operatorTypeList[0] != "ground")
+							isDraw = true;
+					}
+				break;
+				case "ground":
+					if (operatorTypeList[0] == "water") {
+						isWin = true;
+						Anim_npcFightingResult.Play(npc + " Ground Win");
+					} else {
+						isWin = false;
+						if (operatorTypeList[0] != "wind")
+							isDraw = true;
+					}
+				break;
+				default:
+				break;
 			}
-			isAttackFailed = true;
+			if (isWin) {
+				Image_fightResultHint.sprite = fightResultHintArr[0];
+				Anim_operFightingResult.Play("Operator Lose");
+				StartCoroutine(showCalculatePanel(1.5f));
+			} else {
+				Image_fightResultHint.sprite = fightResultHintArr[1];
+				if (isDraw) {
+					Anim_npcFightingResult.Play(npc + " Draw");
+					Anim_operFightingResult.Play("Operator Draw");
+				} else {
+					Anim_npcFightingResult.Play(npc + " Lose Die");
+					Anim_operFightingResult.Play("Operator Win");
+				}
+				StartCoroutine(showClickAnyPosition(0.6f));
+				isAttackFailed = true;
+			}
 		}
-		StartCoroutine(showTypeModeFeedback(1.5f));
-		changeNpcFightingAnim(animationPlay);
 	}
 
-	void changeNpcFightingAnim (string animation) {
-		print(animation);
-		Anim_npcTypeinFighting.Play(animation);
-	}
-
-	IEnumerator showTypeModeFeedback (float time) {
+	IEnumerator showCalculatePanel (float time) {
 		yield return new WaitForSeconds(time);
 
-		if (isWin) {
-			fightingResult.SetActive(false);
-			calculatePanel.SetActive(true);
-		} else
-			clickAnyPositionImage.SetActive(true);
+		fightingResult.SetActive(false);
+		calculatePanel.SetActive(true);
 	}
 
-	void restartTypeMode () {
+	IEnumerator showClickAnyPosition (float time) {
+		yield return new WaitForSeconds(time);
+
+		clickAnyPositionImage.SetActive(true);
+	}
+
+	void restartTypeModeFighting () {
 		fightingResult.SetActive(false);
-		fightingPanel.SetActive(false);
+		Anim_npcFightingType.Play(npc + " Original");
+		chooseNpcType = null;
 		isWin = false;
 		isDraw = false;
-		memberNum = 0;
-		chooseTypeList.Clear();
-		for (int i = 0; i < 3; i++)
-			teamMemberArr[i].sprite = typeArr[4];
+	}
+
+	public void clickNumBtn (int num) {
+		if (Text_userans.text == "ANS") {
+			Text_userans.text = "";
+			Text_userans.text += num.ToString();
+		} else {
+			Text_userans.text += num.ToString();
+		}
+	}
+
+	public void clickClearAnsNum () {
+		Text_userans.text = "";
+	}
+
+	public void clickFinishCalculate () {
+		operFailedCount++;
+		operTeamFailedArr[operFailedCount-1].SetActive(true);
+		calculatePanel.SetActive(false);
+		if (operFailedCount < operMemberCount) {
+			restartTypeModeFighting();
+			Image_firstOperMember.sprite = Image_operTeamMemberArr[operFailedCount].sprite;
+			if (operatorTypeList.Count != 0) {
+				operatorTypeList.Remove(operatorTypeList[0]);
+				print(operatorTypeList[0]);
+			}
+		} else {
+			print("攻擊完成！");
+		}
+		// print(operFailedCount);
+		// print(operMemberCount);
 	}
 }
