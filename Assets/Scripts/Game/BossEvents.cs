@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class BossEvents : MonoBehaviour {
 	private MathDatasControl MathDatas;
-	private GameObject CaculatePanel, questionShield;
+	private GameObject questionShield, OperatorPanel, CaculatePanel;
 	// private Image oper;
 	private bool isClicked;
 	private QuesObj question;
@@ -14,18 +15,25 @@ public class BossEvents : MonoBehaviour {
 	public int maxNum;
 	public List<string> templates;
 
+
+	public Camera camera;
+
 	// Use this for initialization
 	void Start () {
 		// set used variables.
 		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
-		CaculatePanel = GameObject.Find("Panel_caculate");
-		CaculatePanel.SetActive(false);
 		questionShield = GameObject.Find("Image_shield");
 		questionShield.SetActive(false);
+		OperatorPanel = GameObject.Find("Panel_operator");
+		OperatorPanel.SetActive(false);
+		CaculatePanel = GameObject.Find("Panel_caculate");
+		// CaculatePanel.SetActive(false);
+
 		isClicked = false;
 
 		// set Boss and get a question.
-		StartCoroutine(Animation_BossAppear());
+		// StartCoroutine(Animation_BossAppear());
+		StartCoroutine(caculate());
 
 	}
 	
@@ -65,17 +73,17 @@ public class BossEvents : MonoBehaviour {
 
 	private IEnumerator playerRound(){
 		yield return new WaitForSeconds(1f);
-		CaculatePanel.SetActive(true);
-		while(CaculatePanel.GetComponent<Image>().fillAmount < 1){
-			CaculatePanel.GetComponent<Image>().fillAmount += 0.05f;
+		OperatorPanel.SetActive(true);
+		while(OperatorPanel.GetComponent<Image>().fillAmount < 1){
+			OperatorPanel.GetComponent<Image>().fillAmount += 0.05f;
 			yield return 0;
 		}
-		CaculatePanel.transform.GetChild(0).gameObject.SetActive(true);
+		OperatorPanel.transform.GetChild(0).gameObject.SetActive(true);
 		// next state.
-		StartCoroutine(AnimateOperator());
+		StartCoroutine(selectOperator());
 	}
 
-	private IEnumerator AnimateOperator(){
+	private IEnumerator selectOperator(){
 		Image oper = GameObject.Find("Image_operator").GetComponent<Image>();
 		// print("in");
 		while(!isClicked){
@@ -98,30 +106,35 @@ public class BossEvents : MonoBehaviour {
 			}
 		}
 
-
 		// ...
 	}
 
-	// public void SelectOperator( int oper ){
-	// 	GameObject energy = GameObject.Find("Image_energyBall");
-	// 	switch(oper){
-	// 		case 1:
-	// 			energy.GetComponent<Image>().color = Color.Lerp(energy.GetComponent<Image>().color ,Color.red, 5f);
-	// 			break;
-	// 		case 2:
-	// 			energy.GetComponent<Image>().color = Color.Lerp(energy.GetComponent<Image>().color ,Color.yellow, 5f);
-	// 			break;
-	// 		case 3:
-	// 			energy.GetComponent<Image>().color = Color.Lerp(energy.GetComponent<Image>().color ,Color.blue, 5f);
-	// 			break;
-	// 		case 4:
-	// 			energy.GetComponent<Image>().color = Color.Lerp(energy.GetComponent<Image>().color ,Color.green, 5f);
-	// 			break;
-	// 		default:
-	// 			energy.GetComponent<Image>().color = Color.Lerp(energy.GetComponent<Image>().color ,Color.white, 5f);
-	// 			break;
-	// 	}
-	// }
+	private IEnumerator caculate(){
+		yield return new WaitForSeconds(0f);
+		Text t = GameObject.Find("Text_test").GetComponent<Text>();//.text;//.ToCharArray();
+		Font font = t.font;
+		CharacterInfo characterInfo = new CharacterInfo();
+		string text = t.text;
+		float position = 0;
+		float seat = 0;
+		GameObject b = GameObject.Find("Button_plus");
+		b.GetComponent<RectTransform>().anchorMin = new Vector2(0f, 0.5f);
+		b.GetComponent<RectTransform>().anchorMax = new Vector2(0f, 0.5f);
+
+		for( int i = 0; i < text.Length; i++ ){
+			font.GetCharacterInfo(text[i], out characterInfo, t.fontSize);
+			position += characterInfo.advance;
+			switch(text[i]){
+				case '＋':
+					seat = position;
+					print(position);
+					break;
+				default:
+					break;
+			}			
+			b.transform.position = new Vector3((600 - seat)*-1-5, 200f, 0f);//camera.WorldToScreenPoint(new Vector3(318f, -200f, 0f));
+		}
+	}
 
 	private IEnumerator waitAnimation( float time ){
 		// ...
@@ -133,7 +146,7 @@ public class BossEvents : MonoBehaviour {
 		// questionShield.transform.GetChild(0).GetChild(0).GetComponent<Slider>().value = 0f;
 		// questionShield.transform.GetChild(0).gameObject.GetComponent<Text>().text = "";
 		// questionShield.SetActive(false);	
-		// CaculatePanel.GetComponent<Image>().fillAmount = 0f;
+		// OperatorPanel.GetComponent<Image>().fillAmount = 0f;
 		// // regeneration of question shield.
 		// StartCoroutine(createQuestionShield(maxNum, templates));
 	}
