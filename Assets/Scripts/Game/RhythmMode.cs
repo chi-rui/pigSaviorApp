@@ -7,16 +7,16 @@ using UnityEngine.EventSystems;
 // , IPointerClickHandler
 // only onion npc problem
 public class RhythmMode : MonoBehaviour {
-	public GameObject pointer, characterAction, challengeFailedPanel, chooseOperatorPanel, calculatePanel, perfectScenario, remainingText, hitResultText;
+	public GameObject pointer, characterAction, challengeFailedPanel, chooseOperatorPanel, calculatePanel, hitResult, remainingText, hitResultText, clickAnyPositionImage;
 	public Animator Anim_characterAction, Anim_characterActionPerfect, Anim_onion, Anim_onionPerfect;
 	public Sprite Sprite_characterGrab;
 	public Image Image_characterAction;
 	public Image[] hitbarArr;
-	public Text Text_remainCounts, Text_hitResult;
+	public Text Text_remainCounts, Text_hitResult, Text_userans;
 	public float speed;
 	
 	private Vector3 pos_L, pos_R;
-	private int remainCounts;
+	private int remainCounts, rankTimes;
 	private List<int> tmpSortingList = new List<int>();
 	private List<int> hitBarsIndexList = new List<int>();
 	private bool isRhythmStart, isPerfectHit, isChallengeFailed;
@@ -30,7 +30,8 @@ public class RhythmMode : MonoBehaviour {
 		isChallengeFailed = false;
 		isPerfectHit = false;
 		isRhythmStart = true;
-		generateHitBars(1);
+		rankTimes = 1;
+		generateHitBars(rankTimes);
 	}
 	
 	// Update is called once per frame
@@ -52,12 +53,12 @@ public class RhythmMode : MonoBehaviour {
 			}
 		}
 
-		if (isChallengeFailed)
-			challengeFailedPanel.SetActive(true);
-
-		// test
-		if (Input.GetKeyDown(KeyCode.Space)) {
-
+		if (isChallengeFailed) {
+			if (Input.GetMouseButtonDown(0)) {
+				restartRhythmMode();
+				clickAnyPositionImage.SetActive(false);
+				isChallengeFailed = false;
+			}
 		}
 	}
 
@@ -94,7 +95,7 @@ public class RhythmMode : MonoBehaviour {
 		// print(hitBarsIndexList.Count + " " + tmpSortingList.Count);
 		for (int i = 0; i < counts; i++) {
 			// print(hitBarsIndexList[i]);
-			hitbarArr[hitBarsIndexList[i]].color = new Color32(41, 149, 255, 255);
+			hitbarArr[hitBarsIndexList[i]].color = new Color32(50, 120, 255, 255);
 			hitbarArr[hitBarsIndexList[i]].gameObject.tag = "hitbar";
 		}
 	}
@@ -114,10 +115,9 @@ public class RhythmMode : MonoBehaviour {
 		if (isPerfectHit) {
 			Text_hitResult.text = "Perfect";
 			Anim_onion.enabled = false;
-			perfectScenario.SetActive(true);
+			hitResult.SetActive(true);
 			Anim_characterActionPerfect.Play("character game action_grab");
 			Anim_onionPerfect.Play("onion grabbed");
-			// Image_onionM.rectTransform.sizeDelta = new Vector2(250, 300);
 		}
 		else
 			Text_hitResult.text = "Miss";
@@ -140,13 +140,15 @@ public class RhythmMode : MonoBehaviour {
 		if (remainCounts == 0) {
 			isRhythmStart = false;
 			isChallengeFailed = true;
+			challengeFailedPanel.SetActive(true);
+			StartCoroutine(showClickAnyPosition(0.6f));
 		}
 	}
 
 	void clickPerfectHit () {
 		print("isPerfectHit: " + isPerfectHit);
 
-		perfectScenario.SetActive(false);
+		hitResult.SetActive(false);
 
 		// show choose operator panel
 		chooseOperatorPanel.SetActive(true);
@@ -164,5 +166,33 @@ public class RhythmMode : MonoBehaviour {
 			isPerfectHit = false;
 			// print("Error for collision");
 		}
+	}
+
+	IEnumerator showClickAnyPosition (float time) {
+		yield return new WaitForSeconds(time);
+
+		clickAnyPositionImage.SetActive(true);
+	}
+
+	void restartRhythmMode() {
+		challengeFailedPanel.SetActive(false);
+		remainCounts = 10;
+		Text_remainCounts.text = remainCounts.ToString();
+		isPerfectHit = false;
+		isRhythmStart = true;
+		generateHitBars(rankTimes);
+	}
+
+	public void clickNumBtn (int num) {
+		if (Text_userans.text == "ANS") {
+			Text_userans.text = "";
+			Text_userans.text += num.ToString();
+		} else {
+			Text_userans.text += num.ToString();
+		}
+	}
+
+	public void clickClearAnsNum () {
+		Text_userans.text = "";
 	}
 }

@@ -10,7 +10,7 @@ public class ColorMode : MonoBehaviour {
 	public Image[] colorChooseMemberArr;
 	public Image Image_npc, Image_npcInResult, Image_mixColorResultHint;
 	public Button[] Button_colorPaintArr;
-	public Button Button_waterGun;
+	public Button Button_waterGun, Button_finishColorNpc;
 	public Text Text_warning;
 	public string npc;
 
@@ -42,11 +42,24 @@ public class ColorMode : MonoBehaviour {
 		}
 	}
 
+	void changeBtnsState (int state) {
+		if (state == 0) {
+			for (int i = 0; i < 3; i++)
+				Button_colorPaintArr[i].interactable = false;
+			Button_waterGun.interactable = false;
+			Button_finishColorNpc.interactable = false;
+		} else {
+			for (int i = 0; i < 3; i++)
+				Button_colorPaintArr[i].interactable = true;
+			Button_waterGun.interactable = true;
+			Button_finishColorNpc.interactable = true;
+		}
+	}
+
 	public void clickColorNpc (string color) {
-		print(colorMixCount);
+		changeBtnsState(0);
 		colorPainterImage.SetActive(true);
-		for (int i = 0; i < 3; i++)
-			Button_colorPaintArr[i].interactable = false;
+		print(colorMixCount);
 		if (colorMixCount < 2) {
 			switch (color) {
 				case "red":
@@ -70,8 +83,7 @@ public class ColorMode : MonoBehaviour {
 			warningPanel.SetActive(true);
 			Text_warning.text = "最多只能混合2種顏色喔！";
 			colorPainterImage.SetActive(false);
-			for (int i = 0; i < 3; i++)
-				Button_colorPaintArr[i].interactable = true;
+			changeBtnsState(1);
 		}
 		colorMixCount++;
 	}
@@ -104,9 +116,7 @@ public class ColorMode : MonoBehaviour {
 		}
 		Anim_npcColored.Play(npc + " Colored");
 		changeColor(colorResult);
-
-		for (int i = 0; i < 3; i++)
-			Button_colorPaintArr[i].interactable = true;
+		changeBtnsState(1);
 	}
 
 	void changeColor (string color) {
@@ -141,10 +151,9 @@ public class ColorMode : MonoBehaviour {
 	}
 
 	public void clickClearColor () {
+		changeBtnsState(0);
 		waterGunImage.SetActive(true);
 		Anim_waterGun.Play("Water gun");
-
-		Button_waterGun.interactable = false;
 
 		colorResult = null;
 		print(colorResult);
@@ -157,10 +166,11 @@ public class ColorMode : MonoBehaviour {
 
 		waterGunImage.SetActive(false);
 		restartColorMode();
-		Button_waterGun.interactable = true;
+		changeBtnsState(1);
 	}
 
 	public void clickFinishColor () {
+		changeBtnsState(0);
 		mixingColorResult.SetActive(true);
 		print(colorResult);
 		changeColor(colorResult);
@@ -212,6 +222,7 @@ public class ColorMode : MonoBehaviour {
 	}
 
 	void restartColorMode () {
+		changeBtnsState(1);
 		mixingColorResult.SetActive(false);
 		colorMixCount = 0;
 		chooseColorList.Clear();
