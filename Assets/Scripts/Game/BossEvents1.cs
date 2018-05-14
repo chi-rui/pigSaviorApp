@@ -6,17 +6,22 @@ using UnityEngine.UI;
 
 public class BossEvents1 : MonoBehaviour {
 	private MathDatasControl MathDatas;
-	private GameObject questionShield, OperatorPanel, CaculatePanel, AnswerPanel;
-	// private Image oper;
+	private GameObject questionShield, OperatorPanel, CaculatePanel, AnswerPanel, BossLife, PlayerLife;
 	private bool isClicked;
 	private QuesObj question;
 
-	// question setting.
+	// question setting
 	public int maxNum;
 	public List<string> templates;
 
-	// user select for answer.
+	// game setting
+	private float bossLife;
+	private float playerLife;
+
+	// user select for answer
 	private int operIndex;
+	private int attackTime;
+	private bool isTimeUp;
 
 	// Use this for initialization
 	void Start () {
@@ -30,9 +35,14 @@ public class BossEvents1 : MonoBehaviour {
 		CaculatePanel.SetActive(false);
 		AnswerPanel = GameObject.Find("Panel_enterAns");
 		AnswerPanel.SetActive(false);		
+		BossLife = GameObject.Find("Image_LifeBoss");
+		BossLife.SetActive(false);
 
-		isClicked = false;
-		operIndex = -1;
+
+		bossLife = 1f;
+		playerLife = 1f;
+
+		initial();
 
 		// set Boss and get a question.
 		StartCoroutine(Animation_BossAppear());
@@ -207,7 +217,7 @@ public class BossEvents1 : MonoBehaviour {
 			if(ans == question.answer[0].partAns){
 				print("correct");
 				GameObject.Find("Text_userans").GetComponent<Text>().text = "";
-				StartCoroutine(AttackedableState());
+				StartCoroutine(BreakShield());
 			}else{
 				print("your ans is " + ans.ToString() + ", wrong.");
 			}
@@ -217,20 +227,58 @@ public class BossEvents1 : MonoBehaviour {
 		}
 	}
 
-	private IEnumerator AttackedableState(){
+	private IEnumerator BreakShield(){
 		AnswerPanel.SetActive(false);
 		OperatorPanel.SetActive(false);
 		CaculatePanel.SetActive(false);
 		yield return new WaitForSeconds(1f);
 		GameObject.Find("Image_Boss").GetComponent<Animator>().Play("Boss03_shieldBreak");
-		yield return new WaitForSeconds(5f);
+		yield return new WaitForSeconds(2.5f);
 		initial();
-		StartCoroutine(createQuestionShield(maxNum, templates));
+		StartCoroutine(bossAttackable());
+	}
+
+	private IEnumerator bossAttackable(){
+		attackTime = 10;
+		isTimeUp = false;
+		InvokeRepeating("timer", 0f, 1f);
+		BossLife.SetActive(true);
+		// can be attack.
+		while(attackTime > 0 && !isTimeUp){
+			if(Input.GetMouseButtonDown(0)){
+				print("attacked");
+				GameObject.Find("Image_main_character").GetComponent<Animator>().Play("Image_character attack", -1, 0f);
+				GameObject.Find("Image_Boss").GetComponent<Animator>().Play("Boss04_beAttacked", -1, 0f);
+				bossLife -= 0.01f;
+				BossLife.GetComponent<Image>().fillAmount = bossLife;
+			}
+			yield return 0;
+		}
+		CancelInvoke();
+		GameObject.Find("Image_main_character").GetComponent<Animator>().Play("Image_character stage");
+
+		// check if game end.
+		if(bossLife <= 0){
+			print("finish game");
+			GameObject.Find("Image_Boss").GetComponent<Animator>().Play("Boss05_playerWin");
+		}else{
+			BossLife.SetActive(false);
+			StartCoroutine(createQuestionShield(maxNum, templates));
+		}
+	}
+
+	private void timer(){
+		attackTime -= 1;
+		print(attackTime);
+		if(attackTime == -1){
+			isTimeUp = true;
+		}
 	}
 
 	private void initial(){
 		questionShield.transform.GetChild(0).gameObject.GetComponent<Text>().text = "";
 		isClicked = false;
+		operIndex = -1;
 	}
 
 }
