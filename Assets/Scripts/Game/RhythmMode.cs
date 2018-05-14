@@ -12,7 +12,7 @@ public class RhythmMode : MonoBehaviour {
 	public Sprite Sprite_characterGrab;
 	public Image Image_characterAction;
 	public Image[] hitbarArr;
-	public Text Text_remainCounts, Text_hitResult, Text_userans;
+	public Text Text_remainCounts, Text_hitResult, Text_userans, Text_question;
 	public float speed;
 	
 	private Vector3 pos_L, pos_R;
@@ -20,6 +20,12 @@ public class RhythmMode : MonoBehaviour {
 	private List<int> tmpSortingList = new List<int>();
 	private List<int> hitBarsIndexList = new List<int>();
 	private bool isRhythmStart, isPerfectHit, isChallengeFailed;
+	
+	// setting question
+	public int maxNum;
+	public List<string> quesTemplate;
+	private MathDatasControl MathDatas;
+	private QuesObj quesObj;
 
 	// Use this for initialization
 	void Start () {
@@ -32,6 +38,9 @@ public class RhythmMode : MonoBehaviour {
 		isRhythmStart = true;
 		rankTimes = 1;
 		generateHitBars(rankTimes);
+
+		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
+		generateQuesForRhythmMode(maxNum, quesTemplate);
 	}
 	
 	// Update is called once per frame
@@ -60,6 +69,12 @@ public class RhythmMode : MonoBehaviour {
 				isChallengeFailed = false;
 			}
 		}
+	}
+
+	void generateQuesForRhythmMode (int max, List<string> template) {
+		quesObj = MathDatas.getQuestion(max, template[Random.Range(0, template.Count)]);
+		for (int i = 0; i < quesObj.question.Count; i++)
+			Text_question.text += quesObj.question[i];
 	}
 
 	void generateHitBars (int times) {

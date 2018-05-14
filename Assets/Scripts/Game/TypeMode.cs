@@ -4,50 +4,51 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class TypeMode : MonoBehaviour {
+	// public GameObject[] quesNumArr, quesOperArr, quesBracketArr;
 	public GameObject warningPanel, showTeamBeforeFighting, fightingPanel, fightingResult, calculatePanel, clickAnyPositionImage;
-	public GameObject[] operTeamMemberArr, chooseOperMemberArr, definiteOperTeamArr, operTeamInFightingArr, operTeamFailedArr;
+	public GameObject[] operTeamFieldImageArr, chooseOperMemberBtnArr, operTeamFailedArr;
 	public Animator Anim_characterAction, Anim_npcFightingType, Anim_npcFightingResult, Anim_operFightingResult;
 	public Sprite transparentSprite;
-	public Sprite[] fightResultHintArr;
-	public Image[] Image_operTeamMemberArr, Image_chooseOperMemberArr, Image_definiteOperTeamArr, Image_operTeamInFightingArr;
-	public Image Image_firstOperMember, Image_fightResultHint, Image_operFightingResult;
+	public Sprite[] fightResultHintArr, windOperArr, fireOperArr, waterOperArr, groundOperArr;
+	// public Image[] Image_quesOperArr;
+	public Image Image_nextFightOper, Image_fightResultHint, Image_operFightingResult;
+	public Image[] Image_operTeamMemberArr, Image_chooseOperMemberArr;
 	public Text Text_warning, Text_userans;
+	// public Text[] Text_quesNumArr;
 	public string npc;
 
-	private int operCount, operMemberCount, operFailedCount;
+	private int operCount, operChooseMemberCount, operFailedCount;
 	private bool isWin, isDraw, isAttackFailed;
 	private string chooseNpcType;
-	private List<string> operatorTypeList = new List<string>();
+	private List<string> operChooseTypeList = new List<string>();
+	// private List<string> tmpQuesNumList = new List<string>();
+	// private List<int> quesOperList = new List<int>();
+	// private List<string> typeList = new List<string> {"wind", "fire", "water", "ground"};
+	// private List<string> typeRanList = new List<string>();
+
+	// setting question
+	// public int maxNum;
+	// public List<string> quesTemplate;
+	// private MathDatasControl MathDatas;
+	// private QuesObj quesObj;
 
 	// Use this for initialization
 	void Start () {
 		Anim_characterAction.Play("character game action_fighting");
 
-// fake data
-		operatorTypeList.Add("ground");
-		operatorTypeList.Add("fire");
-		operatorTypeList.Add("water");
-		print(operatorTypeList[0]); 
-		operCount = 3;
+		// MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
+		// generateQuesForTypeMode(maxNum, quesTemplate);
 
-		// setting member fields position according to operator counts
-		switch (operCount) {
-			case 2:
-				operTeamMemberArr[0].transform.position += new Vector3 (90f, 0, 0);
-				chooseOperMemberArr[0].transform.position += new Vector3 (90f, 0, 0);
-				operTeamMemberArr[1].transform.position += new Vector3 (140f, 0, 0);
-				chooseOperMemberArr[1].transform.position += new Vector3 (140f, 0, 0);
-			break;
-			case 1:
-				operTeamMemberArr[0].transform.position += new Vector3 (190f, 0, 0);
-				chooseOperMemberArr[0].transform.position += new Vector3 (190f, 0, 0);
-			break;
-			default:
-			break;
-		}
+// fake data
+		operCount = 3;
+		operChooseTypeList.Add("wind");
+		operChooseTypeList.Add("fire");
+		operChooseTypeList.Add("water");
+		print(operChooseTypeList[0]); 
+		
 		for (int i = 0; i < operCount; i++) {
-			operTeamMemberArr[i].SetActive(true);
-			chooseOperMemberArr[i].SetActive(true);
+			operTeamFieldImageArr[i].SetActive(true);
+			chooseOperMemberBtnArr[i].SetActive(true);
 		}
 	}
 	
@@ -62,58 +63,62 @@ public class TypeMode : MonoBehaviour {
 		}
 	}
 
-	// operatorTypeList.Add(type);
+	// operChooseTypeList.Add(type);
 	public void chooseOperatorMember (int num) {
-		if (operMemberCount < operCount) {
+		if (operChooseMemberCount < operCount) {
 			for (int i = 0; i < operCount; i++)
-				Image_operTeamMemberArr[operMemberCount].sprite = Image_chooseOperMemberArr[num].sprite;
+				Image_operTeamMemberArr[operChooseMemberCount].sprite = Image_chooseOperMemberArr[num].sprite;
 		} else {
 			warningPanel.SetActive(true);
 			Text_warning.text = "你指定的運算符號數目已超過"+operCount+"個了喔！";
 		}
-		operMemberCount++;
+		operChooseMemberCount++;
 	}
 
 	public void clickClearTeam () {
-		operMemberCount = 0;
+		operChooseMemberCount = 0;
 		for (int i = 0; i < operCount; i++)
 			Image_operTeamMemberArr[i].sprite = transparentSprite;
 	}
 
 	public void clickFightingStart () {
-		switch (operMemberCount) {
-			case 2:
-				for (int i = 0; i < 2; i++)
-					definiteOperTeamArr[i].transform.position += new Vector3 (80f, 0, 0);
-			break;
-			case 1:
-				definiteOperTeamArr[0].transform.position += new Vector3 (140f, 0, 0);
-			break;
-		}
-		for (int i = 0; i < operMemberCount; i++) {
-			definiteOperTeamArr[i].SetActive(true);
-			Image_definiteOperTeamArr[i].sprite = Image_operTeamMemberArr[i].sprite;
-		}
-		if (operMemberCount == 0) {
+		if (operChooseMemberCount == 0) {
 			warningPanel.SetActive(true);
 			Text_warning.text = "你尚未指定運算符號攻擊順序";
 		} else {
 			showTeamBeforeFighting.SetActive(true);
-			StartCoroutine(showFightingPanel(2.8f));
+			for (int i = 0; i < operCount; i++)
+				operTeamFieldImageArr[i].SetActive(false);
+			StartCoroutine(setOperTeamPosition("beforefight"));
+			StartCoroutine(showFightingPanel(3.3f));
+		}
+	}
+
+	IEnumerator setOperTeamPosition (string state) {
+		switch (state) {
+			case "beforefight":
+				operTeamFieldImageArr[0].transform.position = new Vector3(-1000f, -20f, 0f);
+				operTeamFieldImageArr[1].transform.position = new Vector3(-830f, -20f, 0f);
+				operTeamFieldImageArr[2].transform.position = new Vector3(-660f, -20f, 0f);
+				yield return new WaitForSeconds(1.5f);
+				for (int i = 0; i < operCount; i++)
+					operTeamFieldImageArr[i].SetActive(true);
+				break;
+			case "fightpanel":
+				operTeamFieldImageArr[0].transform.position = new Vector3(-810f, 110f, 0f);
+				operTeamFieldImageArr[1].transform.position = new Vector3(-810f, -10f, 0f);
+				operTeamFieldImageArr[2].transform.position = new Vector3(-810f, -130f, 0f);
+				yield return new WaitForSeconds(1f);
+				break;
 		}
 	}
 
 	IEnumerator showFightingPanel (float time) {
 		yield return new WaitForSeconds(time);
-
+		StartCoroutine(setOperTeamPosition("fightpanel"));
 		showTeamBeforeFighting.SetActive(false);
 		fightingPanel.SetActive(true);
-
-		for (int i = 0; i < operMemberCount; i++) {
-			operTeamInFightingArr[i].SetActive(true);
-			Image_operTeamInFightingArr[i].sprite = Image_operTeamMemberArr[i].sprite;
-		}
-		Image_firstOperMember.sprite = Image_operTeamMemberArr[0].sprite;
+		Image_nextFightOper.sprite = Image_operTeamMemberArr[0].sprite;
 	}
 
 	public void changeNpcFightingType (string type) {
@@ -136,8 +141,6 @@ public class TypeMode : MonoBehaviour {
 				Anim_npcFightingType.Play(npc + " Ground");
 				chooseNpcType = "ground";
 				break;
-			default:
-				break;
 		}
 	}
 
@@ -148,55 +151,53 @@ public class TypeMode : MonoBehaviour {
 			Text_warning.text = "你尚未指定npc屬性";
 		} else {
 			fightingResult.SetActive(true);
-			Image_operFightingResult.sprite = Image_firstOperMember.sprite;
+			Image_operFightingResult.sprite = Image_nextFightOper.sprite;
 			switch (chooseNpcType) {
 				case "wind":
-					if (operatorTypeList[0] == "ground") {
+					if (operChooseTypeList[0] == "ground") {
 						isWin = true;
 						Anim_npcFightingResult.Play(npc + " Wind Win");
 					} else {
 						isWin = false;
-						if (operatorTypeList[0] != "fire")
+						if (operChooseTypeList[0] != "fire")
 							isDraw = true;
 					}
-				break;
+					break;
 				case "fire": 
-					if (operatorTypeList[0] == "wind") {
+					if (operChooseTypeList[0] == "wind") {
 						isWin = true;
 						Anim_npcFightingResult.Play(npc + " Fire Win");
 					} else {
 						isWin = false;
-						if (operatorTypeList[0] != "water")
+						if (operChooseTypeList[0] != "water")
 							isDraw = true;
 					}
-				break;
+					break;
 				case "water":
-					if (operatorTypeList[0] == "fire") {
+					if (operChooseTypeList[0] == "fire") {
 						isWin = true;
 						Anim_npcFightingResult.Play(npc + " Water Win");
 					} else {
 						isWin = false;
-						if (operatorTypeList[0] != "ground")
+						if (operChooseTypeList[0] != "ground")
 							isDraw = true;
 					}
-				break;
+					break;
 				case "ground":
-					if (operatorTypeList[0] == "water") {
+					if (operChooseTypeList[0] == "water") {
 						isWin = true;
 						Anim_npcFightingResult.Play(npc + " Ground Win");
 					} else {
 						isWin = false;
-						if (operatorTypeList[0] != "wind")
+						if (operChooseTypeList[0] != "wind")
 							isDraw = true;
 					}
-				break;
-				default:
-				break;
+					break;
 			}
 			if (isWin) {
 				Image_fightResultHint.sprite = fightResultHintArr[0];
 				Anim_operFightingResult.Play("Operator Lose");
-				StartCoroutine(showCalculatePanel(1.5f));
+				StartCoroutine(showFightingFeedback("win"));
 			} else {
 				Image_fightResultHint.sprite = fightResultHintArr[1];
 				if (isDraw) {
@@ -206,23 +207,30 @@ public class TypeMode : MonoBehaviour {
 					Anim_npcFightingResult.Play(npc + " Lose Die");
 					Anim_operFightingResult.Play("Operator Win");
 				}
-				StartCoroutine(showClickAnyPosition(0.6f));
+				StartCoroutine(showFightingFeedback("lose"));
 				isAttackFailed = true;
 			}
 		}
 	}
 
-	IEnumerator showCalculatePanel (float time) {
-		yield return new WaitForSeconds(time);
-
-		fightingResult.SetActive(false);
-		calculatePanel.SetActive(true);
-	}
-
-	IEnumerator showClickAnyPosition (float time) {
-		yield return new WaitForSeconds(time);
-
-		clickAnyPositionImage.SetActive(true);
+	IEnumerator showFightingFeedback (string fightResult) {
+		switch (fightResult) {
+			case "win":
+				yield return new WaitForSeconds(1.5f);
+				for (int i = 0; i < operCount; i++)
+					operTeamFieldImageArr[i].SetActive(false);
+				if (operFailedCount != 0) {
+					for (int i = 0; i < operFailedCount; i++)
+						operTeamFailedArr[i].SetActive(false);
+				}
+				fightingResult.SetActive(false);
+				calculatePanel.SetActive(true);
+				break;
+			case "lose":
+				yield return new WaitForSeconds(0.6f);
+				clickAnyPositionImage.SetActive(true);
+				break;
+		}
 	}
 
 	void restartTypeModeFighting () {
@@ -247,15 +255,18 @@ public class TypeMode : MonoBehaviour {
 	}
 
 	public void clickFinishCalculate () {
-		operFailedCount++;
-		operTeamFailedArr[operFailedCount-1].SetActive(true);
 		calculatePanel.SetActive(false);
-		if (operFailedCount < operMemberCount) {
+		operFailedCount++;
+		for (int i = 0; i < operFailedCount; i++)
+			operTeamFailedArr[i].SetActive(true);
+		for (int i = 0; i < operCount; i++)
+			operTeamFieldImageArr[i].SetActive(true);
+		if (operFailedCount < operChooseMemberCount) {
 			restartTypeModeFighting();
-			Image_firstOperMember.sprite = Image_operTeamMemberArr[operFailedCount].sprite;
-			if (operatorTypeList.Count != 0) {
-				operatorTypeList.Remove(operatorTypeList[0]);
-				print(operatorTypeList[0]);
+			Image_nextFightOper.sprite = Image_operTeamMemberArr[operFailedCount].sprite;
+			if (operChooseTypeList.Count != 0) {
+				operChooseTypeList.Remove(operChooseTypeList[0]);
+				print(operChooseTypeList[0]);
 			}
 		} else {
 			print("攻擊完成！");
@@ -263,4 +274,5 @@ public class TypeMode : MonoBehaviour {
 		// print(operFailedCount);
 		// print(operMemberCount);
 	}
+
 }

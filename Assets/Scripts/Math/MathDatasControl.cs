@@ -5,10 +5,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MathDatasControl : MonoBehaviour {
-
 	// Use this for initialization
 	void Start () {
-		// quesObj = getQuestion( 200, "A+B+C+D");
+		// QuesObj quesObj = getQuestion( 200, "A+B+C+D");
 	}
 	
 	// Update is called once per frame
