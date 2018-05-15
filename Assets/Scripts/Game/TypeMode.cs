@@ -4,47 +4,40 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class TypeMode : MonoBehaviour {
-	// public GameObject[] quesNumArr, quesOperArr, quesBracketArr;
 	public GameObject warningPanel, showTeamBeforeFighting, fightingPanel, fightingResult, calculatePanel, clickAnyPositionImage;
-	public GameObject[] operTeamFieldImageArr, chooseOperMemberBtnArr, operTeamFailedArr;
+	public GameObject[] operTeamFieldImageArr, chooseOperMemberBtnArr, operTeamFailedImageArr, quesNumTextArr, quesOperImageArr;
 	public Animator Anim_characterAction, Anim_npcFightingType, Anim_npcFightingResult, Anim_operFightingResult;
 	public Sprite transparentSprite;
 	public Sprite[] fightResultHintArr, windOperArr, fireOperArr, waterOperArr, groundOperArr;
-	// public Image[] Image_quesOperArr;
 	public Image Image_nextFightOper, Image_fightResultHint, Image_operFightingResult;
-	public Image[] Image_operTeamMemberArr, Image_chooseOperMemberArr;
+	public Image[] Image_operTeamMemberArr, Image_chooseOperMemberArr, Image_quesOperArr;
 	public Text Text_warning, Text_userans;
-	// public Text[] Text_quesNumArr;
+	public Text[] Text_quesNumArr;
 	public string npc;
 
 	private int operCount, operChooseMemberCount, operFailedCount;
 	private bool isWin, isDraw, isAttackFailed;
 	private string chooseNpcType;
 	private List<string> operChooseTypeList = new List<string>();
-	// private List<string> tmpQuesNumList = new List<string>();
-	// private List<int> quesOperList = new List<int>();
-	// private List<string> typeList = new List<string> {"wind", "fire", "water", "ground"};
-	// private List<string> typeRanList = new List<string>();
+	private List<int> quesOperList = new List<int>();
+	private List<string> typeList = new List<string> {"wind", "fire", "water", "ground"};
+	private List<string> typeRanList = new List<string>();
 
 	// setting question
-	// public int maxNum;
-	// public List<string> quesTemplate;
-	// private MathDatasControl MathDatas;
-	// private QuesObj quesObj;
+	public int maxNum;
+	public List<string> quesTemplate;
+	private MathDatasControl MathDatas;
+	private QuesObj quesObj;
+
+// test
+	private string testQues;
 
 	// Use this for initialization
 	void Start () {
 		Anim_characterAction.Play("character game action_fighting");
 
-		// MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
-		// generateQuesForTypeMode(maxNum, quesTemplate);
-
-// fake data
-		operCount = 3;
-		operChooseTypeList.Add("wind");
-		operChooseTypeList.Add("fire");
-		operChooseTypeList.Add("water");
-		print(operChooseTypeList[0]); 
+		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
+		generateQuestion(maxNum, quesTemplate);
 		
 		for (int i = 0; i < operCount; i++) {
 			operTeamFieldImageArr[i].SetActive(true);
@@ -63,11 +56,111 @@ public class TypeMode : MonoBehaviour {
 		}
 	}
 
-	// operChooseTypeList.Add(type);
+	void generateQuestion (int max, List<string> template) {
+		// generate question and get operator counts
+		quesObj = MathDatas.getQuestion(max, template[UnityEngine.Random.Range(0, template.Count)]);
+		for (int i = 0; i < quesObj.question.Count; i++)
+			testQues += quesObj.question[i];
+		print(testQues);
+		operCount = quesObj.answer.Count;
+		// print(operCount);
+
+		// set question numbers and operators position
+		switch (operCount) {
+			case 2:
+				for (int i = 0; i <= operCount; i++) {
+					quesNumTextArr[i].transform.position += new Vector3(50f, 0, 0);
+					quesOperImageArr[i].transform.position += new Vector3(50f, 0, 0);
+				}
+				break;
+			case 1:
+				for (int i = 0; i <= operCount; i++) {
+					quesNumTextArr[i].transform.position += new Vector3(200f, 0, 0);
+					quesOperImageArr[i].transform.position += new Vector3(200f, 0, 0);
+				}
+				break;
+		}
+
+		// delete operators and brackets in question
+		for (int i = 0; i < quesObj.question.Count; i++) {
+			if (quesObj.question[i] == "+" || quesObj.question[i] == "-" || quesObj.question[i] == "x" || quesObj.question[i] == "÷") {
+				switch (quesObj.question[i]) {
+					case "+":
+						quesOperList.Add(0);
+						break;
+					case "-":
+						quesOperList.Add(1);
+						break;
+					case "x":
+						quesOperList.Add(2);
+						break;
+					case "÷":
+						quesOperList.Add(3);
+						break;
+				}
+				quesObj.question.Remove(quesObj.question[i]);
+			}
+			if (quesObj.question[i] == "(") {
+				quesObj.question[i+1] = quesObj.question[i] + quesObj.question[i+1];
+			} else if (quesObj.question[i] == ")") {
+				quesObj.question[i-1] = quesObj.question[i-1] + quesObj.question[i];
+			}
+		}
+		for (int i = 0; i < quesObj.question.Count; i++) {
+			if (quesObj.question[i] == "(")
+				quesObj.question.Remove(quesObj.question[i]);
+		}
+		for (int i = 0; i < quesObj.question.Count; i++) {
+			if (quesObj.question[i] == ")")
+				quesObj.question.Remove(quesObj.question[i]);
+		}
+
+		// print(quesObj.question.Count);
+		// for (int i = 0; i < quesObj.question.Count; i++)
+		// 	print(quesObj.question[i]);
+		// for (int i = 0; i < quesOperList.Count; i++)
+		// 	print(quesOperList[i]);
+
+		// show question number text
+		for (int i = 0; i < quesObj.question.Count; i++)
+			Text_quesNumArr[i].text = quesObj.question[i];
+
+		// unrepeat random four types
+		while (typeRanList.Count < 4) {
+			int index = Random.Range(0, typeList.Count);
+			if (!typeRanList.Contains(typeList[index])) {
+				typeRanList.Add(typeList[index]);
+				typeList.Remove(typeList[index]);
+			}
+		}
+		for (int i = 0; i < typeRanList.Count; i++)
+			print(typeRanList[i]);
+
+		// set operator type and symbol
+		for (int i = 0; i < operCount; i++) {
+			switch (typeRanList[i]) {
+				case "wind":
+					Image_quesOperArr[i].sprite = windOperArr[quesOperList[i]];
+					break;
+				case "fire":
+					Image_quesOperArr[i].sprite = fireOperArr[quesOperList[i]];
+					break;
+				case "water":
+					Image_quesOperArr[i].sprite = waterOperArr[quesOperList[i]];
+					break;
+				case "ground":
+					Image_quesOperArr[i].sprite = groundOperArr[quesOperList[i]];
+					break;
+			}
+			Image_chooseOperMemberArr[i].sprite = Image_quesOperArr[i].sprite;
+		}
+	}
+
 	public void chooseOperatorMember (int num) {
 		if (operChooseMemberCount < operCount) {
 			for (int i = 0; i < operCount; i++)
 				Image_operTeamMemberArr[operChooseMemberCount].sprite = Image_chooseOperMemberArr[num].sprite;
+			operChooseTypeList.Add(typeRanList[num]);
 		} else {
 			warningPanel.SetActive(true);
 			Text_warning.text = "你指定的運算符號數目已超過"+operCount+"個了喔！";
@@ -77,11 +170,14 @@ public class TypeMode : MonoBehaviour {
 
 	public void clickClearTeam () {
 		operChooseMemberCount = 0;
+		operChooseTypeList.Clear();
 		for (int i = 0; i < operCount; i++)
 			Image_operTeamMemberArr[i].sprite = transparentSprite;
 	}
 
 	public void clickFightingStart () {
+		for (int i = 0; i < operChooseTypeList.Count; i++)
+			print(operChooseTypeList[i]);
 		if (operChooseMemberCount == 0) {
 			warningPanel.SetActive(true);
 			Text_warning.text = "你尚未指定運算符號攻擊順序";
@@ -97,17 +193,17 @@ public class TypeMode : MonoBehaviour {
 	IEnumerator setOperTeamPosition (string state) {
 		switch (state) {
 			case "beforefight":
-				operTeamFieldImageArr[0].transform.position = new Vector3(-1000f, -20f, 0f);
-				operTeamFieldImageArr[1].transform.position = new Vector3(-830f, -20f, 0f);
-				operTeamFieldImageArr[2].transform.position = new Vector3(-660f, -20f, 0f);
+				operTeamFieldImageArr[0].transform.position = new Vector3(-1000f, -20f, 0);
+				operTeamFieldImageArr[1].transform.position = new Vector3(-830f, -20f, 0);
+				operTeamFieldImageArr[2].transform.position = new Vector3(-660f, -20f, 0);
 				yield return new WaitForSeconds(1.5f);
 				for (int i = 0; i < operCount; i++)
 					operTeamFieldImageArr[i].SetActive(true);
 				break;
 			case "fightpanel":
-				operTeamFieldImageArr[0].transform.position = new Vector3(-810f, 110f, 0f);
-				operTeamFieldImageArr[1].transform.position = new Vector3(-810f, -10f, 0f);
-				operTeamFieldImageArr[2].transform.position = new Vector3(-810f, -130f, 0f);
+				operTeamFieldImageArr[0].transform.position = new Vector3(-810f, 110f, 0);
+				operTeamFieldImageArr[1].transform.position = new Vector3(-810f, -10f, 0);
+				operTeamFieldImageArr[2].transform.position = new Vector3(-810f, -130f, 0);
 				yield return new WaitForSeconds(1f);
 				break;
 		}
@@ -123,7 +219,7 @@ public class TypeMode : MonoBehaviour {
 
 	public void changeNpcFightingType (string type) {
 		chooseNpcType = type;
-		print(chooseNpcType);
+		// print(chooseNpcType);
 		switch (type) {
 			case "wind":
 				Anim_npcFightingType.Play(npc + " Wind");
@@ -221,7 +317,7 @@ public class TypeMode : MonoBehaviour {
 					operTeamFieldImageArr[i].SetActive(false);
 				if (operFailedCount != 0) {
 					for (int i = 0; i < operFailedCount; i++)
-						operTeamFailedArr[i].SetActive(false);
+						operTeamFailedImageArr[i].SetActive(false);
 				}
 				fightingResult.SetActive(false);
 				calculatePanel.SetActive(true);
@@ -258,7 +354,7 @@ public class TypeMode : MonoBehaviour {
 		calculatePanel.SetActive(false);
 		operFailedCount++;
 		for (int i = 0; i < operFailedCount; i++)
-			operTeamFailedArr[i].SetActive(true);
+			operTeamFailedImageArr[i].SetActive(true);
 		for (int i = 0; i < operCount; i++)
 			operTeamFieldImageArr[i].SetActive(true);
 		if (operFailedCount < operChooseMemberCount) {

@@ -7,7 +7,9 @@ using UnityEngine;
 public class MathDatasControl : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
-		// QuesObj quesObj = getQuestion( 200, "A+B+C+D");
+		// QuesObj quesObj = questionGenerator( 1, 200, "(A-B)-(C-D)");
+		// for(int i = 0; i < quesObj.answer.Count; i++ )
+		// 	print(quesObj.answer[i].index + " " + quesObj.answer[i].partAns);
 	}
 	
 	// Update is called once per frame

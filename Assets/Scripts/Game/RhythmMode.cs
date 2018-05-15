@@ -8,17 +8,23 @@ using UnityEngine.EventSystems;
 // only onion npc problem
 public class RhythmMode : MonoBehaviour {
 	public GameObject pointer, characterAction, challengeFailedPanel, chooseOperatorPanel, calculatePanel, hitResult, remainingText, hitResultText, clickAnyPositionImage;
+	public GameObject[] quesNumTextArr, quesOperTextArr, quesNumTextChooseArr, quesOperBtnChooseArr;
 	public Animator Anim_characterAction, Anim_characterActionPerfect, Anim_onion, Anim_onionPerfect;
 	public Sprite Sprite_characterGrab;
+	public Sprite[] operBtnsArr;
 	public Image Image_characterAction;
 	public Image[] hitbarArr;
-	public Text Text_remainCounts, Text_hitResult, Text_userans, Text_question;
+	public Text Text_remainCounts, Text_hitResult, Text_userans, Text_partQues;
+	public Text[] Text_quesNumArr, Text_quesOperArr, Text_quesNumChooseArr;
+	public Button[] Button_quesOperChooseArr;
 	public float speed;
 	
 	private Vector3 pos_L, pos_R;
-	private int remainCounts, rankTimes;
+	private int remainCounts, rankTimes, operCount;
 	private List<int> tmpSortingList = new List<int>();
 	private List<int> hitBarsIndexList = new List<int>();
+	private List<int> quesOperList = new List<int>();
+	private List<string> partQuesList = new List<string>();
 	private bool isRhythmStart, isPerfectHit, isChallengeFailed;
 	
 	// setting question
@@ -26,6 +32,9 @@ public class RhythmMode : MonoBehaviour {
 	public List<string> quesTemplate;
 	private MathDatasControl MathDatas;
 	private QuesObj quesObj;
+
+// test
+	private string testQues;
 
 	// Use this for initialization
 	void Start () {
@@ -40,7 +49,7 @@ public class RhythmMode : MonoBehaviour {
 		generateHitBars(rankTimes);
 
 		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
-		generateQuesForRhythmMode(maxNum, quesTemplate);
+		generateQuestion(maxNum, quesTemplate);
 	}
 	
 	// Update is called once per frame
@@ -71,10 +80,112 @@ public class RhythmMode : MonoBehaviour {
 		}
 	}
 
-	void generateQuesForRhythmMode (int max, List<string> template) {
-		quesObj = MathDatas.getQuestion(max, template[Random.Range(0, template.Count)]);
+	void generateQuestion (int max, List<string> template) {
+		// generate question and get operator counts
+		quesObj = MathDatas.getQuestion(max, template[UnityEngine.Random.Range(0, template.Count)]);
 		for (int i = 0; i < quesObj.question.Count; i++)
-			Text_question.text += quesObj.question[i];
+			testQues += quesObj.question[i];
+		print(testQues);
+		operCount = quesObj.answer.Count;
+		// print(operCount);
+
+		// set question numbers and operators position
+		switch (operCount) {
+			case 2:
+				for (int i = 0; i <= operCount; i++) {
+					quesNumTextArr[i].transform.position += new Vector3(100f, 0, 0);
+					quesOperTextArr[i].transform.position += new Vector3(100f, 0, 0);
+					quesNumTextChooseArr[i].transform.position += new Vector3(150f, 0, 0);
+					quesOperBtnChooseArr[i].transform.position += new Vector3(150f, 0, 0);
+				}
+				break;
+			case 1:
+				for (int i = 0; i <= operCount; i++) {
+					quesNumTextArr[i].transform.position += new Vector3(200f, 0, 0);
+					quesOperTextArr[i].transform.position += new Vector3(200f, 0, 0);
+					quesNumTextChooseArr[i].transform.position += new Vector3(300f, 0, 0);
+					quesOperBtnChooseArr[i].transform.position += new Vector3(300f, 0, 0);
+				}
+				break;
+		}
+
+		// store question without brackets in a list
+		for (int i = 0; i < quesObj.question.Count; i++) {
+			if (quesObj.question[i] != "(" && quesObj.question[i] != ")")
+				partQuesList.Add(quesObj.question[i]);
+		}
+		// separate question without brackets in several parts
+		for (int i = 0; i < partQuesList.Count; i++) {
+			if (partQuesList[i] == "+" || partQuesList[i] == "-" || partQuesList[i] == "x" || partQuesList[i] == "÷")
+				partQuesList.Add(partQuesList[i-1]+partQuesList[i]+partQuesList[i+1]);
+		}
+
+		// delete operators and brackets in question
+		for (int i = 0; i < quesObj.question.Count; i++) {
+			if (quesObj.question[i] == "+" || quesObj.question[i] == "-" || quesObj.question[i] == "x" || quesObj.question[i] == "÷") {
+				switch (quesObj.question[i]) {
+					case "+":
+						quesOperList.Add(0);
+						break;
+					case "-":
+						quesOperList.Add(1);
+						break;
+					case "x":
+						quesOperList.Add(2);
+						break;
+					case "÷":
+						quesOperList.Add(3);
+						break;
+				}
+				quesObj.question.Remove(quesObj.question[i]);
+			}
+			if (quesObj.question[i] == "(") {
+				quesObj.question[i+1] = quesObj.question[i] + quesObj.question[i+1];
+			} else if (quesObj.question[i] == ")") {
+				quesObj.question[i-1] = quesObj.question[i-1] + quesObj.question[i];
+			}
+		}
+		for (int i = 0; i < quesObj.question.Count; i++) {
+			if (quesObj.question[i] == "(")
+				quesObj.question.Remove(quesObj.question[i]);
+		}
+		for (int i = 0; i < quesObj.question.Count; i++) {
+			if (quesObj.question[i] == ")")
+				quesObj.question.Remove(quesObj.question[i]);
+		}
+
+		// for (int i = 0; i < partQuesList.Count; i++) 
+		// 	print(partQuesList[i]);
+		// for (int i = (partQuesList.Count-operCount); i < partQuesList.Count; i++)
+		// 	print(partQuesList[i]);
+		// print(quesObj.question.Count);
+		// for (int i = 0; i < quesObj.question.Count; i++)
+		// 	print(quesObj.question[i]);
+
+		// show question number text
+		for (int i = 0; i < quesObj.question.Count; i++) {
+			Text_quesNumArr[i].text = quesObj.question[i];
+			Text_quesNumChooseArr[i].text = quesObj.question[i];
+		}
+
+		// set operator symbol
+		for (int i = 0; i < operCount; i++) {
+			switch (quesOperList[i]) {
+				case 0:
+					Text_quesOperArr[i].text = "+";
+					break;
+				case 1:
+					Text_quesOperArr[i].text = "-";
+					break;
+				case 2:
+					Text_quesOperArr[i].text = "x";
+					break;
+				case 3:
+					Text_quesOperArr[i].text = "÷";
+					break;
+			}
+			Button_quesOperChooseArr[i].GetComponent<Image>().sprite = operBtnsArr[quesOperList[i]];
+		}
 	}
 
 	void generateHitBars (int times) {
@@ -189,7 +300,7 @@ public class RhythmMode : MonoBehaviour {
 		clickAnyPositionImage.SetActive(true);
 	}
 
-	void restartRhythmMode() {
+	void restartRhythmMode () {
 		challengeFailedPanel.SetActive(false);
 		remainCounts = 10;
 		Text_remainCounts.text = remainCounts.ToString();
@@ -209,5 +320,11 @@ public class RhythmMode : MonoBehaviour {
 
 	public void clickClearAnsNum () {
 		Text_userans.text = "";
+	}
+
+	public void clickOperBtn (int num) {
+		num += (partQuesList.Count-operCount);
+		calculatePanel.SetActive(true);
+		Text_partQues.text = partQuesList[num];
 	}
 }
