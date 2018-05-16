@@ -5,20 +5,33 @@ using UnityEngine.UI;
 
 public class ColorMode : MonoBehaviour {
 	public GameObject warningPanel, waterGunImage, colorPainterImage, mixingColorResult, calculatePanel, clickAnyPositionImage;
+	public GameObject[] quesNumTextArr, quesOperImageArr;
 	public Animator Anim_npcColored, Anim_painter, Anim_waterGun, Anim_npcMixingColor, Anim_operatorPairResult;
-	public Sprite[] colorArr, mixColorResultHintArr;
-	public Image[] colorChooseMemberArr;
-	public Image Image_npc, Image_npcInResult, Image_mixColorResultHint;
+	public Sprite[] colorArr, mixColorResultHintArr, redOperArr, yellowOperArr, blueOperArr, orangeOperArr, greenOperArr, purpleOperArr;
+	public Image[] colorChooseMemberArr, Image_quesOperArr;
+	public Image Image_npc, Image_mixColorResultHint, Image_npcInResult, Image_operInResult;
 	public Button[] Button_colorPaintArr;
 	public Button Button_waterGun, Button_finishColorNpc;
 	public Text Text_warning;
+	public Text[] Text_quesNumArr;
 	public string npc;
 
-	private int colorMixCount;
+	private int colorMixCount, operCount;
 	private bool isPair, isMixColorFailed;
 	private string colorResult;
 	private List<string> chooseColorList = new List<string>();
-	private List<string> operatorColorList = new List<string>();
+	private List<string> colorList = new List<string> {"red", "yellow", "blue", "orange", "green", "purple"};
+	private List<string> operColorRanList = new List<string>();
+	private List<int> quesOperList = new List<int>();
+
+	// setting question
+	public int maxNum;
+	public List<string> quesTemplate;
+	private MathDatasControl MathDatas;
+	private QuesObj quesObj;
+
+// test
+	private string testQues;
 
 	// Use this for initialization
 	void Start () {
@@ -26,9 +39,8 @@ public class ColorMode : MonoBehaviour {
 		colorPainterImage.SetActive(false);
 		isMixColorFailed = false;
 
-// fake data
-		operatorColorList.Add("orange");
-		print(operatorColorList[0]);
+		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
+		generateQuestion(maxNum, quesTemplate);
 	}
 	
 	// Update is called once per frame
@@ -38,6 +50,111 @@ public class ColorMode : MonoBehaviour {
 				restartColorMode();
 				clickAnyPositionImage.SetActive(false);
 				isMixColorFailed = false;
+			}
+		}
+	}
+
+	void generateQuestion (int max, List<string> template) {
+		// generate question and get operator counts
+		quesObj = MathDatas.getQuestion(max, template[UnityEngine.Random.Range(0, template.Count)]);
+		for (int i = 0; i < quesObj.question.Count; i++)
+			testQues += quesObj.question[i];
+		print(testQues);
+		operCount = quesObj.answer.Count;
+		// print(operCount);
+
+		// set question numbers and operators position
+		switch (operCount) {
+			case 2:
+				for (int i = 0; i <= operCount; i++) {
+					quesNumTextArr[i].transform.position += new Vector3(50f, 0, 0);
+					quesOperImageArr[i].transform.position += new Vector3(50f, 0, 0);
+				}
+				break;
+			case 1:
+				for (int i = 0; i <= operCount; i++) {
+					quesNumTextArr[i].transform.position += new Vector3(200f, 0, 0);
+					quesOperImageArr[i].transform.position += new Vector3(200f, 0, 0);
+				}
+				break;
+		}
+
+		// delete operators and brackets in question
+		for (int i = 0; i < quesObj.question.Count; i++) {
+			if (quesObj.question[i] == "+" || quesObj.question[i] == "-" || quesObj.question[i] == "x" || quesObj.question[i] == "÷") {
+				switch (quesObj.question[i]) {
+					case "+":
+						quesOperList.Add(0);
+						break;
+					case "-":
+						quesOperList.Add(1);
+						break;
+					case "x":
+						quesOperList.Add(2);
+						break;
+					case "÷":
+						quesOperList.Add(3);
+						break;
+				}
+				quesObj.question.Remove(quesObj.question[i]);
+			}
+			if (quesObj.question[i] == "(") {
+				quesObj.question[i+1] = quesObj.question[i] + quesObj.question[i+1];
+			} else if (quesObj.question[i] == ")") {
+				quesObj.question[i-1] = quesObj.question[i-1] + quesObj.question[i];
+			}
+		}
+		for (int i = 0; i < quesObj.question.Count; i++) {
+			if (quesObj.question[i] == "(")
+				quesObj.question.Remove(quesObj.question[i]);
+		}
+		for (int i = 0; i < quesObj.question.Count; i++) {
+			if (quesObj.question[i] == ")")
+				quesObj.question.Remove(quesObj.question[i]);
+		}
+
+		// print(quesObj.question.Count);
+		// for (int i = 0; i < quesObj.question.Count; i++)
+		// 	print(quesObj.question[i]);
+		// for (int i = 0; i < quesOperList.Count; i++)
+		// 	print(quesOperList[i]);
+
+		// show question number text
+		for (int i = 0; i < quesObj.question.Count; i++)
+			Text_quesNumArr[i].text = quesObj.question[i];
+
+		// unrepeat random four types
+		while (operColorRanList.Count < 6) {
+			int index = Random.Range(0, colorList.Count);
+			if (!operColorRanList.Contains(colorList[index])) {
+				operColorRanList.Add(colorList[index]);
+				colorList.Remove(colorList[index]);
+			}
+		}
+		for (int i = 0; i < operColorRanList.Count; i++)
+			print(operColorRanList[i]);
+
+		// set operator color and symbol
+		for (int i = 0; i < operCount; i++) {
+			switch (operColorRanList[i]) {
+				case "red":
+					Image_quesOperArr[i].sprite = redOperArr[quesOperList[i]];
+					break;
+				case "yellow":
+					Image_quesOperArr[i].sprite = yellowOperArr[quesOperList[i]];
+					break;
+				case "blue":
+					Image_quesOperArr[i].sprite = blueOperArr[quesOperList[i]];
+					break;
+				case "orange":
+					Image_quesOperArr[i].sprite = orangeOperArr[quesOperList[i]];
+					break;
+				case "green":
+					Image_quesOperArr[i].sprite = greenOperArr[quesOperList[i]];
+					break;
+				case "purple":
+					Image_quesOperArr[i].sprite = purpleOperArr[quesOperList[i]];
+					break;
 			}
 		}
 	}
@@ -59,23 +176,21 @@ public class ColorMode : MonoBehaviour {
 	public void clickColorNpc (string color) {
 		changeBtnsState(0);
 		colorPainterImage.SetActive(true);
-		print(colorMixCount);
+		// print(colorMixCount);
 		if (colorMixCount < 2) {
 			switch (color) {
 				case "red":
 					Anim_painter.Play("Color Red on NPC");
 					colorChooseMemberArr[colorMixCount].sprite = colorArr[0];
-				break;
+					break;
 				case "yellow":
 					Anim_painter.Play("Color Yellow on NPC");
 					colorChooseMemberArr[colorMixCount].sprite = colorArr[1];
-				break;
+					break;
 				case "blue":
 					Anim_painter.Play("Color Blue on NPC");
 					colorChooseMemberArr[colorMixCount].sprite = colorArr[2];
-				break;
-				default:
-				break;
+					break;
 			}
 			chooseColorList.Add(color);
 			StartCoroutine(paintColorOnNpc(1.45f));
@@ -124,29 +239,27 @@ public class ColorMode : MonoBehaviour {
 			case "red":
 				Image_npc.color = new Color32(255, 0, 0, 255);
 				Image_npcInResult.color = new Color32(255, 0, 0, 255);
-			break;
+				break;
 			case "yellow":
 				Image_npc.color = new Color32(255, 255, 0, 255);
 				Image_npcInResult.color = new Color32(255, 255, 0, 255);
-			break;
+				break;
 			case "blue":
 				Image_npc.color = new Color32(0, 0, 255, 255);
 				Image_npcInResult.color = new Color32(0, 0, 255, 255);
-			break;
+				break;
 			case "orange":
 				Image_npc.color = new Color32(255, 135, 35, 255);
 				Image_npcInResult.color = new Color32(255, 135, 35, 255);
-			break;
-			case "purple":
-				Image_npc.color = new Color32(150, 50, 220, 255);
-				Image_npcInResult.color = new Color32(150, 50, 220, 255);
-			break;
+				break;
 			case "green":
 				Image_npc.color = new Color32(50, 175, 55, 255);
 				Image_npcInResult.color = new Color32(50, 175, 55, 255);
-			break;
-			default:
-			break;
+				break;
+			case "purple":
+				Image_npc.color = new Color32(150, 50, 220, 255);
+				Image_npcInResult.color = new Color32(150, 50, 220, 255);
+				break;
 		}
 	}
 
@@ -174,25 +287,59 @@ public class ColorMode : MonoBehaviour {
 		mixingColorResult.SetActive(true);
 		print(colorResult);
 		changeColor(colorResult);
+
 		switch (colorResult) {
+			case "red":
+				for (int i = 0; i < operCount; i++) {
+					if (operColorRanList[i] == "red") {
+						isPair = true;
+						Image_operInResult.sprite = redOperArr[quesOperList[i]];
+					}
+				}
+				break;
+			case "yellow":
+				for (int i = 0; i < operCount; i++) {
+					if (operColorRanList[i] == "yellow") {
+						isPair = true;
+						Image_operInResult.sprite = yellowOperArr[quesOperList[i]];
+					}
+				}
+				break;
+			case "blue":
+				for (int i = 0; i < operCount; i++) {
+					if (operColorRanList[i] == "blue") {
+						isPair = true;
+						Image_operInResult.sprite = blueOperArr[quesOperList[i]];
+					}
+				}
+				break;
 			case "orange":
-				if (operatorColorList[0] == "orange")
-					isPair = true;
-				else
-					isPair = false;
-			break;
-			case "purple":
-				if (operatorColorList[0] == "purple")
-					isPair = true;
-				else
-					isPair = false;
-			break;
+				for (int i = 0; i < operCount; i++) {
+					if (operColorRanList[i] == "orange") {
+						isPair = true;
+						Image_operInResult.sprite = orangeOperArr[quesOperList[i]];
+					}
+				}
+				break;
 			case "green":
-				if (operatorColorList[0] == "green")
-					isPair = true;
-				else
-					isPair = false;
-			break;
+				for (int i = 0; i < operCount; i++) {
+					if (operColorRanList[i] == "green") {
+						isPair = true;
+						Image_operInResult.sprite = greenOperArr[quesOperList[i]];
+					}
+				}
+				break;
+			case "purple":
+				for (int i = 0; i < operCount; i++) {
+					if (operColorRanList[i] == "purple") {
+						isPair = true;
+						Image_operInResult.sprite = purpleOperArr[quesOperList[i]];
+					}
+				}
+				break;
+			default:
+				isPair = false;
+				break;
 		}
 
 		if (isPair) {
