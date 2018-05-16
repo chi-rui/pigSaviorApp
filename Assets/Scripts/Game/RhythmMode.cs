@@ -72,7 +72,7 @@ public class RhythmMode : MonoBehaviour {
 	}
 
 	void generateQuesForRhythmMode (int max, List<string> template) {
-		quesObj = MathDatas.getQuestion(max, template[Random.Range(0, template.Count)]);
+		quesObj = MathDatas.getQuestion(1, max, template[Random.Range(0, template.Count)]);
 		for (int i = 0; i < quesObj.question.Count; i++)
 			Text_question.text += quesObj.question[i];
 	}
