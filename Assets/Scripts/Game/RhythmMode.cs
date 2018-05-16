@@ -47,7 +47,7 @@ public class RhythmMode : MonoBehaviour {
 		generateHitBars(rankTimes);
 
 		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
-		generateQuestion(maxNum, quesTemplate);
+		generateQuestion(1, maxNum, quesTemplate);
 	}
 	
 	// Update is called once per frame
@@ -78,9 +78,8 @@ public class RhythmMode : MonoBehaviour {
 		}
 	}
 
-	void generateQuestion (int max, List<string> template) {
-		// generate question and get operator counts
-		quesObj = MathDatas.getQuestion(max, template[UnityEngine.Random.Range(0, template.Count)]);
+	void generateQuesForRhythmMode (int max, List<string> template) {
+		quesObj = MathDatas.getQuestion(1, max, template[Random.Range(0, template.Count)]);
 		for (int i = 0; i < quesObj.question.Count; i++)
 			testQues += quesObj.question[i];
 		print(testQues);

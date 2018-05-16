@@ -11,7 +11,7 @@ public class BossEvents1 : MonoBehaviour {
 	private QuesObj question;
 
 	// question setting
-	public int maxNum;
+	public int maxNum, miniNum;
 	public List<string> templates;
 
 	// game setting
@@ -52,9 +52,7 @@ public class BossEvents1 : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(Input.GetMouseButton(0) && !isClicked){
-			isClicked = true;
-		}
+
 	}
 
 	private IEnumerator Animation_BossAppear(){
@@ -62,22 +60,18 @@ public class BossEvents1 : MonoBehaviour {
 		yield return new WaitForSeconds(3f);
 
 		// next state.
-		StartCoroutine(createQuestionShield(maxNum, templates));
+		StartCoroutine(createQuestionShield(miniNum, maxNum, templates));
 	}
 
-	private IEnumerator createQuestionShield(int max, List<string> t){
+	private IEnumerator createQuestionShield(int mini, int max, List<string> t){
 		yield return new WaitForSeconds(1f);
 		// create shield for boss.
 		questionShield.SetActive(true);
-		// while(questionShield.GetComponent<Image>().fillAmount < 1){
-		// 	questionShield.GetComponent<Image>().fillAmount += 0.01f;
-		// 	questionShield.transform.GetChild(0).GetChild(0).GetComponent<Slider>().value =1;//+= 0.01f;
-		// 	yield return 0;
-		// }
 		GameObject.Find("Image_Boss").GetComponent<Animator>().Play("Boss02_createShield");
+		questionShield.transform.GetChild(0).gameObject.GetComponent<Text>().text = "";
 		yield return new WaitForSeconds(2f);
 		// get a question object for the shield.
-		question = MathDatas.getQuestion(max, t[UnityEngine.Random.Range(0, t.Count)]);
+		question = MathDatas.getQuestion(mini, max, t[UnityEngine.Random.Range(0, t.Count)]);
 		for(int i = 0; i < question.question.Count; i++ ){
 			questionShield.transform.GetChild(0).gameObject.GetComponent<Text>().text += question.question[i];
 		}
@@ -101,6 +95,8 @@ public class BossEvents1 : MonoBehaviour {
 	private IEnumerator selectOperator(){
 		Image oper = GameObject.Find("Image_operator").GetComponent<Image>();
 		char selected = '+';
+		isClicked = false;
+		StartCoroutine(detectClick());
 		while(!isClicked){
 			yield return new WaitForSeconds(1f);
 			if(isClicked)
@@ -127,12 +123,21 @@ public class BossEvents1 : MonoBehaviour {
 		if(selected == question.answer[0].operators){
 			StartCoroutine(calculate(selected));
 			// initial.
-			GameObject.Find("Image_operator").GetComponent<Image>().sprite = Resources.Load<Sprite>("plus") as Sprite;
+			oper.sprite = Resources.Load<Sprite>("plus") as Sprite;
 		}else{
 			print("no selected operator");
 			isClicked = false;
 			// play false anim, and restart selectOperator. 
 			StartCoroutine(selectOperator());			
+		}
+	}
+
+	private IEnumerator detectClick(){
+		while(!isClicked){
+			yield return 0;
+			if(Input.GetMouseButtonDown(0)){
+				isClicked = true;
+			}
 		}
 	}
 
@@ -234,7 +239,7 @@ public class BossEvents1 : MonoBehaviour {
 		yield return new WaitForSeconds(1f);
 		GameObject.Find("Image_Boss").GetComponent<Animator>().Play("Boss03_shieldBreak");
 		yield return new WaitForSeconds(2.5f);
-		initial();
+		// initial();
 		StartCoroutine(bossAttackable());
 	}
 
@@ -263,7 +268,7 @@ public class BossEvents1 : MonoBehaviour {
 			GameObject.Find("Image_Boss").GetComponent<Animator>().Play("Boss05_playerWin");
 		}else{
 			BossLife.SetActive(false);
-			StartCoroutine(createQuestionShield(maxNum, templates));
+			StartCoroutine(createQuestionShield(miniNum, maxNum, templates));
 		}
 	}
 
@@ -276,8 +281,8 @@ public class BossEvents1 : MonoBehaviour {
 	}
 
 	private void initial(){
-		questionShield.transform.GetChild(0).gameObject.GetComponent<Text>().text = "";
-		isClicked = false;
+		// questionShield.transform.GetChild(0).gameObject.GetComponent<Text>().text = "";
+		// isClicked = false;
 		operIndex = -1;
 	}
 
