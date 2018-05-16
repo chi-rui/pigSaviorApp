@@ -4,14 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-// , IPointerClickHandler
 // only onion npc problem
 public class RhythmMode : MonoBehaviour {
 	public GameObject pointer, characterAction, challengeFailedPanel, chooseOperatorPanel, calculatePanel, hitResult, remainingText, hitResultText, clickAnyPositionImage;
 	public GameObject[] quesNumTextArr, quesOperTextArr, quesNumTextChooseArr, quesOperBtnChooseArr;
 	public Animator Anim_characterAction, Anim_characterActionPerfect, Anim_onion, Anim_onionPerfect;
 	public Sprite Sprite_characterGrab;
-	public Sprite[] operBtnsArr;
 	public Image Image_characterAction;
 	public Image[] hitbarArr;
 	public Text Text_remainCounts, Text_hitResult, Text_userans, Text_partQues;
@@ -20,11 +18,11 @@ public class RhythmMode : MonoBehaviour {
 	public float speed;
 	
 	private Vector3 pos_L, pos_R;
-	private int remainCounts, rankTimes, operCount;
+	private int remainCounts, rankTimes, operCount, operChooseBtnIndex, userCalculateCount;
 	private List<int> tmpSortingList = new List<int>();
 	private List<int> hitBarsIndexList = new List<int>();
-	private List<int> quesOperList = new List<int>();
-	private List<string> partQuesList = new List<string>();
+	private List<string> quesOperList = new List<string>();
+	private List<int> userAnsList = new List<int>();
 	private bool isRhythmStart, isPerfectHit, isChallengeFailed;
 	
 	// setting question
@@ -109,34 +107,10 @@ public class RhythmMode : MonoBehaviour {
 				break;
 		}
 
-		// store question without brackets in a list
-		for (int i = 0; i < quesObj.question.Count; i++) {
-			if (quesObj.question[i] != "(" && quesObj.question[i] != ")")
-				partQuesList.Add(quesObj.question[i]);
-		}
-		// separate question without brackets in several parts
-		for (int i = 0; i < partQuesList.Count; i++) {
-			if (partQuesList[i] == "+" || partQuesList[i] == "-" || partQuesList[i] == "x" || partQuesList[i] == "÷")
-				partQuesList.Add(partQuesList[i-1]+partQuesList[i]+partQuesList[i+1]);
-		}
-
 		// delete operators and brackets in question
 		for (int i = 0; i < quesObj.question.Count; i++) {
 			if (quesObj.question[i] == "+" || quesObj.question[i] == "-" || quesObj.question[i] == "x" || quesObj.question[i] == "÷") {
-				switch (quesObj.question[i]) {
-					case "+":
-						quesOperList.Add(0);
-						break;
-					case "-":
-						quesOperList.Add(1);
-						break;
-					case "x":
-						quesOperList.Add(2);
-						break;
-					case "÷":
-						quesOperList.Add(3);
-						break;
-				}
+				quesOperList.Add(quesObj.question[i]);
 				quesObj.question.Remove(quesObj.question[i]);
 			}
 			if (quesObj.question[i] == "(") {
@@ -154,13 +128,11 @@ public class RhythmMode : MonoBehaviour {
 				quesObj.question.Remove(quesObj.question[i]);
 		}
 
-		// for (int i = 0; i < partQuesList.Count; i++) 
-		// 	print(partQuesList[i]);
-		// for (int i = (partQuesList.Count-operCount); i < partQuesList.Count; i++)
-		// 	print(partQuesList[i]);
 		// print(quesObj.question.Count);
 		// for (int i = 0; i < quesObj.question.Count; i++)
 		// 	print(quesObj.question[i]);
+		// for (int i = 0; i < quesOperList.Count; i++)
+		// 	print(quesOperList[i]);
 
 		// show question number text
 		for (int i = 0; i < quesObj.question.Count; i++) {
@@ -170,21 +142,21 @@ public class RhythmMode : MonoBehaviour {
 
 		// set operator symbol
 		for (int i = 0; i < operCount; i++) {
+			Text_quesOperArr[i].text = quesOperList[i];
 			switch (quesOperList[i]) {
-				case 0:
-					Text_quesOperArr[i].text = "+";
+				case "+":
+					Button_quesOperChooseArr[i].GetComponent<Image>().sprite = Resources.Load<Sprite>("plusButton") as Sprite;
 					break;
-				case 1:
-					Text_quesOperArr[i].text = "-";
+				case "-":
+					Button_quesOperChooseArr[i].GetComponent<Image>().sprite = Resources.Load<Sprite>("minusButton") as Sprite;
 					break;
-				case 2:
-					Text_quesOperArr[i].text = "x";
+				case "x":
+					Button_quesOperChooseArr[i].GetComponent<Image>().sprite = Resources.Load<Sprite>("multipledButton") as Sprite;
 					break;
-				case 3:
-					Text_quesOperArr[i].text = "÷";
+				case "÷":
+					Button_quesOperChooseArr[i].GetComponent<Image>().sprite = Resources.Load<Sprite>("dividedButton") as Sprite;
 					break;
 			}
-			Button_quesOperChooseArr[i].GetComponent<Image>().sprite = operBtnsArr[quesOperList[i]];
 		}
 	}
 
@@ -309,6 +281,26 @@ public class RhythmMode : MonoBehaviour {
 		generateHitBars(rankTimes);
 	}
 
+	// choose operator panel
+	public void clickOperBtn (int num) {
+		operChooseBtnIndex = num;
+		calculatePanel.SetActive(true);
+		Text_partQues.text = removeQuesBracket(Text_quesNumChooseArr[num].text) + quesOperList[num] + removeQuesBracket(Text_quesNumChooseArr[num+1].text);
+	}
+
+	string removeQuesBracket (string str) {
+		string str2 = "";
+		if (str.Contains("(")) {
+			str2 = str.Replace("(", "");
+		} else if (str.Contains(")")) {
+			str2 = str.Replace(")", "");
+		} else {
+			str2 = str;
+		}
+		return str2;
+	}
+
+	// calculate panel and check answer
 	public void clickNumBtn (int num) {
 		if (Text_userans.text == "ANS") {
 			Text_userans.text = "";
@@ -322,9 +314,48 @@ public class RhythmMode : MonoBehaviour {
 		Text_userans.text = "";
 	}
 
-	public void clickOperBtn (int num) {
-		num += (partQuesList.Count-operCount);
-		calculatePanel.SetActive(true);
-		Text_partQues.text = partQuesList[num];
+	public void clickPreviousStep () {
+		calculatePanel.SetActive(false);
+	}
+
+	public void clickFinishCalculate () {
+		userCalculateCount++;
+		
+		string tmpAns = "";
+		if (Text_userans.text == null || Text_userans.text == "ANS") {
+			userAnsList.Add(0);
+			tmpAns = "0";
+		} else {
+			userAnsList.Add(int.Parse(Text_userans.text));
+			tmpAns = Text_userans.text;
+		}
+		for (int i = 0; i < userAnsList.Count; i++)
+			print(userAnsList[i]);
+
+		if (userCalculateCount < operCount) {
+			quesOperBtnChooseArr[operChooseBtnIndex].SetActive(false);
+			if (operChooseBtnIndex == 2) {
+				quesNumTextChooseArr[operChooseBtnIndex+1].SetActive(false);
+				Text_quesNumChooseArr[operChooseBtnIndex].text = tmpAns;
+			} else {
+				quesNumTextChooseArr[operChooseBtnIndex].SetActive(false);
+				Text_quesNumChooseArr[operChooseBtnIndex+1].text = tmpAns;
+			}
+			clickClearAnsNum();
+			Text_userans.text = "ANS";
+			calculatePanel.SetActive(false);
+		} else {
+			print("計算完成！");
+			checkUserAnswer();
+		}
+	}
+
+	public void checkUserAnswer () {
+		// for (int i = 0; i < quesObj.answer.Count; i++)
+		// 	print(quesObj.answer[i].partAns);
+		if (userAnsList[userAnsList.Count-1] == quesObj.answer[quesObj.answer.Count-1].partAns)
+			print("答案正確");
+		else
+			print("答案錯誤");
 	}
 }

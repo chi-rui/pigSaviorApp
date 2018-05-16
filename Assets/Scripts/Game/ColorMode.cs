@@ -12,17 +12,18 @@ public class ColorMode : MonoBehaviour {
 	public Image Image_npc, Image_mixColorResultHint, Image_npcInResult, Image_operInResult;
 	public Button[] Button_colorPaintArr;
 	public Button Button_waterGun, Button_finishColorNpc;
-	public Text Text_warning;
+	public Text Text_warning, Text_partQues, Text_userans;
 	public Text[] Text_quesNumArr;
 	public string npc;
 
-	private int colorMixCount, operCount;
+	private int colorMixCount, operCount, userCalculateCount, operChooseColorIndex;
 	private bool isPair, isMixColorFailed;
-	private string colorResult;
+	private string colorResult, operTmpStr;
 	private List<string> chooseColorList = new List<string>();
 	private List<string> colorList = new List<string> {"red", "yellow", "blue", "orange", "green", "purple"};
 	private List<string> operColorRanList = new List<string>();
 	private List<int> quesOperList = new List<int>();
+	private List<int> userAnsList = new List<int>();
 
 	// setting question
 	public int maxNum;
@@ -103,6 +104,8 @@ public class ColorMode : MonoBehaviour {
 			} else if (quesObj.question[i] == ")") {
 				quesObj.question[i-1] = quesObj.question[i-1] + quesObj.question[i];
 			}
+			// else {
+			// }
 		}
 		for (int i = 0; i < quesObj.question.Count; i++) {
 			if (quesObj.question[i] == "(")
@@ -294,6 +297,7 @@ public class ColorMode : MonoBehaviour {
 					if (operColorRanList[i] == "red") {
 						isPair = true;
 						Image_operInResult.sprite = redOperArr[quesOperList[i]];
+						operChooseColorIndex = i;
 					}
 				}
 				break;
@@ -302,6 +306,7 @@ public class ColorMode : MonoBehaviour {
 					if (operColorRanList[i] == "yellow") {
 						isPair = true;
 						Image_operInResult.sprite = yellowOperArr[quesOperList[i]];
+						operChooseColorIndex = i;
 					}
 				}
 				break;
@@ -310,6 +315,7 @@ public class ColorMode : MonoBehaviour {
 					if (operColorRanList[i] == "blue") {
 						isPair = true;
 						Image_operInResult.sprite = blueOperArr[quesOperList[i]];
+						operChooseColorIndex = i;
 					}
 				}
 				break;
@@ -318,6 +324,7 @@ public class ColorMode : MonoBehaviour {
 					if (operColorRanList[i] == "orange") {
 						isPair = true;
 						Image_operInResult.sprite = orangeOperArr[quesOperList[i]];
+						operChooseColorIndex = i;
 					}
 				}
 				break;
@@ -326,6 +333,7 @@ public class ColorMode : MonoBehaviour {
 					if (operColorRanList[i] == "green") {
 						isPair = true;
 						Image_operInResult.sprite = greenOperArr[quesOperList[i]];
+						operChooseColorIndex = i;
 					}
 				}
 				break;
@@ -334,6 +342,7 @@ public class ColorMode : MonoBehaviour {
 					if (operColorRanList[i] == "purple") {
 						isPair = true;
 						Image_operInResult.sprite = purpleOperArr[quesOperList[i]];
+						operChooseColorIndex = i;
 					}
 				}
 				break;
@@ -346,6 +355,7 @@ public class ColorMode : MonoBehaviour {
 			Image_mixColorResultHint.sprite = mixColorResultHintArr[0];
 			Anim_npcMixingColor.Play(npc + " Colored Success");
 			Anim_operatorPairResult.Play("Operator Color Pair Success");
+			StartCoroutine(showColorModeFeedback(1.5f));
 		} else {
 			Image_mixColorResultHint.sprite = mixColorResultHintArr[1];
 			if (colorResult == null)
@@ -354,8 +364,8 @@ public class ColorMode : MonoBehaviour {
 				Anim_npcMixingColor.Play(npc + " Colored Failed");
 			Anim_operatorPairResult.Play("Operator Color Pair Failed");
 			isMixColorFailed = true;
+			StartCoroutine(showColorModeFeedback(0.6f));
 		}
-		StartCoroutine(showColorModeFeedback(1.5f));
 	}
 
 	IEnumerator showColorModeFeedback (float time) {
@@ -363,9 +373,40 @@ public class ColorMode : MonoBehaviour {
 
 		if (isPair) {
 			mixingColorResult.SetActive(false);
+			showPartQuestion();
 			calculatePanel.SetActive(true);
 		} else
 			clickAnyPositionImage.SetActive(true);
+	}
+
+	void showPartQuestion () {
+		switch (quesOperList[operChooseColorIndex]) {
+			case 0:
+				operTmpStr = "+";
+				break;
+			case 1:
+				operTmpStr = "-";
+				break;
+			case 2:
+				operTmpStr = "x";
+				break;
+			case 3:
+				operTmpStr = "÷";
+				break;
+		}
+		Text_partQues.text = removeQuesBracket(Text_quesNumArr[operChooseColorIndex].text) + operTmpStr + removeQuesBracket(Text_quesNumArr[operChooseColorIndex+1].text);
+	}
+
+	string removeQuesBracket (string str) {
+		string str2 = "";
+		if (str.Contains("(")) {
+			str2 = str.Replace("(", "");
+		} else if (str.Contains(")")) {
+			str2 = str.Replace(")", "");
+		} else {
+			str2 = str;
+		}
+		return str2;
 	}
 
 	void restartColorMode () {
@@ -374,9 +415,65 @@ public class ColorMode : MonoBehaviour {
 		colorMixCount = 0;
 		chooseColorList.Clear();
 		for (int i = 0; i < 2; i++)
-			colorChooseMemberArr[i].sprite = colorArr[3];
+			colorChooseMemberArr[i].sprite = Resources.Load<Sprite>("transparent") as Sprite;
 		Image_npc.color = new Color32(255, 255, 255, 255);
 		Image_npcInResult.color = new Color32(255, 255, 255, 255);
 		Anim_npcColored.Play(npc + " Original");
+	}
+
+	public void clickNumBtn (int num) {
+		if (Text_userans.text == "ANS") {
+			Text_userans.text = "";
+			Text_userans.text += num.ToString();
+		} else {
+			Text_userans.text += num.ToString();
+		}
+	}
+
+	public void clickClearAnsNum () {
+		Text_userans.text = "";
+	}
+
+	public void clickFinishCalculate () {
+		userCalculateCount++;
+		
+		string tmpAns = "";
+		if (Text_userans.text == null || Text_userans.text == "ANS") {
+			userAnsList.Add(0);
+			tmpAns = "0";
+		} else {
+			userAnsList.Add(int.Parse(Text_userans.text));
+			tmpAns = Text_userans.text;
+		}
+		for (int i = 0; i < userAnsList.Count; i++)
+			print(userAnsList[i]);
+		
+		if (userCalculateCount < operCount) {
+			restartColorMode();
+			quesOperImageArr[operChooseColorIndex].SetActive(false);
+			if (operChooseColorIndex == 2) {
+				quesNumTextArr[operChooseColorIndex+1].SetActive(false);
+				Text_quesNumArr[operChooseColorIndex].text = tmpAns;
+			} else {
+				quesNumTextArr[operChooseColorIndex].SetActive(false);
+				Text_quesNumArr[operChooseColorIndex+1].text = tmpAns;
+			}
+			showPartQuestion();
+			clickClearAnsNum();
+			Text_userans.text = "ANS";
+			calculatePanel.SetActive(false);
+		} else {
+			print("計算完成！");
+			checkUserAnswer();
+		}
+	}
+
+	public void checkUserAnswer () {
+		// for (int i = 0; i < quesObj.answer.Count; i++)
+		// 	print(quesObj.answer[i].partAns);
+		if (userAnsList[userAnsList.Count-1] == quesObj.answer[quesObj.answer.Count-1].partAns)
+			print("答案正確");
+		else
+			print("答案錯誤");
 	}
 }

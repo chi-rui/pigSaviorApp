@@ -7,21 +7,22 @@ public class TypeMode : MonoBehaviour {
 	public GameObject warningPanel, showTeamBeforeFighting, fightingPanel, fightingResult, calculatePanel, clickAnyPositionImage;
 	public GameObject[] operTeamFieldImageArr, chooseOperMemberBtnArr, operTeamFailedImageArr, quesNumTextArr, quesOperImageArr;
 	public Animator Anim_characterAction, Anim_npcFightingType, Anim_npcFightingResult, Anim_operFightingResult;
-	public Sprite transparentSprite;
 	public Sprite[] fightResultHintArr, windOperArr, fireOperArr, waterOperArr, groundOperArr;
 	public Image Image_nextFightOper, Image_fightResultHint, Image_operFightingResult;
 	public Image[] Image_operTeamMemberArr, Image_chooseOperMemberArr, Image_quesOperArr;
-	public Text Text_warning, Text_userans;
+	public Text Text_warning, Text_userans, Text_partQues;
 	public Text[] Text_quesNumArr;
 	public string npc;
 
 	private int operCount, operChooseMemberCount, operFailedCount;
 	private bool isWin, isDraw, isAttackFailed;
-	private string chooseNpcType;
+	private string chooseNpcType, operTmpStr;
 	private List<string> operChooseTypeList = new List<string>();
 	private List<int> quesOperList = new List<int>();
 	private List<string> typeList = new List<string> {"wind", "fire", "water", "ground"};
 	private List<string> typeRanList = new List<string>();
+	private List<int> operChooseBtnIndexList = new List<int>();
+	private List<int> userAnsList = new List<int>();
 
 	// setting question
 	public int maxNum;
@@ -161,6 +162,7 @@ public class TypeMode : MonoBehaviour {
 			for (int i = 0; i < operCount; i++)
 				Image_operTeamMemberArr[operChooseMemberCount].sprite = Image_chooseOperMemberArr[num].sprite;
 			operChooseTypeList.Add(typeRanList[num]);
+			operChooseBtnIndexList.Add(num);
 		} else {
 			warningPanel.SetActive(true);
 			Text_warning.text = "你指定的運算符號數目已超過"+operCount+"個了喔！";
@@ -172,10 +174,12 @@ public class TypeMode : MonoBehaviour {
 		operChooseMemberCount = 0;
 		operChooseTypeList.Clear();
 		for (int i = 0; i < operCount; i++)
-			Image_operTeamMemberArr[i].sprite = transparentSprite;
+			Image_operTeamMemberArr[i].sprite = Resources.Load<Sprite>("transparent") as Sprite;
 	}
 
 	public void clickFightingStart () {
+		// for (int i = 0; i < operChooseBtnIndexList.Count; i++)
+		// 	print(operChooseBtnIndexList[i]);
 		for (int i = 0; i < operChooseTypeList.Count; i++)
 			print(operChooseTypeList[i]);
 		if (operChooseMemberCount == 0) {
@@ -320,6 +324,7 @@ public class TypeMode : MonoBehaviour {
 						operTeamFailedImageArr[i].SetActive(false);
 				}
 				fightingResult.SetActive(false);
+				showPartQuestion();
 				calculatePanel.SetActive(true);
 				break;
 			case "lose":
@@ -327,6 +332,37 @@ public class TypeMode : MonoBehaviour {
 				clickAnyPositionImage.SetActive(true);
 				break;
 		}
+	}
+
+	void showPartQuestion () {
+		switch (quesOperList[operChooseBtnIndexList[0]]) {
+			case 0:
+				operTmpStr = "+";
+				break;
+			case 1:
+				operTmpStr = "-";
+				break;
+			case 2:
+				operTmpStr = "x";
+				break;
+			case 3:
+				operTmpStr = "÷";
+				break;
+		}
+		// Text_partQues.text = Text_quesNumArr[operChooseBtnIndexList[0]].text + operTmpStr + Text_quesNumArr[operChooseBtnIndexList[0]+1].text;
+		Text_partQues.text = removeQuesBracket(Text_quesNumArr[operChooseBtnIndexList[0]].text) + operTmpStr + removeQuesBracket(Text_quesNumArr[operChooseBtnIndexList[0]+1].text);
+	}
+
+	string removeQuesBracket (string str) {
+		string str2 = "";
+		if (str.Contains("(")) {
+			str2 = str.Replace("(", "");
+		} else if (str.Contains(")")) {
+			str2 = str.Replace(")", "");
+		} else {
+			str2 = str;
+		}
+		return str2;
 	}
 
 	void restartTypeModeFighting () {
@@ -351,8 +387,19 @@ public class TypeMode : MonoBehaviour {
 	}
 
 	public void clickFinishCalculate () {
-		calculatePanel.SetActive(false);
 		operFailedCount++;
+
+		string tmpAns = "";
+		if (Text_userans.text == null || Text_userans.text == "ANS") {
+			userAnsList.Add(0);
+			tmpAns = "0";
+		} else {
+			userAnsList.Add(int.Parse(Text_userans.text));
+			tmpAns = Text_userans.text;
+		}
+		for (int i = 0; i < userAnsList.Count; i++)
+			print(userAnsList[i]);
+
 		for (int i = 0; i < operFailedCount; i++)
 			operTeamFailedImageArr[i].SetActive(true);
 		for (int i = 0; i < operCount; i++)
@@ -364,11 +411,33 @@ public class TypeMode : MonoBehaviour {
 				operChooseTypeList.Remove(operChooseTypeList[0]);
 				print(operChooseTypeList[0]);
 			}
+			quesOperImageArr[operChooseBtnIndexList[0]].SetActive(false);
+			if (operChooseBtnIndexList[0] == 2) {
+				quesNumTextArr[operChooseBtnIndexList[0]+1].SetActive(false);
+				Text_quesNumArr[operChooseBtnIndexList[0]].text = tmpAns;
+			} else {
+				quesNumTextArr[operChooseBtnIndexList[0]].SetActive(false);
+				Text_quesNumArr[operChooseBtnIndexList[0]+1].text = tmpAns;
+			}
+			operChooseBtnIndexList.Remove(operChooseBtnIndexList[0]);
+			showPartQuestion();
+			clickClearAnsNum();
+			Text_userans.text = "ANS";
+			calculatePanel.SetActive(false);
 		} else {
-			print("攻擊完成！");
+			print("計算完成！");
+			checkUserAnswer();
 		}
 		// print(operFailedCount);
 		// print(operMemberCount);
 	}
 
+	public void checkUserAnswer () {
+		// for (int i = 0; i < quesObj.answer.Count; i++)
+		// 	print(quesObj.answer[i].partAns);
+		if (userAnsList[userAnsList.Count-1] == quesObj.answer[quesObj.answer.Count-1].partAns)
+			print("答案正確");
+		else
+			print("答案錯誤");
+	}
 }
