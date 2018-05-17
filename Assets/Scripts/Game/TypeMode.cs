@@ -25,7 +25,7 @@ public class TypeMode : MonoBehaviour {
 	private List<int> userAnsList = new List<int>();
 
 	// setting question
-	public int maxNum;
+	public int minNum, maxNum;
 	public List<string> quesTemplate;
 	private MathDatasControl MathDatas;
 	private QuesObj quesObj;
@@ -38,7 +38,7 @@ public class TypeMode : MonoBehaviour {
 		Anim_characterAction.Play("character game action_fighting");
 
 		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
-		generateQuestion(maxNum, quesTemplate);
+		generateQuestion(minNum, maxNum, quesTemplate);
 		
 		for (int i = 0; i < operCount; i++) {
 			operTeamFieldImageArr[i].SetActive(true);
@@ -57,9 +57,9 @@ public class TypeMode : MonoBehaviour {
 		}
 	}
 
-	void generateQuestion (int max, List<string> template) {
+	void generateQuestion (int min, int max, List<string> template) {
 		// generate question and get operator counts
-		quesObj = MathDatas.getQuestion(max, template[UnityEngine.Random.Range(0, template.Count)]);
+		quesObj = MathDatas.getQuestion(min, max, template[UnityEngine.Random.Range(0, template.Count)]);
 		for (int i = 0; i < quesObj.question.Count; i++)
 			testQues += quesObj.question[i];
 		print(testQues);

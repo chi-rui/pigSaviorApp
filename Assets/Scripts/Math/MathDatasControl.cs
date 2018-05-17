@@ -8,7 +8,7 @@ public class MathDatasControl : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		// string t = "";
-		// QuesObj quesObj = getQuestion( 1, 200, "(AxB)x(CxD)");
+		// QuesObj quesObj = getQuestion( 1, 200, "AxBxC");
 		// for(int i = 0; i < quesObj.question.Count; i++ ){
 		// 	t += quesObj.question[i];
 		// }

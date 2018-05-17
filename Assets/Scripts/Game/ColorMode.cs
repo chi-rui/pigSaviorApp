@@ -26,7 +26,7 @@ public class ColorMode : MonoBehaviour {
 	private List<int> userAnsList = new List<int>();
 
 	// setting question
-	public int maxNum;
+	public int minNum, maxNum;
 	public List<string> quesTemplate;
 	private MathDatasControl MathDatas;
 	private QuesObj quesObj;
@@ -41,7 +41,7 @@ public class ColorMode : MonoBehaviour {
 		isMixColorFailed = false;
 
 		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
-		generateQuestion(maxNum, quesTemplate);
+		generateQuestion(minNum, maxNum, quesTemplate);
 	}
 	
 	// Update is called once per frame
@@ -55,9 +55,9 @@ public class ColorMode : MonoBehaviour {
 		}
 	}
 
-	void generateQuestion (int max, List<string> template) {
+	void generateQuestion (int min, int max, List<string> template) {
 		// generate question and get operator counts
-		quesObj = MathDatas.getQuestion(max, template[UnityEngine.Random.Range(0, template.Count)]);
+		quesObj = MathDatas.getQuestion(min, max, template[UnityEngine.Random.Range(0, template.Count)]);
 		for (int i = 0; i < quesObj.question.Count; i++)
 			testQues += quesObj.question[i];
 		print(testQues);
