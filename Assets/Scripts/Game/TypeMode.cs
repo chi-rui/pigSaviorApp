@@ -13,7 +13,7 @@ public class TypeMode : MonoBehaviour {
 	public string npc;
 
 	private int operCount, operChooseMemberCount, operFailedCount;
-	private bool isWin, isDraw, isAttackFailed;
+	private bool isWin, isDraw, isAttackFailed, isSpecialCalculate;
 	private string chooseNpcType, operTmpStr;
 	private List<string> operChooseTypeList = new List<string>();
 	private List<int> quesOperList = new List<int>();
@@ -125,7 +125,7 @@ public class TypeMode : MonoBehaviour {
 			quesNumTextArr[i].GetComponent<Text>().text = quesObj.question[i];
 
 		// unrepeat random four types
-		while (typeRanList.Count < 4) {
+		while (typeRanList.Count < operCount) {
 			int index = Random.Range(0, typeList.Count);
 			if (!typeRanList.Contains(typeList[index])) {
 				typeRanList.Add(typeList[index]);
@@ -347,7 +347,19 @@ public class TypeMode : MonoBehaviour {
 				operTmpStr = "÷";
 				break;
 		}
-		Text_partQues.text = removeQuesBracket(quesNumTextArr[operChooseBtnIndexList[0]].GetComponent<Text>().text) + operTmpStr + removeQuesBracket(quesNumTextArr[operChooseBtnIndexList[0]+1].GetComponent<Text>().text);
+		string tmp1 = "", tmp2 = "";
+		if (quesNumTextArr[operChooseBtnIndexList[0]].GetComponent<Text>().text == "") {
+			tmp1 = quesNumTextArr[operChooseBtnIndexList[0]-1].GetComponent<Text>().text;
+			tmp2 = quesNumTextArr[operChooseBtnIndexList[0]+1].GetComponent<Text>().text;
+		} else if (quesNumTextArr[operChooseBtnIndexList[0]+1].GetComponent<Text>().text == "") {
+			tmp1 = quesNumTextArr[operChooseBtnIndexList[0]].GetComponent<Text>().text;
+			tmp2 = quesNumTextArr[operChooseBtnIndexList[0]+2].GetComponent<Text>().text;
+			isSpecialCalculate = true;
+		} else {
+			tmp1 = quesNumTextArr[operChooseBtnIndexList[0]].GetComponent<Text>().text;
+			tmp2 = quesNumTextArr[operChooseBtnIndexList[0]+1].GetComponent<Text>().text;
+		}
+		Text_partQues.text = removeQuesBracket(tmp1) + operTmpStr + removeQuesBracket(tmp2);
 	}
 
 	string removeQuesBracket (string str) {
@@ -410,14 +422,15 @@ public class TypeMode : MonoBehaviour {
 			}
 			quesOperImageArr[operChooseBtnIndexList[0]].SetActive(false);
 			if (operChooseBtnIndexList[0] == 2) {
-				quesNumTextArr[operChooseBtnIndexList[0]+1].SetActive(false);
+				quesNumTextArr[operChooseBtnIndexList[0]+1].GetComponent<Text>().text = null;
 				quesNumTextArr[operChooseBtnIndexList[0]].GetComponent<Text>().text = tmpAns;
 			} else {
-				quesNumTextArr[operChooseBtnIndexList[0]].SetActive(false);
+				if (isSpecialCalculate)
+					quesNumTextArr[operChooseBtnIndexList[0]+2].GetComponent<Text>().text = null;
+				quesNumTextArr[operChooseBtnIndexList[0]].GetComponent<Text>().text = null;
 				quesNumTextArr[operChooseBtnIndexList[0]+1].GetComponent<Text>().text = tmpAns;
 			}
 			operChooseBtnIndexList.Remove(operChooseBtnIndexList[0]);
-			showPartQuestion();
 			clickClearAnsNum();
 			Text_userans.text = "ANS";
 			calculatePanel.SetActive(false);
