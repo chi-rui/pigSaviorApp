@@ -8,14 +8,12 @@ using UnityEngine.EventSystems;
 public class RhythmMode : MonoBehaviour {
 	public GameObject pointer, characterAction, challengeFailedPanel, chooseOperatorPanel, calculatePanel, hitResult, remainingText, hitResultText, clickAnyPositionImage;
 	public GameObject[] quesNumTextArr, quesOperTextArr, quesNumTextChooseArr, quesOperBtnChooseArr;
-	public Animator Anim_characterAction, Anim_characterActionPerfect, Anim_onion, Anim_onionPerfect;
-	public Sprite Sprite_characterGrab;
-	public Image Image_characterAction;
+	public Animator Anim_characterPerfect, Anim_npcPerfect;
+	public Sprite Sprite_characterAction; //if need?
 	public Image[] hitbarArr;
-	public Text Text_remainCounts, Text_hitResult, Text_userans, Text_partQues;
-	public Text[] Text_quesNumArr, Text_quesOperArr, Text_quesNumChooseArr;
-	public Button[] Button_quesOperChooseArr;
+	public Text Text_remainCounts, Text_userans, Text_partQues;
 	public float speed;
+	public string characterPerfectAnimStr, npcPerfectAnimStr;
 	
 	private Vector3 pos_L, pos_R;
 	private int remainCounts, rankTimes, operCount, operChooseBtnIndex, userCalculateCount;
@@ -59,7 +57,7 @@ public class RhythmMode : MonoBehaviour {
 
 			// set roles' action
 			characterAction.transform.position = new Vector3(characterAction.transform.position.x, 60, characterAction.transform.position.z);
-			Anim_characterAction.enabled = true;
+			characterAction.GetComponent<Animator>().enabled = true;
 
 			if (Input.GetMouseButtonDown(0)) {
 				if (isPerfectHit)
@@ -136,25 +134,25 @@ public class RhythmMode : MonoBehaviour {
 
 		// show question number text
 		for (int i = 0; i < quesObj.question.Count; i++) {
-			Text_quesNumArr[i].text = quesObj.question[i];
-			Text_quesNumChooseArr[i].text = quesObj.question[i];
+			quesNumTextArr[i].GetComponent<Text>().text = quesObj.question[i];
+			quesNumTextChooseArr[i].GetComponent<Text>().text = quesObj.question[i];
 		}
 
 		// set operator symbol
 		for (int i = 0; i < operCount; i++) {
-			Text_quesOperArr[i].text = quesOperList[i];
+			quesOperTextArr[i].GetComponent<Text>().text = quesOperList[i];
 			switch (quesOperList[i]) {
 				case "+":
-					Button_quesOperChooseArr[i].GetComponent<Image>().sprite = Resources.Load<Sprite>("plusButton") as Sprite;
+					quesOperBtnChooseArr[i].GetComponent<Button>().GetComponent<Image>().sprite = Resources.Load<Sprite>("plusButton") as Sprite;
 					break;
 				case "-":
-					Button_quesOperChooseArr[i].GetComponent<Image>().sprite = Resources.Load<Sprite>("minusButton") as Sprite;
+					quesOperBtnChooseArr[i].GetComponent<Button>().GetComponent<Image>().sprite = Resources.Load<Sprite>("minusButton") as Sprite;
 					break;
 				case "x":
-					Button_quesOperChooseArr[i].GetComponent<Image>().sprite = Resources.Load<Sprite>("multipledButton") as Sprite;
+					quesOperBtnChooseArr[i].GetComponent<Button>().GetComponent<Image>().sprite = Resources.Load<Sprite>("multipledButton") as Sprite;
 					break;
 				case "÷":
-					Button_quesOperChooseArr[i].GetComponent<Image>().sprite = Resources.Load<Sprite>("dividedButton") as Sprite;
+					quesOperBtnChooseArr[i].GetComponent<Button>().GetComponent<Image>().sprite = Resources.Load<Sprite>("dividedButton") as Sprite;
 					break;
 			}
 		}
@@ -203,22 +201,22 @@ public class RhythmMode : MonoBehaviour {
 		
 		// set roles' action
 		characterAction.transform.position = new Vector3(characterAction.transform.position.x, 40, characterAction.transform.position.z);
-		Anim_characterAction.enabled = false;
-		Image_characterAction.sprite = Sprite_characterGrab;
 
 		// show hint result and Perfect hit scenario
 		remainingText.SetActive(false);
 		hitResultText.SetActive(true);
 
 		if (isPerfectHit) {
-			Text_hitResult.text = "Perfect";
-			Anim_onion.enabled = false;
+			hitResultText.GetComponent<Text>().text = "Perfect";
 			hitResult.SetActive(true);
-			Anim_characterActionPerfect.Play("character game action_grab");
-			Anim_onionPerfect.Play("onion grabbed");
+			Anim_characterPerfect.Play(characterPerfectAnimStr);
+			Anim_npcPerfect.Play(npcPerfectAnimStr);
 		}
-		else
-			Text_hitResult.text = "Miss";
+		else {
+			hitResultText.GetComponent<Text>().text = "Miss";
+			characterAction.GetComponent<Animator>().enabled = false;
+			characterAction.GetComponent<Image>().sprite = Sprite_characterAction;
+		}
 
 		yield return new WaitForSeconds(time);
 
@@ -285,7 +283,7 @@ public class RhythmMode : MonoBehaviour {
 	public void clickOperBtn (int num) {
 		operChooseBtnIndex = num;
 		calculatePanel.SetActive(true);
-		Text_partQues.text = removeQuesBracket(Text_quesNumChooseArr[num].text) + quesOperList[num] + removeQuesBracket(Text_quesNumChooseArr[num+1].text);
+		Text_partQues.text = removeQuesBracket(quesNumTextChooseArr[num].GetComponent<Text>().text) + quesOperList[num] + removeQuesBracket(quesNumTextChooseArr[num+1].GetComponent<Text>().text);
 	}
 
 	string removeQuesBracket (string str) {
@@ -327,7 +325,7 @@ public class RhythmMode : MonoBehaviour {
 			tmpAns = "0";
 		} else {
 			userAnsList.Add(int.Parse(Text_userans.text));
-			tmpAns = Text_userans.text;
+			tmpAns = int.Parse(Text_userans.text).ToString();
 		}
 		for (int i = 0; i < userAnsList.Count; i++)
 			print(userAnsList[i]);
@@ -336,10 +334,10 @@ public class RhythmMode : MonoBehaviour {
 			quesOperBtnChooseArr[operChooseBtnIndex].SetActive(false);
 			if (operChooseBtnIndex == 2) {
 				quesNumTextChooseArr[operChooseBtnIndex+1].SetActive(false);
-				Text_quesNumChooseArr[operChooseBtnIndex].text = tmpAns;
+				quesNumTextChooseArr[operChooseBtnIndex].GetComponent<Text>().text = tmpAns;
 			} else {
 				quesNumTextChooseArr[operChooseBtnIndex].SetActive(false);
-				Text_quesNumChooseArr[operChooseBtnIndex+1].text = tmpAns;
+				quesNumTextChooseArr[operChooseBtnIndex+1].GetComponent<Text>().text = tmpAns;
 			}
 			clickClearAnsNum();
 			Text_userans.text = "ANS";

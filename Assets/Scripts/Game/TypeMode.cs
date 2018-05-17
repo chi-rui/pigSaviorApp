@@ -7,11 +7,9 @@ public class TypeMode : MonoBehaviour {
 	public GameObject warningPanel, showTeamBeforeFighting, fightingPanel, fightingResult, calculatePanel, clickAnyPositionImage;
 	public GameObject[] operTeamFieldImageArr, chooseOperMemberBtnArr, operTeamFailedImageArr, quesNumTextArr, quesOperImageArr;
 	public Animator Anim_characterAction, Anim_npcFightingType, Anim_npcFightingResult, Anim_operFightingResult;
-	public Sprite[] fightResultHintArr, windOperArr, fireOperArr, waterOperArr, groundOperArr;
-	public Image Image_nextFightOper, Image_fightResultHint, Image_operFightingResult;
-	public Image[] Image_operTeamMemberArr, Image_chooseOperMemberArr, Image_quesOperArr;
+	public Image Image_nextFightOper, Image_fightResultHint;
+	public Image[] Image_operTeamMemberArr, Image_chooseOperMemberArr;
 	public Text Text_warning, Text_userans, Text_partQues;
-	public Text[] Text_quesNumArr;
 	public string npc;
 
 	private int operCount, operChooseMemberCount, operFailedCount;
@@ -124,7 +122,7 @@ public class TypeMode : MonoBehaviour {
 
 		// show question number text
 		for (int i = 0; i < quesObj.question.Count; i++)
-			Text_quesNumArr[i].text = quesObj.question[i];
+			quesNumTextArr[i].GetComponent<Text>().text = quesObj.question[i];
 
 		// unrepeat random four types
 		while (typeRanList.Count < 4) {
@@ -141,19 +139,19 @@ public class TypeMode : MonoBehaviour {
 		for (int i = 0; i < operCount; i++) {
 			switch (typeRanList[i]) {
 				case "wind":
-					Image_quesOperArr[i].sprite = windOperArr[quesOperList[i]];
+					quesOperImageArr[i].GetComponent<Image>().sprite = Resources.Load<Sprite>("windOper"+quesOperList[i]) as Sprite;
 					break;
 				case "fire":
-					Image_quesOperArr[i].sprite = fireOperArr[quesOperList[i]];
+					quesOperImageArr[i].GetComponent<Image>().sprite = Resources.Load<Sprite>("fireOper"+quesOperList[i]) as Sprite;
 					break;
 				case "water":
-					Image_quesOperArr[i].sprite = waterOperArr[quesOperList[i]];
+					quesOperImageArr[i].GetComponent<Image>().sprite = Resources.Load<Sprite>("waterOper"+quesOperList[i]) as Sprite;
 					break;
 				case "ground":
-					Image_quesOperArr[i].sprite = groundOperArr[quesOperList[i]];
+					quesOperImageArr[i].GetComponent<Image>().sprite = Resources.Load<Sprite>("groundOper"+quesOperList[i]) as Sprite;
 					break;
 			}
-			Image_chooseOperMemberArr[i].sprite = Image_quesOperArr[i].sprite;
+			Image_chooseOperMemberArr[i].sprite = quesOperImageArr[i].GetComponent<Image>().sprite;
 		}
 	}
 
@@ -251,7 +249,7 @@ public class TypeMode : MonoBehaviour {
 			Text_warning.text = "你尚未指定npc屬性";
 		} else {
 			fightingResult.SetActive(true);
-			Image_operFightingResult.sprite = Image_nextFightOper.sprite;
+			Anim_operFightingResult.GetComponent<Image>().sprite = Image_nextFightOper.sprite;
 			switch (chooseNpcType) {
 				case "wind":
 					if (operChooseTypeList[0] == "ground") {
@@ -295,11 +293,11 @@ public class TypeMode : MonoBehaviour {
 					break;
 			}
 			if (isWin) {
-				Image_fightResultHint.sprite = fightResultHintArr[0];
+				Image_fightResultHint.sprite = Resources.Load<Sprite>("fightingResult"+1) as Sprite;
 				Anim_operFightingResult.Play("Operator Lose");
 				StartCoroutine(showFightingFeedback("win"));
 			} else {
-				Image_fightResultHint.sprite = fightResultHintArr[1];
+				Image_fightResultHint.sprite = Resources.Load<Sprite>("fightingResult"+0) as Sprite;
 				if (isDraw) {
 					Anim_npcFightingResult.Play(npc + " Draw");
 					Anim_operFightingResult.Play("Operator Draw");
@@ -349,8 +347,7 @@ public class TypeMode : MonoBehaviour {
 				operTmpStr = "÷";
 				break;
 		}
-		// Text_partQues.text = Text_quesNumArr[operChooseBtnIndexList[0]].text + operTmpStr + Text_quesNumArr[operChooseBtnIndexList[0]+1].text;
-		Text_partQues.text = removeQuesBracket(Text_quesNumArr[operChooseBtnIndexList[0]].text) + operTmpStr + removeQuesBracket(Text_quesNumArr[operChooseBtnIndexList[0]+1].text);
+		Text_partQues.text = removeQuesBracket(quesNumTextArr[operChooseBtnIndexList[0]].GetComponent<Text>().text) + operTmpStr + removeQuesBracket(quesNumTextArr[operChooseBtnIndexList[0]+1].GetComponent<Text>().text);
 	}
 
 	string removeQuesBracket (string str) {
@@ -395,7 +392,7 @@ public class TypeMode : MonoBehaviour {
 			tmpAns = "0";
 		} else {
 			userAnsList.Add(int.Parse(Text_userans.text));
-			tmpAns = Text_userans.text;
+			tmpAns = int.Parse(Text_userans.text).ToString();
 		}
 		for (int i = 0; i < userAnsList.Count; i++)
 			print(userAnsList[i]);
@@ -414,10 +411,10 @@ public class TypeMode : MonoBehaviour {
 			quesOperImageArr[operChooseBtnIndexList[0]].SetActive(false);
 			if (operChooseBtnIndexList[0] == 2) {
 				quesNumTextArr[operChooseBtnIndexList[0]+1].SetActive(false);
-				Text_quesNumArr[operChooseBtnIndexList[0]].text = tmpAns;
+				quesNumTextArr[operChooseBtnIndexList[0]].GetComponent<Text>().text = tmpAns;
 			} else {
 				quesNumTextArr[operChooseBtnIndexList[0]].SetActive(false);
-				Text_quesNumArr[operChooseBtnIndexList[0]+1].text = tmpAns;
+				quesNumTextArr[operChooseBtnIndexList[0]+1].GetComponent<Text>().text = tmpAns;
 			}
 			operChooseBtnIndexList.Remove(operChooseBtnIndexList[0]);
 			showPartQuestion();
