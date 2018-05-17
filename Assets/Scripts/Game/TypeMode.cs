@@ -15,11 +15,11 @@ public class TypeMode : MonoBehaviour {
 	private int operCount, operChooseMemberCount, operFailedCount;
 	private bool isWin, isDraw, isAttackFailed, isSpecialCalculate;
 	private string chooseNpcType, operTmpStr;
-	private List<string> operChooseTypeList = new List<string>();
-	private List<int> quesOperList = new List<int>();
 	private List<string> typeList = new List<string> {"wind", "fire", "water", "ground"};
 	private List<string> typeRanList = new List<string>();
+	private List<string> operChooseTypeList = new List<string>();
 	private List<int> operChooseBtnIndexList = new List<int>();
+	private List<int> quesOperList = new List<int>();
 	private List<int> userAnsList = new List<int>();
 
 	// setting question
@@ -164,13 +164,16 @@ public class TypeMode : MonoBehaviour {
 		} else {
 			warningPanel.SetActive(true);
 			Text_warning.text = "你指定的運算符號數目已超過"+operCount+"個了喔！";
+			operChooseMemberCount--;
 		}
 		operChooseMemberCount++;
+		// print(operChooseMemberCount);
 	}
 
 	public void clickClearTeam () {
 		operChooseMemberCount = 0;
 		operChooseTypeList.Clear();
+		operChooseBtnIndexList.Clear();
 		for (int i = 0; i < operCount; i++)
 			Image_operTeamMemberArr[i].sprite = Resources.Load<Sprite>("transparent") as Sprite;
 	}
@@ -333,6 +336,7 @@ public class TypeMode : MonoBehaviour {
 	}
 
 	void showPartQuestion () {
+		// print(operChooseBtnIndexList[0]);
 		switch (quesOperList[operChooseBtnIndexList[0]]) {
 			case 0:
 				operTmpStr = "+";
@@ -413,6 +417,7 @@ public class TypeMode : MonoBehaviour {
 			operTeamFailedImageArr[i].SetActive(true);
 		for (int i = 0; i < operCount; i++)
 			operTeamFieldImageArr[i].SetActive(true);
+
 		if (operFailedCount < operChooseMemberCount) {
 			restartTypeModeFighting();
 			Image_nextFightOper.sprite = Image_operTeamMemberArr[operFailedCount].sprite;

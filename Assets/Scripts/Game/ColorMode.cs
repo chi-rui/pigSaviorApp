@@ -348,16 +348,13 @@ public class ColorMode : MonoBehaviour {
 		}
 		string tmp1 = "", tmp2 = "";
 		if (quesNumTextArr[operChooseColorIndex].GetComponent<Text>().text == "") {
-			print("state1");
 			tmp1 = quesNumTextArr[operChooseColorIndex-1].GetComponent<Text>().text;
 			tmp2 = quesNumTextArr[operChooseColorIndex+1].GetComponent<Text>().text;
 		} else if (quesNumTextArr[operChooseColorIndex+1].GetComponent<Text>().text == "") {
-			print("state2");
 			tmp1 = quesNumTextArr[operChooseColorIndex].GetComponent<Text>().text;
 			tmp2 = quesNumTextArr[operChooseColorIndex+2].GetComponent<Text>().text;
 			isSpecialCalculate = true;
 		} else {
-			print("state3");
 			tmp1 = quesNumTextArr[operChooseColorIndex].GetComponent<Text>().text;
 			tmp2 = quesNumTextArr[operChooseColorIndex+1].GetComponent<Text>().text;
 		}
