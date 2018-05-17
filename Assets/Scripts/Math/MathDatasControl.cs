@@ -7,12 +7,12 @@ using UnityEngine;
 public class MathDatasControl : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
-		// string t = "";
-		// QuesObj quesObj = getQuestion( 1, 200, "AxBxC");
-		// for(int i = 0; i < quesObj.question.Count; i++ ){
-		// 	t += quesObj.question[i];
-		// }
-		// print(t + " = " + quesObj.answer[2].partAns);
+		string t = "";
+		QuesObj quesObj = getQuestion( 1, 200, "(A*B)/C");
+		for(int i = 0; i < quesObj.question.Count; i++ ){
+			t += quesObj.question[i];
+		}
+		print(t + " = " + quesObj.answer[1].partAns);
 	}
 	
 	// Update is called once per frame
@@ -259,11 +259,11 @@ public class MathDatasControl : MonoBehaviour {
 					// if there's a finished operation before the operator.
 					switch(answerList[i].operators){
 					case '+':
-						num = UnityEngine.Random.Range(miniNum,maxNum-stackNum[i]);
+						num = UnityEngine.Random.Range(miniNum,maxNum);
 						answerList[i].partAns = stackNum[i-1] + num;
 						break;
 					case '-':
-						num = UnityEngine.Random.Range(miniNum,stackNum[i]);
+						num = UnityEngine.Random.Range(miniNum,stackNum[i-1]);
 						answerList[i].partAns = stackNum[i-1] - num;
 						break;					
 					case 'x':case '*':
@@ -271,7 +271,7 @@ public class MathDatasControl : MonoBehaviour {
 						answerList[i].partAns = stackNum[i-1] * num;
 						break;
 					case '÷':case '/':
-						num = getFactor(stackNum[i]);
+						num = getFactor(stackNum[i-1]);
 						answerList[i].partAns = stackNum[i-1] / num;
 						break;
 					}
