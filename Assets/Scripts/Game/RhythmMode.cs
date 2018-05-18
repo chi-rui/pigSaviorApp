@@ -17,11 +17,11 @@ public class RhythmMode : MonoBehaviour {
 	
 	private Vector3 pos_L, pos_R;
 	private int remainCounts, rankTimes, operCount, operChooseBtnIndex, userCalculateCount;
+	private bool isRhythmStart, isPerfectHit, isChallengeFailed, isSpecialCalculate;
 	private List<int> tmpSortingList = new List<int>();
 	private List<int> hitBarsIndexList = new List<int>();
 	private List<string> quesOperList = new List<string>();
 	private List<int> userAnsList = new List<int>();
-	private bool isRhythmStart, isPerfectHit, isChallengeFailed;
 	
 	// setting question
 	public int minNum, maxNum;
@@ -282,8 +282,22 @@ public class RhythmMode : MonoBehaviour {
 	// choose operator panel
 	public void clickOperBtn (int num) {
 		operChooseBtnIndex = num;
+		// print(operChooseBtnIndex);
 		calculatePanel.SetActive(true);
-		Text_partQues.text = removeQuesBracket(quesNumTextChooseArr[num].GetComponent<Text>().text) + quesOperList[num] + removeQuesBracket(quesNumTextChooseArr[num+1].GetComponent<Text>().text);
+		string tmp1 = "", tmp2 = "";
+		if (quesNumTextChooseArr[operChooseBtnIndex].GetComponent<Text>().text == "") {
+			tmp1 = quesNumTextChooseArr[operChooseBtnIndex-1].GetComponent<Text>().text;
+			tmp2 = quesNumTextChooseArr[operChooseBtnIndex+1].GetComponent<Text>().text;
+		} else if (quesNumTextChooseArr[operChooseBtnIndex+1].GetComponent<Text>().text == "") {
+			tmp1 = quesNumTextChooseArr[operChooseBtnIndex].GetComponent<Text>().text;
+			tmp2 = quesNumTextChooseArr[operChooseBtnIndex+2].GetComponent<Text>().text;
+			isSpecialCalculate = true;
+		} else {
+			tmp1 = quesNumTextChooseArr[operChooseBtnIndex].GetComponent<Text>().text;
+			tmp2 = quesNumTextChooseArr[operChooseBtnIndex+1].GetComponent<Text>().text;
+		}
+		// print(tmp1 + " " + tmp2);
+		Text_partQues.text = removeQuesBracket(tmp1) + quesOperList[operChooseBtnIndex] + removeQuesBracket(tmp2);
 	}
 
 	string removeQuesBracket (string str) {
@@ -333,10 +347,12 @@ public class RhythmMode : MonoBehaviour {
 		if (userCalculateCount < operCount) {
 			quesOperBtnChooseArr[operChooseBtnIndex].SetActive(false);
 			if (operChooseBtnIndex == 2) {
-				quesNumTextChooseArr[operChooseBtnIndex+1].SetActive(false);
+				quesNumTextChooseArr[operChooseBtnIndex+1].GetComponent<Text>().text = null;
 				quesNumTextChooseArr[operChooseBtnIndex].GetComponent<Text>().text = tmpAns;
 			} else {
-				quesNumTextChooseArr[operChooseBtnIndex].SetActive(false);
+				if (isSpecialCalculate)
+					quesNumTextChooseArr[operChooseBtnIndex+2].GetComponent<Text>().text = null;
+				quesNumTextChooseArr[operChooseBtnIndex].GetComponent<Text>().text = null;
 				quesNumTextChooseArr[operChooseBtnIndex+1].GetComponent<Text>().text = tmpAns;
 			}
 			clickClearAnsNum();

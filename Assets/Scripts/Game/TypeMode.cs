@@ -13,13 +13,13 @@ public class TypeMode : MonoBehaviour {
 	public string npc;
 
 	private int operCount, operChooseMemberCount, operFailedCount;
-	private bool isWin, isDraw, isAttackFailed;
+	private bool isWin, isDraw, isAttackFailed, isSpecialCalculate;
 	private string chooseNpcType, operTmpStr;
-	private List<string> operChooseTypeList = new List<string>();
-	private List<int> quesOperList = new List<int>();
 	private List<string> typeList = new List<string> {"wind", "fire", "water", "ground"};
 	private List<string> typeRanList = new List<string>();
+	private List<string> operChooseTypeList = new List<string>();
 	private List<int> operChooseBtnIndexList = new List<int>();
+	private List<int> quesOperList = new List<int>();
 	private List<int> userAnsList = new List<int>();
 
 	// setting question
@@ -125,7 +125,7 @@ public class TypeMode : MonoBehaviour {
 			quesNumTextArr[i].GetComponent<Text>().text = quesObj.question[i];
 
 		// unrepeat random four types
-		while (typeRanList.Count < 4) {
+		while (typeRanList.Count < operCount) {
 			int index = Random.Range(0, typeList.Count);
 			if (!typeRanList.Contains(typeList[index])) {
 				typeRanList.Add(typeList[index]);
@@ -164,13 +164,16 @@ public class TypeMode : MonoBehaviour {
 		} else {
 			warningPanel.SetActive(true);
 			Text_warning.text = "你指定的運算符號數目已超過"+operCount+"個了喔！";
+			operChooseMemberCount--;
 		}
 		operChooseMemberCount++;
+		// print(operChooseMemberCount);
 	}
 
 	public void clickClearTeam () {
 		operChooseMemberCount = 0;
 		operChooseTypeList.Clear();
+		operChooseBtnIndexList.Clear();
 		for (int i = 0; i < operCount; i++)
 			Image_operTeamMemberArr[i].sprite = Resources.Load<Sprite>("transparent") as Sprite;
 	}
@@ -333,6 +336,7 @@ public class TypeMode : MonoBehaviour {
 	}
 
 	void showPartQuestion () {
+		// print(operChooseBtnIndexList[0]);
 		switch (quesOperList[operChooseBtnIndexList[0]]) {
 			case 0:
 				operTmpStr = "+";
@@ -347,7 +351,19 @@ public class TypeMode : MonoBehaviour {
 				operTmpStr = "÷";
 				break;
 		}
-		Text_partQues.text = removeQuesBracket(quesNumTextArr[operChooseBtnIndexList[0]].GetComponent<Text>().text) + operTmpStr + removeQuesBracket(quesNumTextArr[operChooseBtnIndexList[0]+1].GetComponent<Text>().text);
+		string tmp1 = "", tmp2 = "";
+		if (quesNumTextArr[operChooseBtnIndexList[0]].GetComponent<Text>().text == "") {
+			tmp1 = quesNumTextArr[operChooseBtnIndexList[0]-1].GetComponent<Text>().text;
+			tmp2 = quesNumTextArr[operChooseBtnIndexList[0]+1].GetComponent<Text>().text;
+		} else if (quesNumTextArr[operChooseBtnIndexList[0]+1].GetComponent<Text>().text == "") {
+			tmp1 = quesNumTextArr[operChooseBtnIndexList[0]].GetComponent<Text>().text;
+			tmp2 = quesNumTextArr[operChooseBtnIndexList[0]+2].GetComponent<Text>().text;
+			isSpecialCalculate = true;
+		} else {
+			tmp1 = quesNumTextArr[operChooseBtnIndexList[0]].GetComponent<Text>().text;
+			tmp2 = quesNumTextArr[operChooseBtnIndexList[0]+1].GetComponent<Text>().text;
+		}
+		Text_partQues.text = removeQuesBracket(tmp1) + operTmpStr + removeQuesBracket(tmp2);
 	}
 
 	string removeQuesBracket (string str) {
@@ -401,6 +417,7 @@ public class TypeMode : MonoBehaviour {
 			operTeamFailedImageArr[i].SetActive(true);
 		for (int i = 0; i < operCount; i++)
 			operTeamFieldImageArr[i].SetActive(true);
+
 		if (operFailedCount < operChooseMemberCount) {
 			restartTypeModeFighting();
 			Image_nextFightOper.sprite = Image_operTeamMemberArr[operFailedCount].sprite;
@@ -410,14 +427,15 @@ public class TypeMode : MonoBehaviour {
 			}
 			quesOperImageArr[operChooseBtnIndexList[0]].SetActive(false);
 			if (operChooseBtnIndexList[0] == 2) {
-				quesNumTextArr[operChooseBtnIndexList[0]+1].SetActive(false);
+				quesNumTextArr[operChooseBtnIndexList[0]+1].GetComponent<Text>().text = null;
 				quesNumTextArr[operChooseBtnIndexList[0]].GetComponent<Text>().text = tmpAns;
 			} else {
-				quesNumTextArr[operChooseBtnIndexList[0]].SetActive(false);
+				if (isSpecialCalculate)
+					quesNumTextArr[operChooseBtnIndexList[0]+2].GetComponent<Text>().text = null;
+				quesNumTextArr[operChooseBtnIndexList[0]].GetComponent<Text>().text = null;
 				quesNumTextArr[operChooseBtnIndexList[0]+1].GetComponent<Text>().text = tmpAns;
 			}
 			operChooseBtnIndexList.Remove(operChooseBtnIndexList[0]);
-			showPartQuestion();
 			clickClearAnsNum();
 			Text_userans.text = "ANS";
 			calculatePanel.SetActive(false);

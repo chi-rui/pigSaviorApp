@@ -15,11 +15,12 @@ public class ColorMode : MonoBehaviour {
 	public string npc;
 
 	private int colorMixCount, operCount, userCalculateCount, operChooseColorIndex;
-	private bool isPair, isMixColorFailed;
+	private bool isPair, isMixColorFailed, isSpecialCalculate;
 	private string colorResult, operTmpStr;
 	private List<string> chooseColorList = new List<string>();
 	private List<string> colorList = new List<string> {"red", "yellow", "blue", "orange", "green", "purple"};
 	private List<string> operColorRanList = new List<string>();
+	private List<string> tmpColorOperList = new List<string>();
 	private List<int> quesOperList = new List<int>();
 	private List<int> userAnsList = new List<int>();
 
@@ -34,6 +35,7 @@ public class ColorMode : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		isPair = false;
 		isMixColorFailed = false;
 
 		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
@@ -123,15 +125,18 @@ public class ColorMode : MonoBehaviour {
 			quesNumTextArr[i].GetComponent<Text>().text = quesObj.question[i];
 
 		// unrepeat random four types
-		while (operColorRanList.Count < 6) {
+		while (operColorRanList.Count < operCount) {
 			int index = Random.Range(0, colorList.Count);
 			if (!operColorRanList.Contains(colorList[index])) {
 				operColorRanList.Add(colorList[index]);
+				tmpColorOperList.Add(colorList[index]);
 				colorList.Remove(colorList[index]);
 			}
 		}
-		for (int i = 0; i < operColorRanList.Count; i++)
-			print(operColorRanList[i]);
+		for (int i = 0; i < operColorRanList.Count; i++) {
+			// print(operColorRanList[i]);
+			print(tmpColorOperList[i]);
+		}
 
 		// set operator color and symbol
 		for (int i = 0; i < operCount; i++) {
@@ -287,67 +292,14 @@ public class ColorMode : MonoBehaviour {
 		// print(colorResult);
 		changeColor(colorResult);
 
-		for (int i = 0; i < operCount; i++)
-			print(operColorRanList[i]);
-
-		switch (colorResult) {
-			case "red":
-				for (int i = 0; i < operCount; i++) {
-					if (operColorRanList[i] == "red") {
-						isPair = true;
-						Image_operInResult.sprite = Resources.Load<Sprite>("redOper"+quesOperList[i]) as Sprite;
-						operChooseColorIndex = i;
-					}
-				}
-				break;
-			case "yellow":
-				for (int i = 0; i < operCount; i++) {
-					if (operColorRanList[i] == "yellow") {
-						isPair = true;
-						Image_operInResult.sprite = Resources.Load<Sprite>("yellowOper"+quesOperList[i]) as Sprite;
-						operChooseColorIndex = i;
-					}
-				}
-				break;
-			case "blue":
-				for (int i = 0; i < operCount; i++) {
-					if (operColorRanList[i] == "blue") {
-						isPair = true;
-						Image_operInResult.sprite = Resources.Load<Sprite>("blueOper"+quesOperList[i]) as Sprite;
-						operChooseColorIndex = i;
-					}
-				}
-				break;
-			case "orange":
-				for (int i = 0; i < operCount; i++) {
-					if (operColorRanList[i] == "orange") {
-						isPair = true;
-						Image_operInResult.sprite = Resources.Load<Sprite>("orangeOper"+quesOperList[i]) as Sprite;
-						operChooseColorIndex = i;
-					}
-				}
-				break;
-			case "green":
-				for (int i = 0; i < operCount; i++) {
-					if (operColorRanList[i] == "green") {
-						isPair = true;
-						Image_operInResult.sprite = Resources.Load<Sprite>("greenOper"+quesOperList[i]) as Sprite;
-						operChooseColorIndex = i;
-					}
-				}
-				break;
-			case "purple":
-				for (int i = 0; i < operCount; i++) {
-					if (operColorRanList[i] == "purple") {
-						isPair = true;
-						Image_operInResult.sprite = Resources.Load<Sprite>("purpleOper"+quesOperList[i]) as Sprite;
-						operChooseColorIndex = i;
-					}
-				}
-				break;
-			default:
-				isPair = false;
-				break;
+		for (int i = 0; i < operColorRanList.Count; i++) {
+			if (operColorRanList[i] == colorResult)
+				operChooseColorIndex = i;
+		}
+		Image_operInResult.sprite = Resources.Load<Sprite>(colorResult+"Oper"+quesOperList[operChooseColorIndex]) as Sprite;
+		for (int i = 0; i < tmpColorOperList.Count; i++) {
+			if (tmpColorOperList[i] == colorResult)
+				isPair = true;
 		}
 
 		if (isPair) {
@@ -356,6 +308,7 @@ public class ColorMode : MonoBehaviour {
 			Anim_operatorPairResult.Play("Operator Color Pair Success");
 			StartCoroutine(showColorModeFeedback(1.5f));
 		} else {
+			Image_operInResult.sprite = Resources.Load<Sprite>("transparent") as Sprite;
 			Image_mixColorResultHint.sprite = Resources.Load<Sprite>("mixColorResult"+0) as Sprite;
 			if (colorResult == null)
 				Anim_npcMixingColor.Play(npc + " Original");
@@ -393,7 +346,19 @@ public class ColorMode : MonoBehaviour {
 				operTmpStr = "÷";
 				break;
 		}
-		Text_partQues.text = removeQuesBracket(quesNumTextArr[operChooseColorIndex].GetComponent<Text>().text) + operTmpStr + removeQuesBracket(quesNumTextArr[operChooseColorIndex+1].GetComponent<Text>().text);
+		string tmp1 = "", tmp2 = "";
+		if (quesNumTextArr[operChooseColorIndex].GetComponent<Text>().text == "") {
+			tmp1 = quesNumTextArr[operChooseColorIndex-1].GetComponent<Text>().text;
+			tmp2 = quesNumTextArr[operChooseColorIndex+1].GetComponent<Text>().text;
+		} else if (quesNumTextArr[operChooseColorIndex+1].GetComponent<Text>().text == "") {
+			tmp1 = quesNumTextArr[operChooseColorIndex].GetComponent<Text>().text;
+			tmp2 = quesNumTextArr[operChooseColorIndex+2].GetComponent<Text>().text;
+			isSpecialCalculate = true;
+		} else {
+			tmp1 = quesNumTextArr[operChooseColorIndex].GetComponent<Text>().text;
+			tmp2 = quesNumTextArr[operChooseColorIndex+1].GetComponent<Text>().text;
+		}
+		Text_partQues.text = removeQuesBracket(tmp1) + operTmpStr + removeQuesBracket(tmp2);
 	}
 
 	string removeQuesBracket (string str) {
@@ -410,6 +375,8 @@ public class ColorMode : MonoBehaviour {
 
 	void restartColorMode () {
 		changeBtnsState(1);
+		isPair = false;
+		Image_operInResult.sprite = Resources.Load<Sprite>("transparent") as Sprite;
 		mixingColorResult.SetActive(false);
 		colorMixCount = 0;
 		chooseColorList.Clear();
@@ -447,24 +414,31 @@ public class ColorMode : MonoBehaviour {
 		for (int i = 0; i < userAnsList.Count; i++)
 			print(userAnsList[i]);
 		
+		tmpColorOperList.Remove(colorResult);
 		if (userCalculateCount < operCount) {
-			restartColorMode();
 			quesOperImageArr[operChooseColorIndex].SetActive(false);
 			if (operChooseColorIndex == 2) {
-				quesNumTextArr[operChooseColorIndex+1].SetActive(false);
+				quesNumTextArr[operChooseColorIndex+1].GetComponent<Text>().text = null;
 				quesNumTextArr[operChooseColorIndex].GetComponent<Text>().text = tmpAns;
 			} else {
-				quesNumTextArr[operChooseColorIndex].SetActive(false);
+				if (isSpecialCalculate)
+					quesNumTextArr[operChooseColorIndex+2].GetComponent<Text>().text = null;
+				quesNumTextArr[operChooseColorIndex].GetComponent<Text>().text = null;
 				quesNumTextArr[operChooseColorIndex+1].GetComponent<Text>().text = tmpAns;
 			}
-			showPartQuestion();
 			clickClearAnsNum();
 			Text_userans.text = "ANS";
+			restartColorMode();
 			calculatePanel.SetActive(false);
 		} else {
 			print("計算完成！");
 			checkUserAnswer();
 		}
+
+		// for (int i = 0; i < operColorRanList.Count; i++)
+		// 	print(operColorRanList[i]);
+		for (int i = 0; i < tmpColorOperList.Count; i++)
+			print(tmpColorOperList[i]);
 	}
 
 	public void checkUserAnswer () {
