@@ -422,7 +422,7 @@ public class ColorMode : MonoBehaviour {
 		
 		tmpColorOperList.Remove(colorResult);
 		if (userCalculateCount < operCount) {
-			print("operChooseColorIndex: " + operChooseColorIndex);
+			// print("operChooseColorIndex: " + operChooseColorIndex);
 			quesOperImageArr[operChooseColorIndex].SetActive(false);
 			if (operChooseColorIndex == 2) {
 				quesNumTextArr[operChooseColorIndex+1].GetComponent<Text>().text = null;
