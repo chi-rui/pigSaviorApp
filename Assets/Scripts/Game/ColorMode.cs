@@ -39,7 +39,7 @@ public class ColorMode : MonoBehaviour {
 		isMixColorFailed = false;
 
 		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
-		generateQuestion(minNum, maxNum, quesTemplate);
+		generateNewQuestion(minNum, maxNum, quesTemplate);
 	}
 	
 	// Update is called once per frame
@@ -53,7 +53,7 @@ public class ColorMode : MonoBehaviour {
 		}
 	}
 
-	void generateQuestion (int min, int max, List<string> template) {
+	void generateNewQuestion (int min, int max, List<string> template) {
 		// generate question and get operator counts
 		quesObj = MathDatas.getQuestion(min, max, template[UnityEngine.Random.Range(0, template.Count)]);
 		for (int i = 0; i < quesObj.question.Count; i++)
@@ -102,8 +102,6 @@ public class ColorMode : MonoBehaviour {
 			} else if (quesObj.question[i] == ")") {
 				quesObj.question[i-1] = quesObj.question[i-1] + quesObj.question[i];
 			}
-			// else {
-			// }
 		}
 		for (int i = 0; i < quesObj.question.Count; i++) {
 			if (quesObj.question[i] == "(")
@@ -120,10 +118,6 @@ public class ColorMode : MonoBehaviour {
 		// for (int i = 0; i < quesOperList.Count; i++)
 		// 	print(quesOperList[i]);
 
-		// show question number text
-		for (int i = 0; i < quesObj.question.Count; i++)
-			quesNumTextArr[i].GetComponent<Text>().text = quesObj.question[i];
-
 		// unrepeat random four types
 		while (operColorRanList.Count < operCount) {
 			int index = Random.Range(0, colorList.Count);
@@ -138,8 +132,17 @@ public class ColorMode : MonoBehaviour {
 			print(tmpColorOperList[i]);
 		}
 
+		showQuestion();
+	}
+
+	void showQuestion () {
+		// show question number text
+		for (int i = 0; i < quesObj.question.Count; i++)
+			quesNumTextArr[i].GetComponent<Text>().text = quesObj.question[i];
+
 		// set operator color and symbol
 		for (int i = 0; i < operCount; i++) {
+			quesOperImageArr[i].SetActive(true);
 			switch (operColorRanList[i]) {
 				case "red":
 					quesOperImageArr[i].GetComponent<Image>().sprite = Resources.Load<Sprite>("redOper"+quesOperList[i]) as Sprite;
@@ -316,7 +319,7 @@ public class ColorMode : MonoBehaviour {
 				Anim_npcMixingColor.Play(npc + " Colored Failed");
 			Anim_operatorPairResult.Play("Operator Color Pair Failed");
 			isMixColorFailed = true;
-			StartCoroutine(showColorModeFeedback(0.6f));
+			StartCoroutine(showColorModeFeedback(0.3f));
 		}
 	}
 
@@ -448,5 +451,17 @@ public class ColorMode : MonoBehaviour {
 			print("答案正確");
 		else
 			print("答案錯誤");
+	}
+
+	public void clickRechallengeGame () {
+		calculatePanel.SetActive(false);
+		userCalculateCount = 0;
+		restartColorMode();
+		tmpColorOperList.Clear();
+		for (int i = 0; i < operColorRanList.Count; i++)
+			tmpColorOperList.Add(operColorRanList[i]);
+		// for (int i = 0; i < tmpColorOperList.Count; i++)
+		// 	print(tmpColorOperList[i]);
+		showQuestion();
 	}
 }

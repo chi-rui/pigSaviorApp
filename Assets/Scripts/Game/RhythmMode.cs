@@ -9,14 +9,14 @@ public class RhythmMode : MonoBehaviour {
 	public GameObject pointer, characterAction, challengeFailedPanel, chooseOperatorPanel, calculatePanel, hitResult, remainingText, hitResultText, clickAnyPositionImage;
 	public GameObject[] quesNumTextArr, quesOperTextArr, quesNumTextChooseArr, quesOperBtnChooseArr;
 	public Animator Anim_characterPerfect, Anim_npcPerfect;
-	public Sprite Sprite_characterAction; //if need?
+	public Sprite Sprite_characterAction;
 	public Image[] hitbarArr;
 	public Text Text_remainCounts, Text_userans, Text_partQues;
 	public float speed;
 	public string characterPerfectAnimStr, npcPerfectAnimStr;
 	
 	private Vector3 pos_L, pos_R;
-	private int remainCounts, rankTimes, operCount, operChooseBtnIndex, userCalculateCount;
+	private int remainCounts, hitbarCounts, operCount, operChooseBtnIndex, userCalculateCount;
 	private bool isRhythmStart, isPerfectHit, isChallengeFailed, isSpecialCalculate;
 	private List<int> tmpSortingList = new List<int>();
 	private List<int> hitBarsIndexList = new List<int>();
@@ -40,12 +40,11 @@ public class RhythmMode : MonoBehaviour {
 		remainCounts = 10;
 		isChallengeFailed = false;
 		isPerfectHit = false;
-		isRhythmStart = true;
-		rankTimes = 1;
-		generateHitBars(rankTimes);
+		hitbarCounts = 3;
+		generateHitBars(hitbarCounts);
 
 		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
-		generateQuestion(minNum, maxNum, quesTemplate);
+		generateNewQuestion(minNum, maxNum, quesTemplate);
 	}
 	
 	// Update is called once per frame
@@ -76,7 +75,7 @@ public class RhythmMode : MonoBehaviour {
 		}
 	}
 
-	void generateQuestion (int min, int max, List<string> template) {
+	void generateNewQuestion (int min, int max, List<string> template) {
 		// generate question and get operator counts
 		quesObj = MathDatas.getQuestion(min, max, template[Random.Range(0, template.Count)]);
 		for (int i = 0; i < quesObj.question.Count; i++)
@@ -132,6 +131,10 @@ public class RhythmMode : MonoBehaviour {
 		// for (int i = 0; i < quesOperList.Count; i++)
 		// 	print(quesOperList[i]);
 
+		showQuestion();
+	}
+
+	void showQuestion () {
 		// show question number text
 		for (int i = 0; i < quesObj.question.Count; i++) {
 			quesNumTextArr[i].GetComponent<Text>().text = quesObj.question[i];
@@ -158,29 +161,20 @@ public class RhythmMode : MonoBehaviour {
 		}
 	}
 
-	void generateHitBars (int times) {
-		switch (times) {
-			case 1:
-				ranNum(3);
-				break;
-			case 2:
-				ranNum(2);
-				break;
-			case 3:
-				ranNum(1);
-				break;
-			default:
-				break;
+	void generateHitBars (int counts) {
+		isRhythmStart = true;
+		// clear random hitbar number list and change to original hitbar
+		tmpSortingList.Clear();
+		hitBarsIndexList.Clear();
+		for (int i = 0; i < hitbarArr.Length; i++) {
+			hitbarArr[i].color = new Color32(255, 255, 255, 0);
+			hitbarArr[i].gameObject.tag = "rhythmbar";
 		}
-	}
-
-	void ranNum (int counts) {
-		for (int i = 0; i < 7; i++){
+		// generate random hitbar
+		for (int i = 0; i < 7; i++)
 			tmpSortingList.Add(i);
-			// print(tmpSortingList[i]);
-		}
-		// print(hitBarsIndexList.Count + " " + tmpSortingList.Count);
 		int tmpListCount = tmpSortingList.Count;
+		// print("tmpListCount:" + tmpListCount);
 		while (hitBarsIndexList.Count < tmpListCount) {
 			int index = Random.Range(0, tmpSortingList.Count);
 			if (!hitBarsIndexList.Contains(tmpSortingList[index])) {
@@ -211,33 +205,29 @@ public class RhythmMode : MonoBehaviour {
 			hitResult.SetActive(true);
 			Anim_characterPerfect.Play(characterPerfectAnimStr);
 			Anim_npcPerfect.Play(npcPerfectAnimStr);
-		}
-		else {
+		} else {
 			hitResultText.GetComponent<Text>().text = "Miss";
 			characterAction.GetComponent<Animator>().enabled = false;
 			characterAction.GetComponent<Image>().sprite = Sprite_characterAction;
 		}
 
-		yield return new WaitForSeconds(time);
-
-		// set remain counts text
-		remainCounts--;
-		Text_remainCounts.text = remainCounts.ToString();
+		yield return new WaitForSeconds(time);		
 
 		if (isPerfectHit)
 			clickPerfectHit();
 		else {
+			remainCounts--;
 			isRhythmStart = true;
 			// show remain counts text
 			remainingText.SetActive(true);
 			hitResultText.SetActive(false);
 		}
-
+		Text_remainCounts.text = remainCounts.ToString();
 		if (remainCounts == 0) {
 			isRhythmStart = false;
 			isChallengeFailed = true;
 			challengeFailedPanel.SetActive(true);
-			StartCoroutine(showClickAnyPosition(0.6f));
+			StartCoroutine(showClickAnyPosition(0.3f));
 		}
 	}
 
@@ -276,7 +266,6 @@ public class RhythmMode : MonoBehaviour {
 		Text_remainCounts.text = remainCounts.ToString();
 		isPerfectHit = false;
 		isRhythmStart = true;
-		generateHitBars(rankTimes);
 	}
 
 	// choose operator panel
@@ -332,6 +321,9 @@ public class RhythmMode : MonoBehaviour {
 
 	public void clickFinishCalculate () {
 		userCalculateCount++;
+		// print(userCalculateCount);
+		hitbarCounts--;
+		// print(hitbarCounts);
 		
 		string tmpAns = "";
 		if (Text_userans.text == null || Text_userans.text == "ANS") {
@@ -346,18 +338,32 @@ public class RhythmMode : MonoBehaviour {
 
 		if (userCalculateCount < operCount) {
 			quesOperBtnChooseArr[operChooseBtnIndex].SetActive(false);
+			quesOperTextArr[operChooseBtnIndex].SetActive(false);
 			if (operChooseBtnIndex == 2) {
 				quesNumTextChooseArr[operChooseBtnIndex+1].GetComponent<Text>().text = null;
 				quesNumTextChooseArr[operChooseBtnIndex].GetComponent<Text>().text = tmpAns;
+				quesNumTextArr[operChooseBtnIndex+1].GetComponent<Text>().text = null;
+				quesNumTextArr[operChooseBtnIndex].GetComponent<Text>().text = tmpAns;
 			} else {
-				if (isSpecialCalculate)
+				if (isSpecialCalculate) {
 					quesNumTextChooseArr[operChooseBtnIndex+2].GetComponent<Text>().text = null;
+					quesNumTextArr[operChooseBtnIndex+2].GetComponent<Text>().text = null;
+				}
 				quesNumTextChooseArr[operChooseBtnIndex].GetComponent<Text>().text = null;
 				quesNumTextChooseArr[operChooseBtnIndex+1].GetComponent<Text>().text = tmpAns;
+				quesNumTextArr[operChooseBtnIndex].GetComponent<Text>().text = null;
+				quesNumTextArr[operChooseBtnIndex+1].GetComponent<Text>().text = tmpAns;
 			}
 			clickClearAnsNum();
 			Text_userans.text = "ANS";
+
+			// show remain counts text
+			remainingText.SetActive(true);
+			hitResultText.SetActive(false);
+			generateHitBars(hitbarCounts);
+			
 			calculatePanel.SetActive(false);
+			chooseOperatorPanel.SetActive(false);
 		} else {
 			print("計算完成！");
 			checkUserAnswer();
