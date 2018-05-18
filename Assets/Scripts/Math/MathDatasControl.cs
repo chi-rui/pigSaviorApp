@@ -7,12 +7,12 @@ using UnityEngine;
 public class MathDatasControl : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
-		// string t = "";
-		// QuesObj quesObj = getQuestion( 1, 200, "(A*B)/C");
-		// for(int i = 0; i < quesObj.question.Count; i++ ){
-		// 	t += quesObj.question[i];
-		// }
-		// print(t + " = " + quesObj.answer[1].partAns);
+		string t = "";
+		QuesObj quesObj = getQuestion( 1, 200, "A+B-C");
+		for(int i = 0; i < quesObj.question.Count; i++ ){
+			t += quesObj.question[i];
+		}
+		print(t + " = " + quesObj.answer[1].partAns);
 	}
 	
 	// Update is called once per frame
@@ -76,7 +76,6 @@ public class MathDatasControl : MonoBehaviour {
 					isInBracket = false;
 					break;
 				default:
-					numbers.Add(formula[i]);
 					break;
 			}
 		}
@@ -93,17 +92,20 @@ public class MathDatasControl : MonoBehaviour {
 			}
 		}
 		answerTemp = answerTemp.ToArray().Concat(answerList.ToArray()).ToList();
-		answerList = new List<AnsObj>();
+		answerList.Clear();
 
 		// sort the list by bracket.
 		for(i = 0; i < answerTemp.Count; i++){
 			if(answerTemp[i].isInBracket){
 				answerList.Add(answerTemp[i]);
 				answerTemp.RemoveAt(i);
+				i--;
 			}
 		}
 		answerList = answerList.ToArray().Concat(answerTemp.ToArray()).ToList();	// string list for store answer.
+		answerTemp.Clear();
 		question = formula.Select(c => c.ToString()).ToArray();						// string array for store question.
+
 		// if template have double brackets...
 		if(bracketNum > 1){
 			int frontAns = 0, behindAns = 0; 
