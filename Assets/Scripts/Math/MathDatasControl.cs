@@ -8,11 +8,11 @@ public class MathDatasControl : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		// string t = "";
-		// QuesObj quesObj = getQuestion( 1, 200, "A+B-C");
+		// QuesObj quesObj = getQuestion( 1, 200, "A+B/(C-D)");
 		// for(int i = 0; i < quesObj.question.Count; i++ ){
 		// 	t += quesObj.question[i];
 		// }
-		// print(t + " = " + quesObj.answer[1].partAns);
+		// print(t + " = " + quesObj.answer[quesObj.answer.Count-1].partAns);
 	}
 	
 	// Update is called once per frame
@@ -83,9 +83,11 @@ public class MathDatasControl : MonoBehaviour {
 		// sort the list by operator.
 		for(i = 0; i < answerList.Count; i++){
 			switch(answerList[i].operators){
-				case 'x':case '÷': case '*': case '/':
+				case 'x':case '*':
+				case '/':case '÷':
 					answerTemp.Add(answerList[i]);
 					answerList.RemoveAt(i);
+					i--;
 					break;
 				default:
 					break;
@@ -182,12 +184,8 @@ public class MathDatasControl : MonoBehaviour {
 			List<int> stackNum = new List<int>();					// save the results of operations.
 			bool isBefore = false, isAfter = false;					// shows whick is already finish operation.
 			
-			// get a first num for operation.
-			// stackNum.Add(-1);
-
 			// check every operations in the formula by its order and set numbers into question.
 			for( i=0; i < answerList.Count; i++){
-
 				// check the numbers near the operator.
 				for( j = answerList[i].index-1; j >= 0; j-- ){
 					if(counter[j] == '(' || counter[j] == ')' ){
@@ -218,13 +216,13 @@ public class MathDatasControl : MonoBehaviour {
 						answerList[i].partAns = stackNum[i-1] + stackNum[i-2];
 						break;
 					case '-':
-						answerList[i].partAns = stackNum[i-2] - stackNum[i-1];
+						answerList[i].partAns = stackNum[i-1] - stackNum[i-2];
 						break;					
 					case 'x':case '*':
-						answerList[i].partAns = stackNum[i-2] * stackNum[i-1];
+						answerList[i].partAns = stackNum[i-1] * stackNum[i-2];
 						break;
 					case '÷':case '/':
-						answerList[i].partAns = stackNum[i-2] / stackNum[i-1];
+						answerList[i].partAns = stackNum[i-1] / stackNum[i-2];
 						break;
 					}
 				}else if(isAfter){
