@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class TypeMode : MonoBehaviour {
-	public GameObject warningPanel, showTeamBeforeFighting, fightingPanel, fightingResult, calculatePanel, clickAnyPositionImage;
+	public GameObject warningPanel, showTeamBeforeFighting, fightingPanel, fightingResult, calculatePanel, clickAnyPositionImage, rechallengeBtn;
 	public GameObject[] operTeamFieldImageArr, chooseOperMemberBtnArr, operTeamFailedImageArr, quesNumTextArr, quesOperImageArr;
 	public Animator Anim_characterAction, Anim_npcFightingType, Anim_npcFightingResult, Anim_operFightingResult;
 	public Image Image_nextFightOper, Image_fightResultHint;
@@ -36,7 +36,7 @@ public class TypeMode : MonoBehaviour {
 		Anim_characterAction.Play("character game action_fighting");
 
 		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
-		generateQuestion(minNum, maxNum, quesTemplate);
+		generateNewQuestion(minNum, maxNum, quesTemplate);
 		
 		for (int i = 0; i < operCount; i++) {
 			operTeamFieldImageArr[i].SetActive(true);
@@ -55,7 +55,7 @@ public class TypeMode : MonoBehaviour {
 		}
 	}
 
-	void generateQuestion (int min, int max, List<string> template) {
+	void generateNewQuestion (int min, int max, List<string> template) {
 		// generate question and get operator counts
 		quesObj = MathDatas.getQuestion(min, max, template[UnityEngine.Random.Range(0, template.Count)]);
 		for (int i = 0; i < quesObj.question.Count; i++)
@@ -120,10 +120,6 @@ public class TypeMode : MonoBehaviour {
 		// for (int i = 0; i < quesOperList.Count; i++)
 		// 	print(quesOperList[i]);
 
-		// show question number text
-		for (int i = 0; i < quesObj.question.Count; i++)
-			quesNumTextArr[i].GetComponent<Text>().text = quesObj.question[i];
-
 		// unrepeat random four types
 		while (typeRanList.Count < operCount) {
 			int index = Random.Range(0, typeList.Count);
@@ -135,8 +131,17 @@ public class TypeMode : MonoBehaviour {
 		for (int i = 0; i < typeRanList.Count; i++)
 			print(typeRanList[i]);
 
+		showQuestion();
+	}
+
+	void showQuestion () {
+		// show question number text
+		for (int i = 0; i < quesObj.question.Count; i++)
+			quesNumTextArr[i].GetComponent<Text>().text = quesObj.question[i];
+
 		// set operator type and symbol
 		for (int i = 0; i < operCount; i++) {
+			quesOperImageArr[i].SetActive(true);
 			switch (typeRanList[i]) {
 				case "wind":
 					quesOperImageArr[i].GetComponent<Image>().sprite = Resources.Load<Sprite>("windOper"+quesOperList[i]) as Sprite;
@@ -156,15 +161,12 @@ public class TypeMode : MonoBehaviour {
 	}
 
 	public void chooseOperatorMember (int num) {
+		chooseOperMemberBtnArr[num].GetComponent<Button>().interactable = false;
 		if (operChooseMemberCount < operCount) {
 			for (int i = 0; i < operCount; i++)
 				Image_operTeamMemberArr[operChooseMemberCount].sprite = Image_chooseOperMemberArr[num].sprite;
 			operChooseTypeList.Add(typeRanList[num]);
 			operChooseBtnIndexList.Add(num);
-		} else {
-			warningPanel.SetActive(true);
-			Text_warning.text = "你指定的運算符號數目已超過"+operCount+"個了喔！";
-			operChooseMemberCount--;
 		}
 		operChooseMemberCount++;
 		// print(operChooseMemberCount);
@@ -174,8 +176,10 @@ public class TypeMode : MonoBehaviour {
 		operChooseMemberCount = 0;
 		operChooseTypeList.Clear();
 		operChooseBtnIndexList.Clear();
-		for (int i = 0; i < operCount; i++)
+		for (int i = 0; i < operCount; i++) {
+			chooseOperMemberBtnArr[i].GetComponent<Button>().interactable = true;
 			Image_operTeamMemberArr[i].sprite = Resources.Load<Sprite>("transparent") as Sprite;
+		}
 	}
 
 	public void clickFightingStart () {
@@ -190,14 +194,20 @@ public class TypeMode : MonoBehaviour {
 			showTeamBeforeFighting.SetActive(true);
 			for (int i = 0; i < operCount; i++)
 				operTeamFieldImageArr[i].SetActive(false);
-			StartCoroutine(setOperTeamPosition("beforefight"));
+			StartCoroutine(setOperTeamPosition("beforeFight"));
 			StartCoroutine(showFightingPanel(3.3f));
 		}
 	}
 
 	IEnumerator setOperTeamPosition (string state) {
 		switch (state) {
-			case "beforefight":
+			case "chooseOperMember":
+				operTeamFieldImageArr[0].transform.position = new Vector3(-1690f, -10f, 0);
+				operTeamFieldImageArr[1].transform.position = new Vector3(-1490f, -10f, 0);
+				operTeamFieldImageArr[2].transform.position = new Vector3(-1290f, -10f, 0);
+				yield return new WaitForSeconds(1f);
+				break;
+			case "beforeFight":
 				operTeamFieldImageArr[0].transform.position = new Vector3(-1000f, -20f, 0);
 				operTeamFieldImageArr[1].transform.position = new Vector3(-830f, -20f, 0);
 				operTeamFieldImageArr[2].transform.position = new Vector3(-660f, -20f, 0);
@@ -205,7 +215,7 @@ public class TypeMode : MonoBehaviour {
 				for (int i = 0; i < operCount; i++)
 					operTeamFieldImageArr[i].SetActive(true);
 				break;
-			case "fightpanel":
+			case "fightPanel":
 				operTeamFieldImageArr[0].transform.position = new Vector3(-810f, 110f, 0);
 				operTeamFieldImageArr[1].transform.position = new Vector3(-810f, -10f, 0);
 				operTeamFieldImageArr[2].transform.position = new Vector3(-810f, -130f, 0);
@@ -216,7 +226,7 @@ public class TypeMode : MonoBehaviour {
 
 	IEnumerator showFightingPanel (float time) {
 		yield return new WaitForSeconds(time);
-		StartCoroutine(setOperTeamPosition("fightpanel"));
+		StartCoroutine(setOperTeamPosition("fightPanel"));
 		showTeamBeforeFighting.SetActive(false);
 		fightingPanel.SetActive(true);
 		Image_nextFightOper.sprite = Image_operTeamMemberArr[0].sprite;
@@ -329,7 +339,7 @@ public class TypeMode : MonoBehaviour {
 				calculatePanel.SetActive(true);
 				break;
 			case "lose":
-				yield return new WaitForSeconds(0.6f);
+				yield return new WaitForSeconds(0.3f);
 				clickAnyPositionImage.SetActive(true);
 				break;
 		}
@@ -440,6 +450,7 @@ public class TypeMode : MonoBehaviour {
 			Text_userans.text = "ANS";
 			calculatePanel.SetActive(false);
 		} else {
+			rechallengeBtn.SetActive(false);
 			print("計算完成！");
 			checkUserAnswer();
 		}
@@ -454,5 +465,16 @@ public class TypeMode : MonoBehaviour {
 			print("答案正確");
 		else
 			print("答案錯誤");
+	}
+
+	public void clickRechallengeGame () {
+		calculatePanel.SetActive(false);
+		fightingPanel.SetActive(false);
+		operFailedCount = 0;
+		clickClearTeam();
+		showQuestion();
+		for (int i = 0; i < operCount; i++)
+			operTeamFieldImageArr[i].SetActive(true);
+		StartCoroutine(setOperTeamPosition("chooseOperMember"));
 	}
 }
