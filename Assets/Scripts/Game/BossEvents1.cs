@@ -46,7 +46,6 @@ public class BossEvents1 : MonoBehaviour {
 
 		// set Boss and get a question.
 		StartCoroutine(Animation_BossAppear());
-		// StartCoroutine(caculate());
 
 	}
 	
