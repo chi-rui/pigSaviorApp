@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -10,11 +11,14 @@ public class StageEvents : MonoBehaviour {
 	private DatasControl dataControl;
 
 	public float speed;
-	public GameObject mainCharacter, mainCamera, TalkWindow, gamePanel, correctPanel, wrongPanel, warningPanel;
+	public GameObject mainCharacter, mainCamera, TalkWindow, gamePanel, correctPanel, wrongPanel, warningPanel, enterPanel;
 	private Vector3 newPosition, newCameraPosition;
 	public int userProgress;
-	bool isGameStart = false;
-	bool isProgressIncrease = false;
+	private bool isGameStart = false;
+	private bool isProgressIncrease = false;
+	// saved npc plots contents 
+	private List<string> plots = new List<string>();
+	private int page;
 
 	// Use this for initialization
 	void Start () {
@@ -55,29 +59,36 @@ public class StageEvents : MonoBehaviour {
 	// Set the game info of the plots.
 	public void setGameInfo( GameObject game, Sprite header, string title, string npcPlots, bool isCorrectPlot ){
 		TalkWindow.SetActive(true);
-		TalkWindow.transform.GetChild(0).GetChild(0).GetComponentInChildren<Image>().sprite = header;
+		TalkWindow.transform.GetChild(0).GetComponentInChildren<Image>().sprite = header;
 		TalkWindow.transform.GetChild(1).GetComponentInChildren<Text>().text = title;
-		TalkWindow.transform.GetChild(2).GetComponentInChildren<Text>().text = npcPlots;
+		plots = npcPlots.Split('#').ToList();
 		gamePanel = game;
 		isProgressIncrease = isCorrectPlot;
+		page = 0;
+		nextPagePlots();
 	}
 	
-	// public void setGamePanel( GameObject game ){
-	// 	gamePanel = game;
-	// }
+	public void nextPagePlots(){
+		if(page == plots.Count){
+			TalkWindow.SetActive(false);
+			if(isProgressIncrease){
+				if(gamePanel == null)
+					checkStageProgress();	
+				else
+					enterPanel.SetActive(true);
+			}else{
+				print("Wrong plots");
+			}
+		}else{
+			TalkWindow.transform.GetChild(2).GetComponentInChildren<Text>().text = plots[page];
+			page++;
+		}
+	}
 
 	// Show the game panel and start the game.
 	public void taskStart(){
-		if(isProgressIncrease){
-			if(gamePanel == null)
-				checkStageProgress();	// increase while the plot doesn't need to operate.
-			else{
-				gamePanel.SetActive(true);
-				isGameStart = true;
-			}
-		}else{
-			print("wrong talk.");
-		}
+		gamePanel.SetActive(true);
+		isGameStart = true;
 	}
 
 	// Show the suit feedback after check the result of the game.(check is in game script)
