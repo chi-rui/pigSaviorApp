@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ColorMode : MonoBehaviour {
-	public GameObject warningPanel, waterGunImage, colorPainterImage, mixingColorResult, calculatePanel, clickAnyPositionImage;
+	public GameObject warningPanel, waterGunImage, colorPainterImage, mixingColorResult, calculatePanel, clickAnyPositionImage, rechallengeBtn;
 	public GameObject[] quesNumTextArr, quesOperImageArr;
 	public Animator Anim_npcColored, Anim_npcMixingColor, Anim_operatorPairResult;
 	public Image[] colorChooseMemberArr;
@@ -139,6 +139,9 @@ public class ColorMode : MonoBehaviour {
 		// show question number text
 		for (int i = 0; i < quesObj.question.Count; i++)
 			quesNumTextArr[i].GetComponent<Text>().text = quesObj.question[i];
+
+		// for (int i = 0; i < quesObj.question.Count; i++)
+		// 	print(quesObj.question[i]);
 
 		// set operator color and symbol
 		for (int i = 0; i < operCount; i++) {
@@ -419,6 +422,7 @@ public class ColorMode : MonoBehaviour {
 		
 		tmpColorOperList.Remove(colorResult);
 		if (userCalculateCount < operCount) {
+			print("operChooseColorIndex: " + operChooseColorIndex);
 			quesOperImageArr[operChooseColorIndex].SetActive(false);
 			if (operChooseColorIndex == 2) {
 				quesNumTextArr[operChooseColorIndex+1].GetComponent<Text>().text = null;
@@ -434,14 +438,15 @@ public class ColorMode : MonoBehaviour {
 			restartColorMode();
 			calculatePanel.SetActive(false);
 		} else {
+			rechallengeBtn.SetActive(false);
 			print("計算完成！");
 			checkUserAnswer();
 		}
 
 		// for (int i = 0; i < operColorRanList.Count; i++)
 		// 	print(operColorRanList[i]);
-		for (int i = 0; i < tmpColorOperList.Count; i++)
-			print(tmpColorOperList[i]);
+		// for (int i = 0; i < tmpColorOperList.Count; i++)
+		// 	print(tmpColorOperList[i]);
 	}
 
 	public void checkUserAnswer () {
@@ -456,7 +461,10 @@ public class ColorMode : MonoBehaviour {
 	public void clickRechallengeGame () {
 		calculatePanel.SetActive(false);
 		userCalculateCount = 0;
+		Text_userans.text = "ANS";
+		isSpecialCalculate = false;
 		restartColorMode();
+		userAnsList.Clear();
 		tmpColorOperList.Clear();
 		for (int i = 0; i < operColorRanList.Count; i++)
 			tmpColorOperList.Add(operColorRanList[i]);
