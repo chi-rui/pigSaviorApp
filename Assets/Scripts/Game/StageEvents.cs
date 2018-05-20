@@ -121,8 +121,6 @@ public class StageEvents : MonoBehaviour {
 		}
 	}
 
-
-//game mode
 	// warnings confirm btn
 	public void clickWarningConfirmBtn () {
 		warningPanel.SetActive(false);
