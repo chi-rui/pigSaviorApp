@@ -197,8 +197,8 @@ public class TypeMode : MonoBehaviour {
 	public void clickFightingStart () {
 		// for (int i = 0; i < operChooseBtnIndexList.Count; i++)
 		// 	print(operChooseBtnIndexList[i]);
-		for (int i = 0; i < operChooseTypeList.Count; i++)
-			print(operChooseTypeList[i]);
+		// for (int i = 0; i < operChooseTypeList.Count; i++)
+		// 	print(operChooseTypeList[i]);
 		if (operChooseMemberCount == 0) {
 			warningPanel.SetActive(true);
 			Text_warning.text = "你尚未指定運算符號攻擊順序";
@@ -453,10 +453,9 @@ public class TypeMode : MonoBehaviour {
 			userAnsObj.partAns = int.Parse(Text_userans.text);
 			tmpAns = int.Parse(Text_userans.text).ToString();
 		}
-		// print(numA + " " + numB);
-		// userAnsObj.numA = numA;
-		// userAnsObj.numB = numB;
 		userAnsObj.isInBracket = isInBracket;
+		userAnsObj.numA = numA;
+		userAnsObj.numB = numB;
 		userAnsList.Add(userAnsObj);
 
 		for (int i = 0; i < operFailedCount; i++)
@@ -469,7 +468,7 @@ public class TypeMode : MonoBehaviour {
 			Image_nextFightOper.sprite = Image_operTeamMemberArr[operFailedCount].sprite;
 			if (operChooseTypeList.Count != 0) {
 				operChooseTypeList.Remove(operChooseTypeList[0]);
-				print(operChooseTypeList[0]);
+				// print(operChooseTypeList[0]);
 			}
 			quesOperImageArr[operChooseBtnIndexList[0]].SetActive(false);
 			if (operChooseBtnIndexList[0] == 2) {
@@ -497,7 +496,7 @@ public class TypeMode : MonoBehaviour {
 	public void checkUserAnswer () {
 		print("userAnsList.Count: " + userAnsList.Count);
 		for (int i = 0; i < userAnsList.Count; i++)
-			print(userAnsList[i].index + " " + userAnsList[i].operators + " " + userAnsList[i].partAns + " " + userAnsList[i].isInBracket);
+			print(userAnsList[i].index + " " + userAnsList[i].operators + " " + userAnsList[i].partAns + " " + userAnsList[i].isInBracket + " " + userAnsList[i].numA + " " + userAnsList[i].numB);
 
 		if (userAnsList[userAnsList.Count-1].partAns == quesObj.answer[quesObj.answer.Count-1].partAns)
 			print("答案正確");

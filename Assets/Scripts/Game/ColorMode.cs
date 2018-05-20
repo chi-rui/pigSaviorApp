@@ -447,10 +447,9 @@ public class ColorMode : MonoBehaviour {
 			userAnsObj.partAns = int.Parse(Text_userans.text);
 			tmpAns = int.Parse(Text_userans.text).ToString();
 		}
-		// print(numA + " " + numB);
-		// userAnsObj.numA = numA;
-		// userAnsObj.numB = numB;
 		userAnsObj.isInBracket = isInBracket;
+		userAnsObj.numA = numA;
+		userAnsObj.numB = numB;
 		userAnsList.Add(userAnsObj);
 		
 		tmpColorOperList.Remove(colorResult);
@@ -485,7 +484,7 @@ public class ColorMode : MonoBehaviour {
 	public void checkUserAnswer () {
 		print("userAnsList.Count: " + userAnsList.Count);
 		for (int i = 0; i < userAnsList.Count; i++)
-			print(userAnsList[i].index + " " + userAnsList[i].operators + " " + userAnsList[i].partAns + " " + userAnsList[i].isInBracket);
+			print(userAnsList[i].index + " " + userAnsList[i].operators + " " + userAnsList[i].partAns + " " + userAnsList[i].isInBracket + " " + userAnsList[i].numA + " " + userAnsList[i].numB);
 
 		if (userAnsList[userAnsList.Count-1].partAns == quesObj.answer[quesObj.answer.Count-1].partAns)
 			print("答案正確");
