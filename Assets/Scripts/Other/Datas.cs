@@ -74,6 +74,8 @@ public class AnsObj
 	public char operators;
 	public int partAns;
 	public bool isInBracket;
+	public int numA;
+	public int numB;
 }
 
 

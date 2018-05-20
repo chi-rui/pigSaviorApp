@@ -7,12 +7,15 @@ using UnityEngine;
 public class MathDatasControl : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
-		// string t = "";
-		// QuesObj quesObj = getQuestion( 1, 200, "A+B/(C-D)");
-		// for(int i = 0; i < quesObj.question.Count; i++ ){
-		// 	t += quesObj.question[i];
-		// }
-		// print(t + " = " + quesObj.answer[quesObj.answer.Count-1].partAns);
+		string t = "";
+		QuesObj quesObj = getQuestion( 1, 200, "A+(B-C)*D");
+		for(int i = 0; i < quesObj.question.Count; i++ ){
+			t += quesObj.question[i];
+		}
+		print(t + " = " + quesObj.answer[quesObj.answer.Count-1].partAns);
+		for(int i = 0; i < quesObj.answer.Count; i++ ){
+			print(quesObj.answer[i].numA + quesObj.answer[i].operators.ToString() + quesObj.answer[i].numB + " = " + quesObj.answer[i].partAns);
+		}
 	}
 	
 	// Update is called once per frame
@@ -108,8 +111,12 @@ public class MathDatasControl : MonoBehaviour {
 		question = formula.Select(c => c.ToString()).ToArray();						// string array for store question.
 
 		if(answerList.Count > 2)
-			if(answerList[2].index < answerList[0].index || answerList[2].index < answerList[1].index)
+			if(answerList[2].index < answerList[0].index && answerList[2].index > answerList[1].index)
 				special = true;
+			else if(answerList[2].index > answerList[0].index && answerList[2].index < answerList[1].index)
+				special = true;
+			else
+				special = false;
 
 		// if template have double brackets...
 		if(special){
@@ -142,6 +149,8 @@ public class MathDatasControl : MonoBehaviour {
 				print("operators not found.");
 				break;
 			}
+			answerList[2].numA = frontAns;
+			answerList[2].numB = behindAns;
 
 			// set number to template question.
 			for(i = 0; i < answerList.Count-1; i++ ){
@@ -177,6 +186,8 @@ public class MathDatasControl : MonoBehaviour {
 					break;
 				}
 				answerList[i].partAns = num;
+				answerList[i].numA = int.Parse(question[answerList[i].index-1]);
+				answerList[i].numB = int.Parse(question[answerList[i].index+1]);
 			}
 
 
@@ -228,6 +239,8 @@ public class MathDatasControl : MonoBehaviour {
 						answerList[i].partAns = stackNum[i-1] / stackNum[i-2];
 						break;
 					}
+					answerList[i].numA = stackNum[i-1];
+					answerList[i].numB = stackNum[i-2];
 				}else if(isAfter){
 					// if there's a finished operation after the operator.
 					switch(answerList[i].operators){
@@ -244,7 +257,7 @@ public class MathDatasControl : MonoBehaviour {
 						answerList[i].partAns = stackNum[i-1] * num;
 						break;
 					case '÷':case '/':
-						answerList[i].partAns = UnityEngine.Random.Range(miniNum, (int)maxNum/2);
+						answerList[i].partAns = UnityEngine.Random.Range(miniNum, (int)Mathf.Sqrt(maxNum));
 						num = stackNum[i-1] * answerList[i].partAns;
 						break;
 					}
@@ -253,6 +266,8 @@ public class MathDatasControl : MonoBehaviour {
 						if(question[j] == "(" || question[j] == ")" ){
 							continue;
 						}else{
+							answerList[i].numA = num;
+							answerList[i].numB = stackNum[i-1];
 							question[j] = num.ToString();
 							counter[j] = '@';
 							break;
@@ -283,6 +298,8 @@ public class MathDatasControl : MonoBehaviour {
 						if(question[j] == "(" || question[j] == ")" ){
 							continue;
 						}else{
+							answerList[i].numA = stackNum[i-1];
+							answerList[i].numB = num;
 							question[j] = num.ToString();
 							counter[j] = '@';
 							break;
@@ -319,6 +336,7 @@ public class MathDatasControl : MonoBehaviour {
 						if(question[j] == "(" || question[j] == ")" ){
 							continue;
 						}else{
+							answerList[i].numA = tempNum;
 							question[j] = tempNum.ToString();
 							counter[j] = '@';
 							break;
@@ -328,6 +346,7 @@ public class MathDatasControl : MonoBehaviour {
 						if(question[j] == "(" || question[j] == ")" ){
 							continue;
 						}else{
+							answerList[i].numB = num;
 							question[j] = num.ToString();
 							counter[j] = '@';
 							break;
