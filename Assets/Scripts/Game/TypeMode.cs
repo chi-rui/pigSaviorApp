@@ -470,7 +470,10 @@ public class TypeMode : MonoBehaviour {
 	public void clickRechallengeGame () {
 		calculatePanel.SetActive(false);
 		fightingPanel.SetActive(false);
+		isSpecialCalculate = false;
 		operFailedCount = 0;
+		Text_userans.text = "ANS";
+		userAnsList.Clear();
 		clickClearTeam();
 		showQuestion();
 		for (int i = 0; i < operCount; i++)

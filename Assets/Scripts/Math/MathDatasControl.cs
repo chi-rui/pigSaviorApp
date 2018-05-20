@@ -8,7 +8,7 @@ public class MathDatasControl : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		// string t = "";
-		// QuesObj quesObj = getQuestion( 1, 200, "A+B-C÷D");
+		// QuesObj quesObj = getQuestion( 1, 200, "A+B/(C-D)");
 		// for(int i = 0; i < quesObj.question.Count; i++ ){
 		// 	t += quesObj.question[i];
 		// }
