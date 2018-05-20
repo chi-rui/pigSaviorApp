@@ -7,15 +7,15 @@ using UnityEngine;
 public class MathDatasControl : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
-		// string t = "";
-		// QuesObj quesObj = getQuestion( 1, 200, "A+B/(C-D)");
-		// for(int i = 0; i < quesObj.question.Count; i++ ){
-		// 	t += quesObj.question[i];
-		// }
-		// print(t + " = " + quesObj.answer[quesObj.answer.Count-1].partAns);
-		// for(int i = 0; i < quesObj.answer.Count; i++ ){
-		// 	print(quesObj.answer[i].numA + quesObj.answer[i].operators.ToString() + quesObj.answer[i].numB + " = " + quesObj.answer[i].partAns);
-		// }
+		string t = "";
+		QuesObj quesObj = getQuestion( 1, 200, "A+(B-C)*D");
+		for(int i = 0; i < quesObj.question.Count; i++ ){
+			t += quesObj.question[i];
+		}
+		print(t + " = " + quesObj.answer[quesObj.answer.Count-1].partAns);
+		for(int i = 0; i < quesObj.answer.Count; i++ ){
+			print(quesObj.answer[i].numA + quesObj.answer[i].operators.ToString() + quesObj.answer[i].numB + " = " + quesObj.answer[i].partAns);
+		}
 	}
 	
 	// Update is called once per frame
@@ -111,9 +111,12 @@ public class MathDatasControl : MonoBehaviour {
 		question = formula.Select(c => c.ToString()).ToArray();						// string array for store question.
 
 		if(answerList.Count > 2)
-			if(answerList[2].index < answerList[0].index || answerList[2].index < answerList[1].index )
+			if(answerList[2].index < answerList[0].index && answerList[2].index > answerList[1].index)
 				special = true;
-
+			else if(answerList[2].index > answerList[0].index && answerList[2].index < answerList[1].index)
+				special = true;
+			else
+				special = false;
 
 		// if template have double brackets...
 		if(special){
