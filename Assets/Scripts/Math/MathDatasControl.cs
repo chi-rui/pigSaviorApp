@@ -34,8 +34,8 @@ public class MathDatasControl : MonoBehaviour {
 		string[] question;
 		List<char> numbers = new List<char>();
 		char[] formula = template.ToCharArray();
-		bool isInBracket = false;
-		int i, j, num = 0, tempNum=0, bracketNum = 0;
+		bool isInBracket = false, special = false;
+		int i, j, num = 0, tempNum=0;
 		List<AnsObj> answerList = new List<AnsObj>();
 		List<AnsObj> answerTemp = new List<AnsObj>();
 		AnsObj ansObj = new AnsObj();
@@ -68,7 +68,6 @@ public class MathDatasControl : MonoBehaviour {
 					break;
 				case '(':
 					isInBracket = true;
-					bracketNum ++;
 					if(!quesObj.isBracket)
 						quesObj.isBracket = true;
 					break;
@@ -108,8 +107,12 @@ public class MathDatasControl : MonoBehaviour {
 		answerTemp.Clear();
 		question = formula.Select(c => c.ToString()).ToArray();						// string array for store question.
 
+		if(answerList.Count > 2)
+			if(answerList[2].index < answerList[0].index || answerList[2].index < answerList[1].index)
+				special = true;
+
 		// if template have double brackets...
-		if(bracketNum > 1){
+		if(special){
 			int frontAns = 0, behindAns = 0; 
 			// check the last operator.
 			switch(answerList[2].operators){
@@ -142,9 +145,9 @@ public class MathDatasControl : MonoBehaviour {
 
 			// set number to template question.
 			for(i = 0; i < answerList.Count-1; i++ ){
-				if(i == 0)
+				if(answerList[i].index < answerList[2].index)
 					num = frontAns;
-				else if (i == 1)
+				else if (answerList[i].index > answerList[2].index)
 					num = behindAns;
 
 				// int tempNum = 0;
