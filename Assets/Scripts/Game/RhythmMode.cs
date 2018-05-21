@@ -27,6 +27,7 @@ public class RhythmMode : MonoBehaviour {
 	public int minNum, maxNum;
 	public List<string> quesTemplate;
 	private MathDatasControl MathDatas;
+	private MisIdentify MisIdent;
 	private QuesObj quesObj;
 
 	// set user answer
@@ -46,6 +47,7 @@ public class RhythmMode : MonoBehaviour {
 		generateHitBars(hitbarCounts);
 
 		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
+		MisIdent = GameObject.Find("EventSystem").GetComponent<MisIdentify>();
 		generateNewQuestion(minNum, maxNum, quesTemplate);
 	}
 	
@@ -419,13 +421,19 @@ public class RhythmMode : MonoBehaviour {
 	}
 
 	public void checkUserAnswer () {
-		print("userAnsList.Count: " + userAnsList.Count);
-		for (int i = 0; i < userAnsList.Count; i++)
-			print(userAnsList[i].index + " " + userAnsList[i].operators + " " + userAnsList[i].partAns + " " + userAnsList[i].isInBracket + " " + userAnsList[i].numA + " " + userAnsList[i].numB);
+		List<string> misConceptions = new List<string>();
+		misConceptions = MisIdent.getMisConception(quesObj.answer, userAnsList);
+
+		for(int i = 0; i < misConceptions.Count; i++){
+			print("你有 : " + misConceptions[i]);
+		}
+		// print("userAnsList.Count: " + userAnsList.Count);
+		// for (int i = 0; i < userAnsList.Count; i++)
+		// 	print(userAnsList[i].index + " " + userAnsList[i].operators + " " + userAnsList[i].partAns + " " + userAnsList[i].isInBracket + " " + userAnsList[i].numA + " " + userAnsList[i].numB);
 		
-		if (userAnsList[userAnsList.Count-1].partAns == quesObj.answer[quesObj.answer.Count-1].partAns)
-			print("答案正確");
-		else
-			print("答案錯誤");
+		// if (userAnsList[userAnsList.Count-1].partAns == quesObj.answer[quesObj.answer.Count-1].partAns)
+		// 	print("答案正確");
+		// else
+		// 	print("答案錯誤");
 	}
 }
