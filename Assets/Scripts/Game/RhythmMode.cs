@@ -16,18 +16,22 @@ public class RhythmMode : MonoBehaviour {
 	public string characterPerfectAnimStr, npcPerfectAnimStr;
 	
 	private Vector3 pos_L, pos_R;
-	private int remainCounts, hitbarCounts, operCount, operChooseBtnIndex, userCalculateCount;
-	private bool isRhythmStart, isPerfectHit, isChallengeFailed, isSpecialCalculate;
+	private int remainCounts, hitbarCounts, operCount, operChooseBtnIndex, userCalculateCount, numA, numB;
+	private bool isRhythmStart, isPerfectHit, isChallengeFailed, isSpecialCalculate, isInBracket;
 	private List<int> tmpSortingList = new List<int>();
 	private List<int> hitBarsIndexList = new List<int>();
 	private List<string> quesOperList = new List<string>();
-	private List<int> userAnsList = new List<int>();
+	private List<int> quesOperIndexList = new List<int>();
 	
-	// setting question
+	// set question
 	public int minNum, maxNum;
 	public List<string> quesTemplate;
 	private MathDatasControl MathDatas;
+	private MisIdentify MisIdent;
 	private QuesObj quesObj;
+
+	// set user answer
+	private List<AnsObj> userAnsList = new List<AnsObj>();
 
 // test
 	private string testQues;
@@ -38,12 +42,12 @@ public class RhythmMode : MonoBehaviour {
 		pos_R = new Vector3(-530f, pointer.transform.position.y, 0);
 		speed = 0.5f;
 		remainCounts = 10;
-		isChallengeFailed = false;
-		isPerfectHit = false;
+		isInBracket = true;
 		hitbarCounts = 3;
 		generateHitBars(hitbarCounts);
 
 		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
+		MisIdent = GameObject.Find("EventSystem").GetComponent<MisIdentify>();
 		generateNewQuestion(minNum, maxNum, quesTemplate);
 	}
 	
@@ -104,12 +108,18 @@ public class RhythmMode : MonoBehaviour {
 				break;
 		}
 
-		// delete operators and brackets in question
+		// store operators index and operators in each list
 		for (int i = 0; i < quesObj.question.Count; i++) {
 			if (quesObj.question[i] == "+" || quesObj.question[i] == "-" || quesObj.question[i] == "x" || quesObj.question[i] == "÷") {
+				quesOperIndexList.Add(i);
 				quesOperList.Add(quesObj.question[i]);
-				quesObj.question.Remove(quesObj.question[i]);
 			}
+		}
+
+		// delete operators and brackets in question
+		for (int i = 0; i < quesObj.question.Count; i++) {
+			if (quesObj.question[i] == "+" || quesObj.question[i] == "-" || quesObj.question[i] == "x" || quesObj.question[i] == "÷")
+				quesObj.question.Remove(quesObj.question[i]);
 			if (quesObj.question[i] == "(") {
 				quesObj.question[i+1] = quesObj.question[i] + quesObj.question[i+1];
 			} else if (quesObj.question[i] == ")") {
@@ -130,6 +140,8 @@ public class RhythmMode : MonoBehaviour {
 		// 	print(quesObj.question[i]);
 		// for (int i = 0; i < quesOperList.Count; i++)
 		// 	print(quesOperList[i]);
+		// for (int i = 0; i < quesOperIndexList.Count; i++)
+		// 	print(quesOperIndexList[i]);
 
 		showQuestion();
 	}
@@ -244,14 +256,12 @@ public class RhythmMode : MonoBehaviour {
 	void OnTriggerEnter2D (Collider2D collider) {
 		if (collider.gameObject.tag == "hitbar") {
 			isPerfectHit = true;
-			// print("isPerfectHit: " + isPerfectHit);
 		} else if (collider.gameObject.tag == "rhythmbar") {
 			isPerfectHit = false;
-			// print("isPerfectHit: " + isPerfectHit);
 		} else {
 			isPerfectHit = false;
-			// print("Error for collision");
 		}
+		// print("isPerfectHit: " + isPerfectHit);
 	}
 
 	IEnumerator showClickAnyPosition (float time) {
@@ -272,6 +282,7 @@ public class RhythmMode : MonoBehaviour {
 	public void clickOperBtn (int num) {
 		operChooseBtnIndex = num;
 		// print(operChooseBtnIndex);
+		// print(quesOperIndexList[operChooseBtnIndex]);
 		calculatePanel.SetActive(true);
 		string tmp1 = "", tmp2 = "";
 		if (quesNumTextChooseArr[operChooseBtnIndex].GetComponent<Text>().text == "") {
@@ -287,6 +298,8 @@ public class RhythmMode : MonoBehaviour {
 		}
 		// print(tmp1 + " " + tmp2);
 		Text_partQues.text = removeQuesBracket(tmp1) + quesOperList[operChooseBtnIndex] + removeQuesBracket(tmp2);
+		numA = int.Parse(removeQuesBracket(tmp1));
+		numB = int.Parse(removeQuesBracket(tmp2));
 	}
 
 	string removeQuesBracket (string str) {
@@ -297,6 +310,7 @@ public class RhythmMode : MonoBehaviour {
 			str2 = str.Replace(")", "");
 		} else {
 			str2 = str;
+			isInBracket = false;
 		}
 		return str2;
 	}
@@ -317,6 +331,7 @@ public class RhythmMode : MonoBehaviour {
 
 	public void clickPreviousStep () {
 		calculatePanel.SetActive(false);
+		Text_userans.text = "ANS";
 	}
 
 	public void clickFinishCalculate () {
@@ -324,17 +339,23 @@ public class RhythmMode : MonoBehaviour {
 		// print(userCalculateCount);
 		hitbarCounts--;
 		// print(hitbarCounts);
-		
 		string tmpAns = "";
+
+		// set user answer object and add to user answer list
+		AnsObj userAnsObj = new AnsObj();
+		userAnsObj.index = quesOperIndexList[operChooseBtnIndex];
+		userAnsObj.operators = System.Convert.ToChar(quesOperList[operChooseBtnIndex]);
 		if (Text_userans.text == null || Text_userans.text == "ANS") {
-			userAnsList.Add(0);
+			userAnsObj.partAns = 0;
 			tmpAns = "0";
 		} else {
-			userAnsList.Add(int.Parse(Text_userans.text));
+			userAnsObj.partAns = int.Parse(Text_userans.text);
 			tmpAns = int.Parse(Text_userans.text).ToString();
 		}
-		for (int i = 0; i < userAnsList.Count; i++)
-			print(userAnsList[i]);
+		userAnsObj.isInBracket = isInBracket;
+		userAnsObj.numA = numA;
+		userAnsObj.numB = numB;
+		userAnsList.Add(userAnsObj);
 
 		if (userCalculateCount < operCount) {
 			quesOperBtnChooseArr[operChooseBtnIndex].SetActive(false);
@@ -371,11 +392,19 @@ public class RhythmMode : MonoBehaviour {
 	}
 
 	public void checkUserAnswer () {
-		// for (int i = 0; i < quesObj.answer.Count; i++)
-		// 	print(quesObj.answer[i].partAns);
-		if (userAnsList[userAnsList.Count-1] == quesObj.answer[quesObj.answer.Count-1].partAns)
-			print("答案正確");
-		else
-			print("答案錯誤");
+		List<string> misConceptions = new List<string>();
+		misConceptions = MisIdent.getMisConception(quesObj.answer, userAnsList);
+
+		for(int i = 0; i < misConceptions.Count; i++){
+			print("你有 : " + misConceptions[i]);
+		}
+		// print("userAnsList.Count: " + userAnsList.Count);
+		// for (int i = 0; i < userAnsList.Count; i++)
+		// 	print(userAnsList[i].index + " " + userAnsList[i].operators + " " + userAnsList[i].partAns + " " + userAnsList[i].isInBracket + " " + userAnsList[i].numA + " " + userAnsList[i].numB);
+		
+		// if (userAnsList[userAnsList.Count-1].partAns == quesObj.answer[quesObj.answer.Count-1].partAns)
+		// 	print("答案正確");
+		// else
+		// 	print("答案錯誤");
 	}
 }

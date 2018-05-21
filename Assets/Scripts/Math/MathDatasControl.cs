@@ -7,15 +7,15 @@ using UnityEngine;
 public class MathDatasControl : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
-		string t = "";
-		QuesObj quesObj = getQuestion( 1, 200, "A+(B-C)*D");
-		for(int i = 0; i < quesObj.question.Count; i++ ){
-			t += quesObj.question[i];
-		}
-		print(t + " = " + quesObj.answer[quesObj.answer.Count-1].partAns);
-		for(int i = 0; i < quesObj.answer.Count; i++ ){
-			print(quesObj.answer[i].numA + quesObj.answer[i].operators.ToString() + quesObj.answer[i].numB + " = " + quesObj.answer[i].partAns);
-		}
+		// string t = "";
+		// QuesObj quesObj = getQuestion( 1, 200, "A+(B-C)*D");
+		// for(int i = 0; i < quesObj.question.Count; i++ ){
+		// 	t += quesObj.question[i];
+		// }
+		// print(t + " = " + quesObj.answer[quesObj.answer.Count-1].partAns);
+		// for(int i = 0; i < quesObj.answer.Count; i++ ){
+		// 	print(quesObj.answer[i].numA + quesObj.answer[i].operators.ToString() + quesObj.answer[i].numB + " = " + quesObj.answer[i].partAns);
+		// }
 	}
 	
 	// Update is called once per frame

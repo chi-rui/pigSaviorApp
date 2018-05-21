@@ -14,29 +14,31 @@ public class ColorMode : MonoBehaviour {
 	public Text Text_warning, Text_partQues, Text_userans;
 	public string npc;
 
-	private int colorMixCount, operCount, userCalculateCount, operChooseColorIndex;
-	private bool isPair, isMixColorFailed, isSpecialCalculate;
+	private int colorMixCount, operCount, userCalculateCount, operChooseColorIndex, numA, numB;
+	private bool isPair, isMixColorFailed, isSpecialCalculate, isInBracket;
 	private string colorResult, operTmpStr;
 	private List<string> chooseColorList = new List<string>();
 	private List<string> colorList = new List<string> {"red", "yellow", "blue", "orange", "green", "purple"};
 	private List<string> operColorRanList = new List<string>();
 	private List<string> tmpColorOperList = new List<string>();
 	private List<int> quesOperList = new List<int>();
-	private List<int> userAnsList = new List<int>();
+	private List<int> quesOperIndexList = new List<int>();
 
-	// setting question
+	// set question
 	public int minNum, maxNum;
 	public List<string> quesTemplate;
 	private MathDatasControl MathDatas;
 	private QuesObj quesObj;
+
+	// set user answer
+	private List<AnsObj> userAnsList = new List<AnsObj>();
 
 // test
 	private string testQues;
 
 	// Use this for initialization
 	void Start () {
-		isPair = false;
-		isMixColorFailed = false;
+		isInBracket = true;
 
 		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
 		generateNewQuestion(minNum, maxNum, quesTemplate);
@@ -78,9 +80,10 @@ public class ColorMode : MonoBehaviour {
 				break;
 		}
 
-		// delete operators and brackets in question
+		// store operators index and operators in each list
 		for (int i = 0; i < quesObj.question.Count; i++) {
 			if (quesObj.question[i] == "+" || quesObj.question[i] == "-" || quesObj.question[i] == "x" || quesObj.question[i] == "÷") {
+				quesOperIndexList.Add(i);
 				switch (quesObj.question[i]) {
 					case "+":
 						quesOperList.Add(0);
@@ -95,8 +98,13 @@ public class ColorMode : MonoBehaviour {
 						quesOperList.Add(3);
 						break;
 				}
-				quesObj.question.Remove(quesObj.question[i]);
 			}
+		}
+
+		// delete operators and brackets in question
+		for (int i = 0; i < quesObj.question.Count; i++) {
+			if (quesObj.question[i] == "+" || quesObj.question[i] == "-" || quesObj.question[i] == "x" || quesObj.question[i] == "÷")
+				quesObj.question.Remove(quesObj.question[i]);
 			if (quesObj.question[i] == "(") {
 				quesObj.question[i+1] = quesObj.question[i] + quesObj.question[i+1];
 			} else if (quesObj.question[i] == ")") {
@@ -365,6 +373,8 @@ public class ColorMode : MonoBehaviour {
 			tmp2 = quesNumTextArr[operChooseColorIndex+1].GetComponent<Text>().text;
 		}
 		Text_partQues.text = removeQuesBracket(tmp1) + operTmpStr + removeQuesBracket(tmp2);
+		numA = int.Parse(removeQuesBracket(tmp1));
+		numB = int.Parse(removeQuesBracket(tmp2));
 	}
 
 	string removeQuesBracket (string str) {
@@ -375,6 +385,7 @@ public class ColorMode : MonoBehaviour {
 			str2 = str.Replace(")", "");
 		} else {
 			str2 = str;
+			isInBracket = false;
 		}
 		return str2;
 	}
@@ -406,19 +417,40 @@ public class ColorMode : MonoBehaviour {
 		Text_userans.text = "";
 	}
 
+	public void clickRechallengeGame () {
+		calculatePanel.SetActive(false);
+		userCalculateCount = 0;
+		Text_userans.text = "ANS";
+		isSpecialCalculate = false;
+		restartColorMode();
+		userAnsList.Clear();
+		tmpColorOperList.Clear();
+		for (int i = 0; i < operColorRanList.Count; i++)
+			tmpColorOperList.Add(operColorRanList[i]);
+		// for (int i = 0; i < tmpColorOperList.Count; i++)
+		// 	print(tmpColorOperList[i]);
+		showQuestion();
+	}
+
 	public void clickFinishCalculate () {
 		userCalculateCount++;
-		
 		string tmpAns = "";
+
+		// set user answer object and add to user answer list
+		AnsObj userAnsObj = new AnsObj();
+		userAnsObj.index = quesOperIndexList[operChooseColorIndex];
+		userAnsObj.operators = System.Convert.ToChar(operTmpStr);
 		if (Text_userans.text == null || Text_userans.text == "ANS") {
-			userAnsList.Add(0);
+			userAnsObj.partAns = 0;
 			tmpAns = "0";
 		} else {
-			userAnsList.Add(int.Parse(Text_userans.text));
+			userAnsObj.partAns = int.Parse(Text_userans.text);
 			tmpAns = int.Parse(Text_userans.text).ToString();
 		}
-		for (int i = 0; i < userAnsList.Count; i++)
-			print(userAnsList[i]);
+		userAnsObj.isInBracket = isInBracket;
+		userAnsObj.numA = numA;
+		userAnsObj.numB = numB;
+		userAnsList.Add(userAnsObj);
 		
 		tmpColorOperList.Remove(colorResult);
 		if (userCalculateCount < operCount) {
@@ -450,26 +482,13 @@ public class ColorMode : MonoBehaviour {
 	}
 
 	public void checkUserAnswer () {
-		// for (int i = 0; i < quesObj.answer.Count; i++)
-		// 	print(quesObj.answer[i].partAns);
-		if (userAnsList[userAnsList.Count-1] == quesObj.answer[quesObj.answer.Count-1].partAns)
+		print("userAnsList.Count: " + userAnsList.Count);
+		for (int i = 0; i < userAnsList.Count; i++)
+			print(userAnsList[i].index + " " + userAnsList[i].operators + " " + userAnsList[i].partAns + " " + userAnsList[i].isInBracket + " " + userAnsList[i].numA + " " + userAnsList[i].numB);
+
+		if (userAnsList[userAnsList.Count-1].partAns == quesObj.answer[quesObj.answer.Count-1].partAns)
 			print("答案正確");
 		else
 			print("答案錯誤");
-	}
-
-	public void clickRechallengeGame () {
-		calculatePanel.SetActive(false);
-		userCalculateCount = 0;
-		Text_userans.text = "ANS";
-		isSpecialCalculate = false;
-		restartColorMode();
-		userAnsList.Clear();
-		tmpColorOperList.Clear();
-		for (int i = 0; i < operColorRanList.Count; i++)
-			tmpColorOperList.Add(operColorRanList[i]);
-		// for (int i = 0; i < tmpColorOperList.Count; i++)
-		// 	print(tmpColorOperList[i]);
-		showQuestion();
 	}
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class misIdentify : MonoBehaviour {
+public class MisIdentify : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
@@ -34,18 +34,19 @@ public class misIdentify : MonoBehaviour {
 		/**** MisConception number ****/
 
 		List<string> misConception = new List<string>();
-		int bracketSep = 0, i = 0, nowOperIndex = 0, answer = 0;
+		int bracketSep = -1, i = 0, nowOperIndex = 0, answer = 0;
 		string questionOper = "";
 		bool operSwitch = false;
 
 		for(i = 0; i < trueAns.Count; i++){
-			if(trueAns[i].isInBracket && bracketSep == 0){
+			if(!trueAns[i].isInBracket && bracketSep == -1){
 				bracketSep = i;
 			}
 			questionOper += trueAns[i].operators.ToString();
 		}
 
-		
+		print(bracketSep);
+
 		for(i = 0; i < userAns.Count; i++){
 			
 			// check rule type misConception
@@ -68,14 +69,20 @@ public class misIdentify : MonoBehaviour {
 			if(i == bracketSep)
 				operSwitch = false;
 
+
 			switch(questionOper){
 				case "++":case "+++":
 				case "**":case "***":
 				case "xx":case "xxx":
 					break;
 				default:
-					if(userAns[i].index > trueAns[i].index)
-						mis03 = true;
+					if(i > 0){
+						print(userAns[i].index + " " + userAns[i-1].index);
+						if(userAns[i].index < userAns[i-1].index)
+							if(!(userAns[i].isInBracket ^ userAns[i-1].isInBracket))
+								if(isSameLevelOper(userAns[i].operators, userAns[i-1].operators))
+									mis03 = true;
+					}
 					break;
 			}
 
@@ -165,5 +172,31 @@ public class misIdentify : MonoBehaviour {
 			misConception.Add("mis09");
 
 		return misConception;
+	}
+
+	private bool isSameLevelOper( char operA, char operB ){
+		switch(operA){
+			case '+':
+				if(operB == '-')
+					return true;
+				else
+					break;
+			case '-':
+				if(operB == '+' || operB == '-')
+					return true;
+				else
+					break;
+			case '*':case 'x':
+				if(operB == '/' || operB == '÷')
+					return true;
+				else
+					break;
+			case '/':case '÷':
+				if(operB == '*' || operB == 'x' || operB == '/' || operB == '÷')
+					return true;
+				else
+					break;
+		}
+		return false;
 	}
 }
