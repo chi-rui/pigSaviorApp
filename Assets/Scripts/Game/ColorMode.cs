@@ -15,7 +15,7 @@ public class ColorMode : MonoBehaviour {
 	public string npc;
 
 	private int colorMixCount, operCount, userCalculateCount, operChooseColorIndex, numA, numB;
-	private bool isPair, isMixColorFailed, isSpecialCalculate, isInBracket;
+	private bool isPair, isMixColorFailed, isSpecialCalculate, isInBracketA, isInBracketB;
 	private string colorResult, operTmpStr;
 	private List<string> chooseColorList = new List<string>();
 	private List<string> colorList = new List<string> {"red", "yellow", "blue", "orange", "green", "purple"};
@@ -38,8 +38,6 @@ public class ColorMode : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		isInBracket = true;
-
 		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
 		generateNewQuestion(minNum, maxNum, quesTemplate);
 	}
@@ -360,6 +358,7 @@ public class ColorMode : MonoBehaviour {
 				operTmpStr = "÷";
 				break;
 		}
+		isInBracketA = false; isInBracketB = false;
 		string tmp1 = "", tmp2 = "";
 		if (quesNumTextArr[operChooseColorIndex].GetComponent<Text>().text == "") {
 			tmp1 = quesNumTextArr[operChooseColorIndex-1].GetComponent<Text>().text;
@@ -372,20 +371,33 @@ public class ColorMode : MonoBehaviour {
 			tmp1 = quesNumTextArr[operChooseColorIndex].GetComponent<Text>().text;
 			tmp2 = quesNumTextArr[operChooseColorIndex+1].GetComponent<Text>().text;
 		}
-		Text_partQues.text = removeQuesBracket(tmp1) + operTmpStr + removeQuesBracket(tmp2);
-		numA = int.Parse(removeQuesBracket(tmp1));
-		numB = int.Parse(removeQuesBracket(tmp2));
+		Text_partQues.text = removeLeftNumBracket(tmp1) + operTmpStr + removeRightNumBracket(tmp2);
+		numA = int.Parse(removeLeftNumBracket(tmp1));
+		numB = int.Parse(removeRightNumBracket(tmp2));
 	}
 
-	string removeQuesBracket (string str) {
-		string str2 = "";
+	string removeLeftNumBracket (string str) {
+		string str2;
 		if (str.Contains("(")) {
 			str2 = str.Replace("(", "");
+			isInBracketA = true;
 		} else if (str.Contains(")")) {
 			str2 = str.Replace(")", "");
 		} else {
 			str2 = str;
-			isInBracket = false;
+		}
+		return str2;
+	}
+
+	string removeRightNumBracket (string str) {
+		string str2;
+		if (str.Contains("(")) {
+			str2 = str.Replace("(", "");
+		} else if (str.Contains(")")) {
+			str2 = str.Replace(")", "");
+			isInBracketB = true;
+		} else {
+			str2 = str;
 		}
 		return str2;
 	}
@@ -434,7 +446,7 @@ public class ColorMode : MonoBehaviour {
 
 	public void clickFinishCalculate () {
 		userCalculateCount++;
-		string tmpAns = "";
+		string tmpAns = ""; string bracketStr = "";
 
 		// set user answer object and add to user answer list
 		AnsObj userAnsObj = new AnsObj();
@@ -447,7 +459,8 @@ public class ColorMode : MonoBehaviour {
 			userAnsObj.partAns = int.Parse(Text_userans.text);
 			tmpAns = int.Parse(Text_userans.text).ToString();
 		}
-		userAnsObj.isInBracket = isInBracket;
+		if (isInBracketA || isInBracketB)
+			userAnsObj.isInBracket = true;
 		userAnsObj.numA = numA;
 		userAnsObj.numB = numB;
 		userAnsList.Add(userAnsObj);
@@ -458,12 +471,21 @@ public class ColorMode : MonoBehaviour {
 			quesOperImageArr[operChooseColorIndex].SetActive(false);
 			if (operChooseColorIndex == 2) {
 				quesNumTextArr[operChooseColorIndex+1].GetComponent<Text>().text = null;
-				quesNumTextArr[operChooseColorIndex].GetComponent<Text>().text = tmpAns;
+				bracketStr = quesNumTextArr[operChooseColorIndex-1].GetComponent<Text>().text;
+				if (bracketStr.Contains("("))
+					quesNumTextArr[operChooseColorIndex].GetComponent<Text>().text = tmpAns + ")";
+				else
+					quesNumTextArr[operChooseColorIndex].GetComponent<Text>().text = tmpAns;
 			} else {
+				quesNumTextArr[operChooseColorIndex].GetComponent<Text>().text = null;
+				bracketStr = quesNumTextArr[operChooseColorIndex+2].GetComponent<Text>().text;
+				if (bracketStr.Contains(")"))
+					quesNumTextArr[operChooseColorIndex+1].GetComponent<Text>().text = "(" + tmpAns;
+				else
+					quesNumTextArr[operChooseColorIndex+1].GetComponent<Text>().text = tmpAns;
+
 				if (isSpecialCalculate)
 					quesNumTextArr[operChooseColorIndex+2].GetComponent<Text>().text = null;
-				quesNumTextArr[operChooseColorIndex].GetComponent<Text>().text = null;
-				quesNumTextArr[operChooseColorIndex+1].GetComponent<Text>().text = tmpAns;
 			}
 			clickClearAnsNum();
 			Text_userans.text = "ANS";

@@ -17,7 +17,7 @@ public class RhythmMode : MonoBehaviour {
 	
 	private Vector3 pos_L, pos_R;
 	private int remainCounts, hitbarCounts, operCount, operChooseBtnIndex, userCalculateCount, numA, numB;
-	private bool isRhythmStart, isPerfectHit, isChallengeFailed, isSpecialCalculate, isInBracket;
+	private bool isRhythmStart, isPerfectHit, isChallengeFailed, isSpecialCalculate, isInBracketA, isInBracketB;
 	private List<int> tmpSortingList = new List<int>();
 	private List<int> hitBarsIndexList = new List<int>();
 	private List<string> quesOperList = new List<string>();
@@ -41,7 +41,7 @@ public class RhythmMode : MonoBehaviour {
 		pos_R = new Vector3(-530f, pointer.transform.position.y, 0);
 		speed = 0.5f;
 		remainCounts = 10;
-		isInBracket = true;
+		// isInBracket = true;
 		hitbarCounts = 3;
 		generateHitBars(hitbarCounts);
 
@@ -282,6 +282,7 @@ public class RhythmMode : MonoBehaviour {
 		// print(operChooseBtnIndex);
 		// print(quesOperIndexList[operChooseBtnIndex]);
 		calculatePanel.SetActive(true);
+		isInBracketA = false; isInBracketB = false;
 		string tmp1 = "", tmp2 = "";
 		if (quesNumTextChooseArr[operChooseBtnIndex].GetComponent<Text>().text == "") {
 			tmp1 = quesNumTextChooseArr[operChooseBtnIndex-1].GetComponent<Text>().text;
@@ -295,20 +296,34 @@ public class RhythmMode : MonoBehaviour {
 			tmp2 = quesNumTextChooseArr[operChooseBtnIndex+1].GetComponent<Text>().text;
 		}
 		// print(tmp1 + " " + tmp2);
-		Text_partQues.text = removeQuesBracket(tmp1) + quesOperList[operChooseBtnIndex] + removeQuesBracket(tmp2);
-		numA = int.Parse(removeQuesBracket(tmp1));
-		numB = int.Parse(removeQuesBracket(tmp2));
+		Text_partQues.text = removeLeftNumBracket(tmp1) + quesOperList[operChooseBtnIndex] + removeRightNumBracket(tmp2);
+		numA = int.Parse(removeLeftNumBracket(tmp1));
+		numB = int.Parse(removeRightNumBracket(tmp2));
+		// print(isInBracketA + " " + isInBracketB);
 	}
 
-	string removeQuesBracket (string str) {
-		string str2 = "";
+	string removeLeftNumBracket (string str) {
+		string str2;
 		if (str.Contains("(")) {
 			str2 = str.Replace("(", "");
+			isInBracketA = true;
 		} else if (str.Contains(")")) {
 			str2 = str.Replace(")", "");
 		} else {
 			str2 = str;
-			isInBracket = false;
+		}
+		return str2;
+	}
+
+	string removeRightNumBracket (string str) {
+		string str2;
+		if (str.Contains("(")) {
+			str2 = str.Replace("(", "");
+		} else if (str.Contains(")")) {
+			str2 = str.Replace(")", "");
+			isInBracketB = true;
+		} else {
+			str2 = str;
 		}
 		return str2;
 	}
@@ -337,7 +352,7 @@ public class RhythmMode : MonoBehaviour {
 		// print(userCalculateCount);
 		hitbarCounts--;
 		// print(hitbarCounts);
-		string tmpAns = "";
+		string tmpAns = ""; string bracketStr = "";
 
 		// set user answer object and add to user answer list
 		AnsObj userAnsObj = new AnsObj();
@@ -350,7 +365,8 @@ public class RhythmMode : MonoBehaviour {
 			userAnsObj.partAns = int.Parse(Text_userans.text);
 			tmpAns = int.Parse(Text_userans.text).ToString();
 		}
-		userAnsObj.isInBracket = isInBracket;
+		if (isInBracketA || isInBracketB)
+			userAnsObj.isInBracket = true;
 		userAnsObj.numA = numA;
 		userAnsObj.numB = numB;
 		userAnsList.Add(userAnsObj);
@@ -360,18 +376,31 @@ public class RhythmMode : MonoBehaviour {
 			quesOperTextArr[operChooseBtnIndex].SetActive(false);
 			if (operChooseBtnIndex == 2) {
 				quesNumTextChooseArr[operChooseBtnIndex+1].GetComponent<Text>().text = null;
-				quesNumTextChooseArr[operChooseBtnIndex].GetComponent<Text>().text = tmpAns;
 				quesNumTextArr[operChooseBtnIndex+1].GetComponent<Text>().text = null;
-				quesNumTextArr[operChooseBtnIndex].GetComponent<Text>().text = tmpAns;
+				bracketStr = quesNumTextArr[operChooseBtnIndex-1].GetComponent<Text>().text;
+				if (bracketStr.Contains("(")) {
+					quesNumTextChooseArr[operChooseBtnIndex].GetComponent<Text>().text = tmpAns + ")";
+					quesNumTextArr[operChooseBtnIndex].GetComponent<Text>().text = tmpAns + ")";
+				} else {
+					quesNumTextChooseArr[operChooseBtnIndex].GetComponent<Text>().text = tmpAns;
+					quesNumTextArr[operChooseBtnIndex].GetComponent<Text>().text = tmpAns;
+				}
 			} else {
+				quesNumTextChooseArr[operChooseBtnIndex].GetComponent<Text>().text = null;
+				quesNumTextArr[operChooseBtnIndex].GetComponent<Text>().text = null;
+				bracketStr = quesNumTextArr[operChooseBtnIndex+2].GetComponent<Text>().text;
+				if (bracketStr.Contains(")")) {
+					quesNumTextChooseArr[operChooseBtnIndex+1].GetComponent<Text>().text = "(" + tmpAns;
+					quesNumTextArr[operChooseBtnIndex+1].GetComponent<Text>().text = "(" + tmpAns;
+				} else {
+					quesNumTextChooseArr[operChooseBtnIndex+1].GetComponent<Text>().text = tmpAns;
+					quesNumTextArr[operChooseBtnIndex+1].GetComponent<Text>().text = tmpAns;
+				}
+				
 				if (isSpecialCalculate) {
 					quesNumTextChooseArr[operChooseBtnIndex+2].GetComponent<Text>().text = null;
 					quesNumTextArr[operChooseBtnIndex+2].GetComponent<Text>().text = null;
 				}
-				quesNumTextChooseArr[operChooseBtnIndex].GetComponent<Text>().text = null;
-				quesNumTextChooseArr[operChooseBtnIndex+1].GetComponent<Text>().text = tmpAns;
-				quesNumTextArr[operChooseBtnIndex].GetComponent<Text>().text = null;
-				quesNumTextArr[operChooseBtnIndex+1].GetComponent<Text>().text = tmpAns;
 			}
 			clickClearAnsNum();
 			Text_userans.text = "ANS";
