@@ -1,0 +1,287 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.UI;
+using UnityEngine;
+
+public class DynamicAssessment : MonoBehaviour {
+
+	public int countMistake;
+	private bool RuleType, ProcessType, OperType, isTeaching;
+
+	public GameObject teachingPanel, teachPage, selectionFunc, selectionQues, promptQues;
+
+	public List<QuesObj> quesList = new List<QuesObj>();
+	public List<List<AnsObj>> userList = new List<List<AnsObj>>();
+	public List<string> misConceptions = new List<string>();
+
+
+	// for test
+	private MathDatasControl MathDatas;
+	public Text TrueAnsBefore, TrueAnsAfter, UserAnsBefore, UserAnsAfter;
+
+	// Use this for initialization
+	void Start () {
+		// countMistake = 0;
+		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
+
+		RuleType = false;
+		ProcessType = false;
+		OperType = false;
+
+		for(int i = 0; i < 3; i++){
+			QuesObj test = MathDatas.getQuestion(1, 200, "(A÷B)÷(C÷D)");
+			setContents(test, test.answer, "迷思概念測試"+i.ToString());
+		}
+
+		teachNum(-1);
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		
+	}
+
+	public string getPrompt( List<string> misConception ){
+		switch(misConception[0]){
+			case "mis01":
+				if(!RuleType){
+					RuleType = true;
+					return "注意一下運算規則再試試看吧";
+				}else{
+					return "括號裡面的運算要比誰都先做喔";
+				}
+				break;
+			case "mis02":
+				if(!RuleType){
+					RuleType = true;
+					return "注意一下運算規則再試試看吧";
+				}else{
+					return "運算符號是有計算的先後順序的\n想一想再試一次吧";
+				}
+				break;
+			case "mis03":
+				if(!RuleType){
+					RuleType = true;
+					return "注意一下運算規則再試試看吧";
+				}else{
+					return "運算要由左而右進行\n才不會導致結果錯誤喔";
+				}
+				break;
+			case "mis04":
+				if(!ProcessType){
+					ProcessType = true;
+					return "計算的過程中好像有點狀況\n小心一些再試試看吧";
+				}else{
+					return "運算的過程也是很重要的喔\n再嘗試一次吧";	
+				}
+				break;
+			case "mis05":
+				if(!ProcessType){
+					ProcessType = true;
+					return "計算的過程中好像有點狀況\n小心一些再試試看吧";
+				}else{
+					return "好像有些小地方沒有注意到喔\n算完了不要忘記再檢查一下喔";	
+				}
+				break;
+			case "mis06":
+				if(!OperType){
+					OperType = true;
+					return "不同的運算符號有不同的意義\n想一想再試試看吧";
+				}else{
+					return "一直一橫是加號\n一橫結束的是減號\n想想看要怎麼使用他們呢";
+				}
+				break;
+			case "mis07":
+				if(!OperType){
+					OperType = true;
+					return "不同的運算符號有不同的意義\n想一想再試試看吧";
+				}else{
+					return "一直一橫是加號\n長相叉叉是乘號\n他們是不一樣的東西喔";
+				}
+				break;
+			case "mis08":
+				if(!OperType){
+					OperType = true;
+					return "不同的運算符號有不同的意義\n想一想再試試看吧";
+				}else{
+					return "長相叉叉是乘號\n上下點點是除號\n他們概念上是相反的喔";
+				}
+				break;
+			case "mis09":
+				if(!OperType){
+					OperType = true;
+					return "不同的運算符號有不同的意義\n想一想再試試看吧";
+				}else{
+					return "一橫結束是減號\n上下點點是除號\n多了點點概念就不一樣囉";
+				}
+				break;
+			default:
+				return "哎呀！好像出了些小問題！";
+				break;
+		}
+	}
+
+	public void setContents( QuesObj question, List<AnsObj> user, string misConception ){
+		quesList.Add(question);
+		userList.Add(user);
+		misConceptions.Add(misConception);
+		print(quesList.Count);
+	}
+
+	public void teachNum( int index ){
+		StartCoroutine(teaching(index));
+		if(index == -1){
+			selectionQues.SetActive(true);
+			string question = "";
+			for(int i = 0; i < 3; i++ ){
+				for(int j = 0; j < quesList[i].question.Count; j++)
+					question += quesList[i].question[j];
+				selectionQues.transform.GetChild(0).GetChild(0).GetChild(i).GetChild(0).GetComponent<Text>().text = question;
+				question = "";
+			}
+			selectionQues.SetActive(false);
+		}
+	}
+
+	// public void teaching( List<QuesObj> questions, List<AnsObj> userAns, List<string> misConceptions ){
+	public IEnumerator teaching( int index ){
+		teachingPanel.SetActive(true);
+		// teachPage.SetActive(true);
+		if(index == -1){
+			for(int i = 0; i < 3; i++){
+				promptQues.SetActive(true);
+				promptQues.transform.GetChild(2).GetComponent<Text>().text = "第 "+(i+1).ToString()+" 題";
+				yield return new WaitForSeconds(4f);
+				promptQues.SetActive(false);
+				teachPage.SetActive(true);
+				StartCoroutine(teachingProcess(quesList[i].question, quesList[i].answer, userList[i], misConceptions[i]));
+				while(isTeaching)
+					yield return new WaitForSeconds(0.1f);
+				teachPage.SetActive(false);
+			}
+		}else{
+			teachPage.SetActive(true);
+			StartCoroutine(teachingProcess(quesList[index].question, quesList[index].answer, userList[index], misConceptions[index]));
+			while(isTeaching)
+				yield return new WaitForSeconds(0.1f);
+			teachPage.SetActive(false);
+		}
+		// open panel and gave selection.
+		selectionFunc.SetActive(true);
+	}
+
+	private IEnumerator teachingProcess( List<string> question, List<AnsObj> trueAns, List<AnsObj> userAns, string misConception ){
+		isTeaching = true;
+		List<string> left = new List<string>(question);
+		List<string> right = new List<string>(question);
+
+		string temp = "";
+		teachingPanel.SetActive(true);
+		teachPage.transform.GetChild(9).GetComponent<Text>().text = misConception;
+		// initial test question
+		for(int i = 0; i < question.Count; i++){
+			temp += question[i];
+		}
+		TrueAnsBefore.text = UserAnsBefore.text = temp;
+		TrueAnsAfter.text = UserAnsAfter.text = "";
+		yield return new WaitForSeconds(0f);
+
+		// Count the loop by answer list length.
+		for(int i = 0; i < trueAns.Count; i++){
+			yield return new WaitForSeconds(2f);
+			// a step of true answer.
+			left[trueAns[i].index] = trueAns[i].partAns.ToString();
+			left = caculatedNumProcess( left, trueAns[i].index );
+			left = bracketsProcess(left, trueAns[i].index);
+			temp = "";
+			for(int j = 0; j < left.Count; j++){
+				if(left[j] != "@")
+					temp += left[j];
+			}
+			TrueAnsAfter.text = temp;
+
+			yield return new WaitForSeconds(2f);
+			// a step of user answer.
+			right[userAns[i].index] = userAns[i].partAns.ToString();
+			right = caculatedNumProcess( right, userAns[i].index );
+			right = bracketsProcess(right, userAns[i].index);
+
+			temp = "";
+			for(int j = 0; j < right.Count; j++){
+				if(right[j] != "@")
+					temp += right[j];
+			}
+			if(TrueAnsAfter.text == temp)
+				UserAnsAfter.text = temp;
+			else
+				Debug.Log("<color=red>"+temp+"</color>");
+
+			yield return new WaitForSeconds(2f);
+			if( i == trueAns.Count -1 ){
+				// ...the last answer.
+				yield return new WaitForSeconds(2f);
+
+			}else{
+				TrueAnsBefore.text = TrueAnsAfter.text;
+				UserAnsBefore.text = UserAnsAfter.text;
+				TrueAnsAfter.text = UserAnsAfter.text = "";
+			}
+		}
+		isTeaching = false;
+	}
+
+	private List<string> caculatedNumProcess( List<string> q, int operIndex ){
+		List<string> question = new List<string>(q);
+		int i = 0, j = 0;
+		for(i = operIndex-1; i >= 0; i-- ){
+			if(int.TryParse(question[i], out j)){
+				question[i] = "@";
+				break;
+			}
+		}
+		for(i = operIndex+1; i < question.Count; i++ ){
+			if(int.TryParse(question[i], out j)){
+				question[i] = "@";
+				break;
+			}
+		}
+		return question;
+	}
+
+	private List<string> bracketsProcess( List<string> q, int operIndex ){
+		List<string> question = new List<string>(q);
+		bool upBracket = false;
+		bool downBracket = false;
+		int b = 0, a = 0;
+
+		for(b = operIndex-1; b >= 0; b--){
+			if(question[b] == "("){
+				upBracket = true;
+				break;
+			}else if(question[b] == "@"){
+				continue;
+			}else{
+				break;
+			}
+		}
+		for(a = operIndex+1; a < question.Count; a++){
+			if(question[a] == ")"){
+				downBracket = true;
+				break;
+			}else if(question[a] == "@"){
+				continue;
+			}else{
+				break;
+			}
+		}
+		if(upBracket && downBracket){
+			question[a] = "@";
+			question[b] = "@";
+		}
+		return question;
+	}
+
+	// private void showSelections(){
+		
+	// }
+}

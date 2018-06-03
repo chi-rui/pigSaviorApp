@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class BossEvents1 : MonoBehaviour {
 	private MathDatasControl MathDatas;
+	private MisIdentify MisIdent;
 	private GameObject questionShield, OperatorPanel, CaculatePanel, AnswerPanel, BossLife, PlayerLife;
 	private bool isClicked;
 	private QuesObj question;
@@ -23,10 +24,15 @@ public class BossEvents1 : MonoBehaviour {
 	private int attackTime;
 	private bool isTimeUp;
 
+	// save user's answer to detect misConception.
+	// private List<AnsObj> userAns = new List<AnsObj>();
+	// private AnsObj userAnsObj;
+
 	// Use this for initialization
 	void Start () {
 		// set used variables.
 		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
+		// MisIdent = GameObject.Find("EventSystem").GetComponent<MisIdentify>();
 		questionShield = GameObject.Find("Image_shield");
 		questionShield.SetActive(false);
 		OperatorPanel = GameObject.Find("Panel_operator");
@@ -74,7 +80,8 @@ public class BossEvents1 : MonoBehaviour {
 		for(int i = 0; i < question.question.Count; i++ ){
 			questionShield.transform.GetChild(0).gameObject.GetComponent<Text>().text += question.question[i];
 		}
-
+		// initial user's AnsObj
+		// userAnsObj = new AnsObj();
 		// next state.
 		StartCoroutine(playerRound());
 	}
@@ -119,6 +126,7 @@ public class BossEvents1 : MonoBehaviour {
 					break;
 			}
 		}
+		// userAnsObj.operators = selected;
 		if(selected == question.answer[0].operators){
 			StartCoroutine(calculate(selected));
 			// initial.
@@ -215,6 +223,8 @@ public class BossEvents1 : MonoBehaviour {
 	}
 
 	public void checkAns(){
+		// List<string> misConception = MisIdent.getMisConception(question.answer, );
+
 		int ans = -1;
 		bool b = int.TryParse(GameObject.Find("Text_userans").GetComponent<Text>().text, out ans);
 		if(b){

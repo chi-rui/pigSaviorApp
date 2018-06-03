@@ -11,19 +11,23 @@ public class StageEvents : MonoBehaviour {
 	private DatasControl dataControl;
 
 	public float speed;
-	public GameObject mainCharacter, mainCamera, TalkWindow, gamePanel, correctPanel, wrongPanel, warningPanel, enterPanel;
+	public GameObject mainCharacter, mainCamera, TalkWindow, gamePanel, correctPanel, wrongPanel, warningPanel, enterPanel, plotsImage;
 	private Vector3 newPosition, newCameraPosition;
 	public int userProgress;
 	private bool isGameStart = false;
 	private bool isProgressIncrease = false;
 	// saved npc plots contents 
 	private List<string> plots = new List<string>();
-	private int page;
+	private int page, userLife;
+	// prompt for next plots
+	public List<StagePrompts> prompts = new List<StagePrompts>();
+
 
 	// Use this for initialization
 	void Start () {
 		dataControl = GameObject.Find("Datas").GetComponent<DatasControl>();
 		userProgress = 0;
+		userLife = 3;
 	}
 
 	// Update is called once per frame
@@ -99,6 +103,10 @@ public class StageEvents : MonoBehaviour {
 		}else{
 			StartCoroutine(Feedback(wrongPanel));
 			// ... set wrong panel hints.
+			userLife--;
+			string life = "Life" + userLife.ToString();
+			GameObject.Find("player life").transform.GetChild(1).GetComponent<Image>().sprite = Resources.Load<Sprite>(life) as Sprite;;
+			
 		}
 	}
 
@@ -106,18 +114,40 @@ public class StageEvents : MonoBehaviour {
 		imageFeedBack.SetActive(true);
 		yield return new WaitForSeconds(2f);
 		imageFeedBack.SetActive(false);
+		if(userLife > 0)
+			isGameStart = false;
+		else
+			print("stage fail");
 	}
 
 	// Increase the stage progress and check if the stage is finish.
 	public void checkStageProgress(){
 		userProgress += 1;
 		// print(userProgress);
-		isGameStart = false;
+		// show prompts.
+		StartCoroutine(showPlots());
 		if(userProgress == dataControl.stageGoal){
 			// show stage finish animation.
 			print("stage finish.");
 			dataControl.progress += 1;
 			SceneManager.LoadScene("Chapter"+dataControl.chapter.ToString());
+		}else{
+
+		}
+	}
+
+	private IEnumerator showPlots(){
+		// prompts > userProgress --;
+		if(prompts[userProgress-1].pictures.Count == 0){
+			// nothing...
+		}else{
+			plotsImage.SetActive(true);
+			for(int i = 0; i < prompts[userProgress-1].pictures.Count; i++){
+				plotsImage.transform.GetChild(0).GetComponent<Image>().sprite = prompts[userProgress-1].pictures[i];
+				plotsImage.transform.GetChild(1).GetComponent<Text>().text = prompts[userProgress-1].words[i];
+				yield return new WaitForSeconds(5f);
+			}
+			plotsImage.SetActive(false);
 		}
 	}
 
