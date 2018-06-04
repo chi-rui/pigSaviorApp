@@ -5,10 +5,15 @@ using UnityEngine;
 public class Stage : MonoBehaviour {
 	
 	public StageInfo stageInfo;
-	
+	private DatasControl datas;
+
 	// Use this for initialization
 	void Start () {
-
+		datas = GameObject.Find("Datas").GetComponent<DatasControl>();
+		if(stageInfo.stageNum < datas.progress){
+			stageInfo.stageImg.SetActive(false);
+			stageInfo.stageFin.SetActive(true);
+		}
 	}
 	
 	// Update is called once per frame

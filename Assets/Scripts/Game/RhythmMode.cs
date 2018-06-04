@@ -427,6 +427,12 @@ public class RhythmMode : MonoBehaviour {
 		for(int i = 0; i < misConceptions.Count; i++){
 			print("你有 : " + misConceptions[i]);
 		}
+
+		if(misConceptions.Count == 0){
+			
+		}else{
+			
+		}
 		// print("userAnsList.Count: " + userAnsList.Count);
 		// for (int i = 0; i < userAnsList.Count; i++)
 		// 	print(userAnsList[i].index + " " + userAnsList[i].operators + " " + userAnsList[i].partAns + " " + userAnsList[i].isInBracket + " " + userAnsList[i].numA + " " + userAnsList[i].numB);

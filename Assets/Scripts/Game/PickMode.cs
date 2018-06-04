@@ -70,8 +70,8 @@ public class PickMode : MonoBehaviour {
 	}
 
 	public void checkAns(){
+		StartCoroutine(gameFinish(2f));
 		if(this.itemsPicked == this.answer){
-			StartCoroutine(gameFinish(2f));
 			stageEvents.showFeedBack(true);
 		}else{
 			stageEvents.showFeedBack(false);
