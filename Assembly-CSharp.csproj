@@ -60,7 +60,9 @@
      <Compile Include="Assets\Scripts\Game\RhythmMode.cs" />
      <Compile Include="Assets\Scripts\Game\Stage.cs" />
      <Compile Include="Assets\Scripts\Game\StageEvents.cs" />
+     <Compile Include="Assets\Scripts\Game\TextQuesMode.cs" />
      <Compile Include="Assets\Scripts\Game\TypeMode.cs" />
+     <Compile Include="Assets\Scripts\Math\DynamicAssessment.cs" />
      <Compile Include="Assets\Scripts\Math\MathDatasControl.cs" />
      <Compile Include="Assets\Scripts\Math\misIdentify.cs" />
      <Compile Include="Assets\Scripts\Other\Collision.cs" />
