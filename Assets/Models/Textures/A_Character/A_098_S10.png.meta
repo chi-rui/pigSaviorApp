@@ -1,4 +1,5 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 36faa24e0abeb4806b69086053a0a6e5
 timeCreated: 1528083288
 licenseType: Free
@@ -6,6 +7,13 @@ TextureImporter:
   fileIDToRecycleName: {}
   externalObjects: {}
   serializedVersion: 4
+=======
+guid: d7fdf52100bd24213b27963bec05f96b
+TextureImporter:
+  fileIDToRecycleName: {}
+  externalObjects: {}
+  serializedVersion: 5
+>>>>>>> 04ef05c0db9d546ef739057ef8b338fff5a544ad
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -45,18 +53,33 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
+<<<<<<< HEAD
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
+=======
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+>>>>>>> 04ef05c0db9d546ef739057ef8b338fff5a544ad
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
   textureType: 8
   textureShape: 1
+<<<<<<< HEAD
+=======
+  singleChannelComponent: 0
+>>>>>>> 04ef05c0db9d546ef739057ef8b338fff5a544ad
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
   platformSettings:
+<<<<<<< HEAD
   - buildTarget: DefaultTexturePlatform
+=======
+  - serializedVersion: 2
+    buildTarget: DefaultTexturePlatform
+>>>>>>> 04ef05c0db9d546ef739057ef8b338fff5a544ad
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -71,6 +94,15 @@ TextureImporter:
     sprites: []
     outline: []
     physicsShape: []
+<<<<<<< HEAD
+=======
+    bones: []
+    spriteID: 81ac8dedc79fa4048a1b4607ed81c6b6
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+>>>>>>> 04ef05c0db9d546ef739057ef8b338fff5a544ad
   spritePackingTag: 
   userData: 
   assetBundleName: 

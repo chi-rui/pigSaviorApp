@@ -11,7 +11,7 @@ public class StageEvents : MonoBehaviour {
 	private DatasControl dataControl;
 
 	public float speed;
-	public GameObject mainCharacter, mainCamera, TalkWindow, gamePanel, correctPanel, wrongPanel, warningPanel, enterPanel, plotsImage;
+	public GameObject mainCharacter, mainCamera, TalkWindow, gamePanel, correctPanel, wrongPanel, warningPanel, enterPanel, teachingPanel, plotsImage, NPCs;
 	private Vector3 newPosition, newCameraPosition;
 	public int userProgress;
 	private bool isGameStart = false;
@@ -81,7 +81,7 @@ public class StageEvents : MonoBehaviour {
 				else
 					enterPanel.SetActive(true);
 			}else{
-				print("Wrong plots");
+				// print("Wrong plots");
 			}
 		}else{
 			TalkWindow.transform.GetChild(2).GetComponentInChildren<Text>().text = plots[page];
@@ -93,6 +93,8 @@ public class StageEvents : MonoBehaviour {
 	public void taskStart(){
 		gamePanel.SetActive(true);
 		isGameStart = true;
+		NPCs.SetActive(false);
+		mainCharacter.SetActive(false);
 	}
 
 	// Show the suit feedback after check the result of the game.(check is in game script)
@@ -114,10 +116,13 @@ public class StageEvents : MonoBehaviour {
 		imageFeedBack.SetActive(true);
 		yield return new WaitForSeconds(2f);
 		imageFeedBack.SetActive(false);
-		if(userLife > 0)
+		if(userLife > 0){
 			isGameStart = false;
+			NPCs.SetActive(true);
+			mainCharacter.SetActive(true);
+		}
 		else
-			print("stage fail");
+			teachingPanel.SetActive(true);
 	}
 
 	// Increase the stage progress and check if the stage is finish.
@@ -128,11 +133,9 @@ public class StageEvents : MonoBehaviour {
 		StartCoroutine(showPlots());
 		if(userProgress == dataControl.stageGoal){
 			// show stage finish animation.
-			print("stage finish.");
+			// print("stage finish.");
 			dataControl.progress += 1;
 			SceneManager.LoadScene("Chapter"+dataControl.chapter.ToString());
-		}else{
-
 		}
 	}
 
@@ -149,11 +152,6 @@ public class StageEvents : MonoBehaviour {
 			}
 			plotsImage.SetActive(false);
 		}
-	}
-
-	// warnings confirm btn
-	public void clickWarningConfirmBtn () {
-		warningPanel.SetActive(false);
 	}
 
 }
