@@ -28,12 +28,12 @@ public class DynamicAssessment : MonoBehaviour {
 		ProcessType = false;
 		OperType = false;
 
-		for(int i = 0; i < 3; i++){
-			QuesObj test = MathDatas.getQuestion(1, 200, "(A÷B)÷(C÷D)");
-			setContents(test, test.answer, "迷思概念測試"+i.ToString());
-		}
+		// for(int i = 0; i < 3; i++){
+		// 	QuesObj test = MathDatas.getQuestion(1, 200, "(A÷B)÷(C÷D)");
+		// 	setContents(test, test.answer, "迷思概念測試"+i.ToString());
+		// }
 
-		teachNum(-1);
+		// teachNum(-1);
 	}
 	
 	// Update is called once per frame
@@ -125,7 +125,8 @@ public class DynamicAssessment : MonoBehaviour {
 		quesList.Add(question);
 		userList.Add(user);
 		misConceptions.Add(misConception);
-		print(quesList.Count);
+		if(quesList.Count > 3)
+			print("question too much.");
 	}
 
 	public void teachNum( int index ){
@@ -176,7 +177,7 @@ public class DynamicAssessment : MonoBehaviour {
 		List<string> right = new List<string>(question);
 
 		string temp = "";
-		teachingPanel.SetActive(true);
+		// teachingPanel.SetActive(true);
 		teachPage.transform.GetChild(9).GetComponent<Text>().text = misConception;
 		// initial test question
 		for(int i = 0; i < question.Count; i++){
@@ -228,6 +229,13 @@ public class DynamicAssessment : MonoBehaviour {
 			}
 		}
 		isTeaching = false;
+	}
+
+	public void finishTeaching(){
+		quesList.Clear();
+		userList.Clear();
+		misConceptions.Clear();
+		teachingPanel.SetActive(false);
 	}
 
 	private List<string> caculatedNumProcess( List<string> q, int operIndex ){

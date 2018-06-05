@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -30,6 +30,8 @@ public class RhythmMode : MonoBehaviour {
 	private MisIdentify MisIdent;
 	private QuesObj quesObj;
 
+	private StageEvents stageEvents;
+	private DynamicAssessment dynamicAssessment;
 	// set user answer
 	private List<AnsObj> userAnsList = new List<AnsObj>();
 
@@ -41,16 +43,24 @@ public class RhythmMode : MonoBehaviour {
 		pos_L = new Vector3(-1860f, pointer.transform.position.y, 0);
 		pos_R = new Vector3(-530f, pointer.transform.position.y, 0);
 		speed = 0.5f;
-		remainCounts = 10;
-		// isInBracket = true;
-		hitbarCounts = 3;
-		generateHitBars(hitbarCounts);
-
-		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
-		MisIdent = GameObject.Find("EventSystem").GetComponent<MisIdentify>();
-		generateNewQuestion(minNum, maxNum, quesTemplate);
+		
+		
+		// generateNewQuestion(minNum, maxNum, quesTemplate);
 	}
 	
+	void OnEnable(){
+		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
+		MisIdent = GameObject.Find("EventSystem").GetComponent<MisIdentify>();
+		stageEvents = GameObject.Find("EventSystem").GetComponent<StageEvents>();
+		dynamicAssessment = GameObject.Find("EventSystem").GetComponent<DynamicAssessment>();
+		quesOperList.Clear();
+		remainCounts = 10;
+		hitbarCounts = 3;
+		generateHitBars(hitbarCounts);
+		generateNewQuestion(minNum, maxNum, quesTemplate);
+
+	}
+
 	// Update is called once per frame
 	// -530 -1860
 	// Mathf.PingPong(speed * Time.time, 1.0f)
@@ -82,6 +92,7 @@ public class RhythmMode : MonoBehaviour {
 	void generateNewQuestion (int min, int max, List<string> template) {
 		// generate question and get operator counts
 		quesObj = MathDatas.getQuestion(min, max, template[Random.Range(0, template.Count)]);
+		testQues = "";
 		for (int i = 0; i < quesObj.question.Count; i++)
 			testQues += quesObj.question[i];
 		print(testQues);
@@ -138,8 +149,8 @@ public class RhythmMode : MonoBehaviour {
 		// print(quesObj.question.Count);
 		// for (int i = 0; i < quesObj.question.Count; i++)
 		// 	print(quesObj.question[i]);
-		// for (int i = 0; i < quesOperList.Count; i++)
-		// 	print(quesOperList[i]);
+		for (int i = 0; i < quesOperList.Count; i++)
+			print(quesOperList[i]);
 		// for (int i = 0; i < quesOperIndexList.Count; i++)
 		// 	print(quesOperIndexList[i]);
 
@@ -373,6 +384,7 @@ public class RhythmMode : MonoBehaviour {
 		userAnsObj.numB = numB;
 		userAnsList.Add(userAnsObj);
 
+		calculatePanel.SetActive(false);
 		if (userCalculateCount < operCount) {
 			quesOperBtnChooseArr[operChooseBtnIndex].SetActive(false);
 			quesOperTextArr[operChooseBtnIndex].SetActive(false);
@@ -412,7 +424,6 @@ public class RhythmMode : MonoBehaviour {
 			hitResultText.SetActive(false);
 			generateHitBars(hitbarCounts);
 			
-			calculatePanel.SetActive(false);
 			chooseOperatorPanel.SetActive(false);
 		} else {
 			print("計算完成！");
@@ -423,16 +434,15 @@ public class RhythmMode : MonoBehaviour {
 	public void checkUserAnswer () {
 		List<string> misConceptions = new List<string>();
 		misConceptions = MisIdent.getMisConception(quesObj.answer, userAnsList);
-
-		for(int i = 0; i < misConceptions.Count; i++){
-			print("你有 : " + misConceptions[i]);
-		}
-
 		if(misConceptions.Count == 0){
-			
+			stageEvents.showFeedBack(true);
+			// GameObject.Find("Panel_RhythmMode").SetActive(false);
 		}else{
-			
+			dynamicAssessment.setContents(quesObj, userAnsList, misConceptions[0]);
+			stageEvents.showFeedBack(false);
 		}
+		// GameObject.Find("pointer").SetActive(false);
+		GameObject.Find("Panel_RhythmMode").SetActive(false);
 		// print("userAnsList.Count: " + userAnsList.Count);
 		// for (int i = 0; i < userAnsList.Count; i++)
 		// 	print(userAnsList[i].index + " " + userAnsList[i].operators + " " + userAnsList[i].partAns + " " + userAnsList[i].isInBracket + " " + userAnsList[i].numA + " " + userAnsList[i].numB);
