@@ -22,6 +22,8 @@ public class RhythmMode : MonoBehaviour {
 	private List<int> hitBarsIndexList = new List<int>();
 	private List<string> quesOperList = new List<string>();
 	private List<int> quesOperIndexList = new List<int>();
+	private	List<string> misConceptions = new List<string>();
+
 	
 	// set question
 	public int minNum, maxNum;
@@ -43,9 +45,6 @@ public class RhythmMode : MonoBehaviour {
 		pos_L = new Vector3(-1860f, pointer.transform.position.y, 0);
 		pos_R = new Vector3(-530f, pointer.transform.position.y, 0);
 		speed = 0.5f;
-		
-		
-		// generateNewQuestion(minNum, maxNum, quesTemplate);
 	}
 	
 	void OnEnable(){
@@ -53,12 +52,14 @@ public class RhythmMode : MonoBehaviour {
 		MisIdent = GameObject.Find("EventSystem").GetComponent<MisIdentify>();
 		stageEvents = GameObject.Find("EventSystem").GetComponent<StageEvents>();
 		dynamicAssessment = GameObject.Find("EventSystem").GetComponent<DynamicAssessment>();
-		quesOperList.Clear();
-		remainCounts = 10;
+		
+		// remainCounts = 10;
+		restartRhythmMode ();
 		hitbarCounts = 3;
+		userCalculateCount = 0;
+		userAnsList.Clear();
 		generateHitBars(hitbarCounts);
 		generateNewQuestion(minNum, maxNum, quesTemplate);
-
 	}
 
 	// Update is called once per frame
@@ -92,6 +93,10 @@ public class RhythmMode : MonoBehaviour {
 	void generateNewQuestion (int min, int max, List<string> template) {
 		// generate question and get operator counts
 		quesObj = MathDatas.getQuestion(min, max, template[Random.Range(0, template.Count)]);
+
+		// initial and clear question setting lists
+		quesOperList.Clear();
+		quesOperIndexList.Clear();
 		testQues = "";
 		for (int i = 0; i < quesObj.question.Count; i++)
 			testQues += quesObj.question[i];
@@ -149,8 +154,8 @@ public class RhythmMode : MonoBehaviour {
 		// print(quesObj.question.Count);
 		// for (int i = 0; i < quesObj.question.Count; i++)
 		// 	print(quesObj.question[i]);
-		for (int i = 0; i < quesOperList.Count; i++)
-			print(quesOperList[i]);
+		// for (int i = 0; i < quesOperList.Count; i++)
+		// 	print(quesOperList[i]);
 		// for (int i = 0; i < quesOperIndexList.Count; i++)
 		// 	print(quesOperIndexList[i]);
 
@@ -166,6 +171,8 @@ public class RhythmMode : MonoBehaviour {
 
 		// set operator symbol
 		for (int i = 0; i < operCount; i++) {
+			quesOperTextArr[i].SetActive(true);
+			quesOperBtnChooseArr[i].SetActive(true);
 			quesOperTextArr[i].GetComponent<Text>().text = quesOperList[i];
 			switch (quesOperList[i]) {
 				case "+":
@@ -287,12 +294,13 @@ public class RhythmMode : MonoBehaviour {
 		Text_remainCounts.text = remainCounts.ToString();
 		isPerfectHit = false;
 		isRhythmStart = true;
+		isSpecialCalculate = false;
 	}
 
 	// choose operator panel
 	public void clickOperBtn (int num) {
 		operChooseBtnIndex = num;
-		// print(operChooseBtnIndex);
+		print("operChooseBtnIndex: " + operChooseBtnIndex);
 		// print(quesOperIndexList[operChooseBtnIndex]);
 		calculatePanel.SetActive(true);
 		isInBracketA = false; isInBracketB = false;
@@ -362,7 +370,7 @@ public class RhythmMode : MonoBehaviour {
 
 	public void clickFinishCalculate () {
 		userCalculateCount++;
-		// print(userCalculateCount);
+		print("userCalculateCount: " + userCalculateCount);
 		hitbarCounts--;
 		// print(hitbarCounts);
 		string tmpAns = ""; string bracketStr = "";
@@ -385,6 +393,15 @@ public class RhythmMode : MonoBehaviour {
 		userAnsList.Add(userAnsObj);
 
 		calculatePanel.SetActive(false);
+		chooseOperatorPanel.SetActive(false);
+		clickClearAnsNum();
+		Text_userans.text = "ANS";
+		// show remain counts text
+		remainingText.SetActive(true);
+		hitResultText.SetActive(false);
+
+		print(tmpAns);
+
 		if (userCalculateCount < operCount) {
 			quesOperBtnChooseArr[operChooseBtnIndex].SetActive(false);
 			quesOperTextArr[operChooseBtnIndex].SetActive(false);
@@ -416,15 +433,7 @@ public class RhythmMode : MonoBehaviour {
 					quesNumTextArr[operChooseBtnIndex+2].GetComponent<Text>().text = null;
 				}
 			}
-			clickClearAnsNum();
-			Text_userans.text = "ANS";
-
-			// show remain counts text
-			remainingText.SetActive(true);
-			hitResultText.SetActive(false);
 			generateHitBars(hitbarCounts);
-			
-			chooseOperatorPanel.SetActive(false);
 		} else {
 			print("計算完成！");
 			checkUserAnswer();
@@ -432,7 +441,8 @@ public class RhythmMode : MonoBehaviour {
 	}
 
 	public void checkUserAnswer () {
-		List<string> misConceptions = new List<string>();
+		misConceptions.Clear();
+		print(quesObj.answer.Count + " / " + userAnsList.Count);
 		misConceptions = MisIdent.getMisConception(quesObj.answer, userAnsList);
 		if(misConceptions.Count == 0){
 			stageEvents.showFeedBack(true);
@@ -441,15 +451,8 @@ public class RhythmMode : MonoBehaviour {
 			dynamicAssessment.setContents(quesObj, userAnsList, misConceptions[0]);
 			stageEvents.showFeedBack(false);
 		}
+		// print("end");
 		// GameObject.Find("pointer").SetActive(false);
 		GameObject.Find("Panel_RhythmMode").SetActive(false);
-		// print("userAnsList.Count: " + userAnsList.Count);
-		// for (int i = 0; i < userAnsList.Count; i++)
-		// 	print(userAnsList[i].index + " " + userAnsList[i].operators + " " + userAnsList[i].partAns + " " + userAnsList[i].isInBracket + " " + userAnsList[i].numA + " " + userAnsList[i].numB);
-		
-		// if (userAnsList[userAnsList.Count-1].partAns == quesObj.answer[quesObj.answer.Count-1].partAns)
-		// 	print("答案正確");
-		// else
-		// 	print("答案錯誤");
 	}
 }

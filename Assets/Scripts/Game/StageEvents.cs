@@ -141,8 +141,9 @@ public class StageEvents : MonoBehaviour {
 
 	private IEnumerator showPlots(){
 		// prompts > userProgress --;
+		print(userProgress);
 		if(prompts[userProgress-1].pictures.Count == 0){
-			// nothing...
+			print("nothing");
 		}else{
 			plotsImage.SetActive(true);
 			for(int i = 0; i < prompts[userProgress-1].pictures.Count; i++){
