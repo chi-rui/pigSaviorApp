@@ -29,7 +29,7 @@ public class RhythmMode : MonoBehaviour {
 	public List<string> quesTemplate;
 	private MathDatasControl MathDatas;
 	private MisIdentify MisIdent;
-	private QuesObj quesObj;
+	private QuesObj quesObj, temp;
 
 	private StageEvents stageEvents;
 	private DynamicAssessment dynamicAssessment;
@@ -87,15 +87,18 @@ public class RhythmMode : MonoBehaviour {
 	void generateNewQuestion (int min, int max, List<string> template) {
 		// generate question and get operator counts
 		quesObj = MathDatas.getQuestion(min, max, template[Random.Range(0, template.Count)]);
+		temp = new QuesObj();
+		temp.question = new List<string>(quesObj.question);
+		temp.answer = new List<AnsObj>(quesObj.answer);
 
 		// initial and clear question setting lists
 		quesOperList.Clear();
 		quesOperIndexList.Clear();
 		testQues = "";
-		for (int i = 0; i < quesObj.question.Count; i++)
-			testQues += quesObj.question[i];
+		for (int i = 0; i < temp.question.Count; i++)
+			testQues += temp.question[i];
 		print(testQues);
-		operCount = quesObj.answer.Count;
+		operCount = temp.answer.Count;
 		// print(operCount);
 
 		// set question numbers and operators position
@@ -119,35 +122,35 @@ public class RhythmMode : MonoBehaviour {
 		}
 
 		// store operators index and operators in each list
-		for (int i = 0; i < quesObj.question.Count; i++) {
-			if (quesObj.question[i] == "+" || quesObj.question[i] == "-" || quesObj.question[i] == "x" || quesObj.question[i] == "÷") {
+		for (int i = 0; i < temp.question.Count; i++) {
+			if (temp.question[i] == "+" || temp.question[i] == "-" || temp.question[i] == "x" || temp.question[i] == "÷") {
 				quesOperIndexList.Add(i);
-				quesOperList.Add(quesObj.question[i]);
+				quesOperList.Add(temp.question[i]);
 			}
 		}
 
 		// delete operators and brackets in question
-		for (int i = 0; i < quesObj.question.Count; i++) {
-			if (quesObj.question[i] == "+" || quesObj.question[i] == "-" || quesObj.question[i] == "x" || quesObj.question[i] == "÷")
-				quesObj.question.Remove(quesObj.question[i]);
-			if (quesObj.question[i] == "(") {
-				quesObj.question[i+1] = quesObj.question[i] + quesObj.question[i+1];
-			} else if (quesObj.question[i] == ")") {
-				quesObj.question[i-1] = quesObj.question[i-1] + quesObj.question[i];
+		for (int i = 0; i < temp.question.Count; i++) {
+			if (temp.question[i] == "+" || temp.question[i] == "-" || temp.question[i] == "x" || temp.question[i] == "÷")
+				temp.question.Remove(temp.question[i]);
+			if (temp.question[i] == "(") {
+				temp.question[i+1] = temp.question[i] + temp.question[i+1];
+			} else if (temp.question[i] == ")") {
+				temp.question[i-1] = temp.question[i-1] + temp.question[i];
 			}
 		}
-		for (int i = 0; i < quesObj.question.Count; i++) {
-			if (quesObj.question[i] == "(")
-				quesObj.question.Remove(quesObj.question[i]);
+		for (int i = 0; i < temp.question.Count; i++) {
+			if (temp.question[i] == "(")
+				temp.question.Remove(temp.question[i]);
 		}
-		for (int i = 0; i < quesObj.question.Count; i++) {
-			if (quesObj.question[i] == ")")
-				quesObj.question.Remove(quesObj.question[i]);
+		for (int i = 0; i < temp.question.Count; i++) {
+			if (temp.question[i] == ")")
+				temp.question.Remove(temp.question[i]);
 		}
 
-		// print(quesObj.question.Count);
-		// for (int i = 0; i < quesObj.question.Count; i++)
-		// 	print(quesObj.question[i]);
+		// print(temp.question.Count);
+		// for (int i = 0; i < temp.question.Count; i++)
+		// 	print(temp.question[i]);
 		// for (int i = 0; i < quesOperList.Count; i++)
 		// 	print(quesOperList[i]);
 		// for (int i = 0; i < quesOperIndexList.Count; i++)
@@ -158,9 +161,9 @@ public class RhythmMode : MonoBehaviour {
 
 	void showQuestion () {
 		// show question number text
-		for (int i = 0; i < quesObj.question.Count; i++) {
-			quesNumTextArr[i].GetComponent<Text>().text = quesObj.question[i];
-			quesNumTextChooseArr[i].GetComponent<Text>().text = quesObj.question[i];
+		for (int i = 0; i < temp.question.Count; i++) {
+			quesNumTextArr[i].GetComponent<Text>().text = temp.question[i];
+			quesNumTextChooseArr[i].GetComponent<Text>().text = temp.question[i];
 		}
 
 		// set operator symbol
@@ -441,9 +444,9 @@ public class RhythmMode : MonoBehaviour {
 	}
 
 	public void checkUserAnswer () {
-		misConceptions.Clear();
-		print(quesObj.answer.Count + " / " + userAnsList.Count);
+		// misConceptions.Clear();
 		misConceptions = MisIdent.getMisConception(quesObj.answer, userAnsList);
+
 		if(misConceptions.Count == 0){
 			stageEvents.showFeedBack(true);
 			// GameObject.Find("Panel_RhythmMode").SetActive(false);

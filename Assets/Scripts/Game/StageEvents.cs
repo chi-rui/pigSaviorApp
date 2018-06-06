@@ -121,8 +121,10 @@ public class StageEvents : MonoBehaviour {
 			NPCs.SetActive(true);
 			mainCharacter.SetActive(true);
 		}
-		else
+		else{
 			teachingPanel.SetActive(true);
+			GameObject.Find("EventSystem").GetComponent<DynamicAssessment>().teachNum(-1);
+		}
 	}
 
 	// Increase the stage progress and check if the stage is finish.

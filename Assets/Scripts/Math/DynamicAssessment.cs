@@ -215,7 +215,8 @@ public class DynamicAssessment : MonoBehaviour {
 			if(TrueAnsAfter.text == temp)
 				UserAnsAfter.text = temp;
 			else
-				Debug.Log("<color=red>"+temp+"</color>");
+				UserAnsAfter.text = "<color=red>"+temp+"</color>";
+				// Debug.Log("<color=red>"+temp+"</color>");
 
 			yield return new WaitForSeconds(2f);
 			if( i == trueAns.Count -1 ){
@@ -236,6 +237,7 @@ public class DynamicAssessment : MonoBehaviour {
 		userList.Clear();
 		misConceptions.Clear();
 		teachingPanel.SetActive(false);
+		// back to chapter
 	}
 
 	private List<string> caculatedNumProcess( List<string> q, int operIndex ){
