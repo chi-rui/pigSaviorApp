@@ -36,10 +36,16 @@ public class ColorMode : MonoBehaviour {
 // test
 	private string testQues;
 
+	void OnEnable () {
+		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
+
+		generateNewQuestion(minNum, maxNum, quesTemplate);
+		clickRechallengeGame();
+	}
+
 	// Use this for initialization
 	void Start () {
-		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
-		generateNewQuestion(minNum, maxNum, quesTemplate);
+		
 	}
 	
 	// Update is called once per frame
@@ -431,6 +437,8 @@ public class ColorMode : MonoBehaviour {
 
 	public void clickRechallengeGame () {
 		calculatePanel.SetActive(false);
+		if (userCalculateCount != 0)
+			showQuestion();
 		userCalculateCount = 0;
 		Text_userans.text = "ANS";
 		isSpecialCalculate = false;
@@ -441,7 +449,6 @@ public class ColorMode : MonoBehaviour {
 			tmpColorOperList.Add(operColorRanList[i]);
 		// for (int i = 0; i < tmpColorOperList.Count; i++)
 		// 	print(tmpColorOperList[i]);
-		showQuestion();
 	}
 
 	public void clickFinishCalculate () {
@@ -464,8 +471,13 @@ public class ColorMode : MonoBehaviour {
 		userAnsObj.numA = numA;
 		userAnsObj.numB = numB;
 		userAnsList.Add(userAnsObj);
-		
+
+		clickClearAnsNum();
+		Text_userans.text = "ANS";
+		restartColorMode();
+		calculatePanel.SetActive(false);
 		tmpColorOperList.Remove(colorResult);
+
 		if (userCalculateCount < operCount) {
 			// print("operChooseColorIndex: " + operChooseColorIndex);
 			quesOperImageArr[operChooseColorIndex].SetActive(false);
@@ -487,10 +499,6 @@ public class ColorMode : MonoBehaviour {
 				if (isSpecialCalculate)
 					quesNumTextArr[operChooseColorIndex+2].GetComponent<Text>().text = null;
 			}
-			clickClearAnsNum();
-			Text_userans.text = "ANS";
-			restartColorMode();
-			calculatePanel.SetActive(false);
 		} else {
 			rechallengeBtn.SetActive(false);
 			print("計算完成！");

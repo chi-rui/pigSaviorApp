@@ -49,6 +49,9 @@ public class MisIdentify : MonoBehaviour {
 
 		for(i = 0; i < userAns.Count; i++){
 			
+			// test
+			print("userAns : " + userAns[i].index + " / " + userAns[i].partAns + "\ntrueAns : " + trueAns[i].index + " / " + trueAns[i].partAns);
+
 			// check rule type misConception
 			if(i < bracketSep){
 				if(!userAns[i].isInBracket)
@@ -57,16 +60,23 @@ public class MisIdentify : MonoBehaviour {
 
 			switch(userAns[i].operators){
 				case '*':case 'x':case '÷':case '/':
-					if(operSwitch)
+					print("*/");
+					if(operSwitch){
 						mis02 = true;
+						print("mis02");
+					}
 					break;
 				case '+':case '-':
+					print("+-");
 					if(!operSwitch)
 						operSwitch = true;
 					break;
+				default:
+					print("no oper");
+					break;
 			}
 
-			if(i == bracketSep)
+			if(i == bracketSep-1)
 				operSwitch = false;
 
 

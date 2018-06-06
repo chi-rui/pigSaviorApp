@@ -34,17 +34,16 @@ public class TypeMode : MonoBehaviour {
 // test
 	private string testQues;
 
+	void OnEnable () {
+		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
+
+		generateNewQuestion(minNum, maxNum, quesTemplate);
+		clickRechallengeGame();
+	}
+
 	// Use this for initialization
 	void Start () {
 		Anim_characterAction.Play("character game action_fighting");
-
-		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
-		generateNewQuestion(minNum, maxNum, quesTemplate);
-		
-		for (int i = 0; i < operCount; i++) {
-			operTeamFieldImageArr[i].SetActive(true);
-			chooseOperMemberBtnArr[i].SetActive(true);
-		}
 	}
 	
 	// Update is called once per frame
@@ -442,14 +441,18 @@ public class TypeMode : MonoBehaviour {
 	public void clickRechallengeGame () {
 		calculatePanel.SetActive(false);
 		fightingPanel.SetActive(false);
-		isSpecialCalculate = false;
+		if (operFailedCount != 0)
+			showQuestion();
 		operFailedCount = 0;
 		Text_userans.text = "ANS";
+		isSpecialCalculate = false;
 		userAnsList.Clear();
 		clickClearTeam();
-		showQuestion();
-		for (int i = 0; i < operCount; i++)
+		// print("operCount: " + operCount);
+		for (int i = 0; i < operCount; i++) {
 			operTeamFieldImageArr[i].SetActive(true);
+			chooseOperMemberBtnArr[i].SetActive(true);
+		}
 		StartCoroutine(setOperTeamPosition("chooseOperMember"));
 	}
 
@@ -478,6 +481,9 @@ public class TypeMode : MonoBehaviour {
 			operTeamFailedImageArr[i].SetActive(true);
 		for (int i = 0; i < operCount; i++)
 			operTeamFieldImageArr[i].SetActive(true);
+		clickClearAnsNum();
+		Text_userans.text = "ANS";
+		calculatePanel.SetActive(false);
 
 		if (operFailedCount < operChooseMemberCount) {
 			restartTypeModeFighting();
@@ -506,9 +512,6 @@ public class TypeMode : MonoBehaviour {
 					quesNumTextArr[operChooseBtnIndexList[0]+2].GetComponent<Text>().text = null;
 			}
 			operChooseBtnIndexList.Remove(operChooseBtnIndexList[0]);
-			clickClearAnsNum();
-			Text_userans.text = "ANS";
-			calculatePanel.SetActive(false);
 		} else {
 			rechallengeBtn.SetActive(false);
 			print("計算完成！");
