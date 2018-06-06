@@ -107,7 +107,11 @@ public class StageEvents : MonoBehaviour {
 			// ... set wrong panel hints.
 			userLife--;
 			string life = "Life" + userLife.ToString();
-			GameObject.Find("player life").transform.GetChild(1).GetComponent<Image>().sprite = Resources.Load<Sprite>(life) as Sprite;;
+			if(life == 0){
+				GameObject.Find("player life").transform.GetChild(1).GetComponent<Image>().sprite = null;
+				GameObject.Find("player life").transform.GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>(life) as Sprite;
+			}else
+				GameObject.Find("player life").transform.GetChild(1).GetComponent<Image>().sprite = Resources.Load<Sprite>(life) as Sprite;
 			
 		}
 	}
