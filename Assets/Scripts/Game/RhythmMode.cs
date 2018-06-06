@@ -23,7 +23,6 @@ public class RhythmMode : MonoBehaviour {
 	private List<string> quesOperList = new List<string>();
 	private List<int> quesOperIndexList = new List<int>();
 	private	List<string> misConceptions = new List<string>();
-
 	
 	// set question
 	public int minNum, maxNum;
@@ -40,26 +39,21 @@ public class RhythmMode : MonoBehaviour {
 // test
 	private string testQues;
 
-	// Use this for initialization
-	void Start () {
-		pos_L = new Vector3(-1860f, pointer.transform.position.y, 0);
-		pos_R = new Vector3(-530f, pointer.transform.position.y, 0);
-		speed = 0.5f;
-	}
-	
-	void OnEnable(){
+	void OnEnable () {
 		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
 		MisIdent = GameObject.Find("EventSystem").GetComponent<MisIdentify>();
 		stageEvents = GameObject.Find("EventSystem").GetComponent<StageEvents>();
 		dynamicAssessment = GameObject.Find("EventSystem").GetComponent<DynamicAssessment>();
 		
-		// remainCounts = 10;
-		restartRhythmMode ();
-		hitbarCounts = 3;
-		userCalculateCount = 0;
-		userAnsList.Clear();
-		generateHitBars(hitbarCounts);
 		generateNewQuestion(minNum, maxNum, quesTemplate);
+		restartRhythmMode ();
+	}
+
+	// Use this for initialization
+	void Start () {
+		pos_L = new Vector3(-1860f, pointer.transform.position.y, 0);
+		pos_R = new Vector3(-530f, pointer.transform.position.y, 0);
+		speed = 0.5f;
 	}
 
 	// Update is called once per frame
@@ -290,6 +284,12 @@ public class RhythmMode : MonoBehaviour {
 
 	void restartRhythmMode () {
 		challengeFailedPanel.SetActive(false);
+		if (userCalculateCount != 0)
+			showQuestion();
+		userCalculateCount = 0;
+		userAnsList.Clear();
+		hitbarCounts = 3;
+		generateHitBars(hitbarCounts);
 		remainCounts = 10;
 		Text_remainCounts.text = remainCounts.ToString();
 		isPerfectHit = false;
@@ -300,7 +300,7 @@ public class RhythmMode : MonoBehaviour {
 	// choose operator panel
 	public void clickOperBtn (int num) {
 		operChooseBtnIndex = num;
-		print("operChooseBtnIndex: " + operChooseBtnIndex);
+		// print("operChooseBtnIndex: " + operChooseBtnIndex);
 		// print(quesOperIndexList[operChooseBtnIndex]);
 		calculatePanel.SetActive(true);
 		isInBracketA = false; isInBracketB = false;
@@ -370,7 +370,7 @@ public class RhythmMode : MonoBehaviour {
 
 	public void clickFinishCalculate () {
 		userCalculateCount++;
-		print("userCalculateCount: " + userCalculateCount);
+		// print("userCalculateCount: " + userCalculateCount);
 		hitbarCounts--;
 		// print(hitbarCounts);
 		string tmpAns = ""; string bracketStr = "";
@@ -392,6 +392,8 @@ public class RhythmMode : MonoBehaviour {
 		userAnsObj.numB = numB;
 		userAnsList.Add(userAnsObj);
 
+		// print(tmpAns);
+
 		calculatePanel.SetActive(false);
 		chooseOperatorPanel.SetActive(false);
 		clickClearAnsNum();
@@ -399,8 +401,6 @@ public class RhythmMode : MonoBehaviour {
 		// show remain counts text
 		remainingText.SetActive(true);
 		hitResultText.SetActive(false);
-
-		print(tmpAns);
 
 		if (userCalculateCount < operCount) {
 			quesOperBtnChooseArr[operChooseBtnIndex].SetActive(false);
