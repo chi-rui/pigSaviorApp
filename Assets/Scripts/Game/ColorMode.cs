@@ -18,7 +18,6 @@ public class ColorMode : MonoBehaviour {
 	private bool isPair, isMixColorFailed, isSpecialCalculate, isInBracketA, isInBracketB;
 	private string colorResult, operTmpStr;
 	private List<string> chooseColorList = new List<string>();
-	private List<string> colorList = new List<string> {"red", "yellow", "blue", "orange", "green", "purple"};
 	private List<string> operColorRanList = new List<string>();
 	private List<string> tmpColorOperList = new List<string>();
 	private List<int> quesOperList = new List<int>();
@@ -27,8 +26,8 @@ public class ColorMode : MonoBehaviour {
 	// set question
 	public int minNum, maxNum;
 	public List<string> quesTemplate;
-	private MathDatasControl MathDatas;
 	private QuesObj quesObj;
+	private MathDatasControl MathDatas;
 
 	// set user answer
 	private List<AnsObj> userAnsList = new List<AnsObj>();
@@ -130,7 +129,8 @@ public class ColorMode : MonoBehaviour {
 		// for (int i = 0; i < quesOperList.Count; i++)
 		// 	print(quesOperList[i]);
 
-		// unrepeat random four types
+		// unrepeat random six color
+		List<string> colorList = new List<string> {"red", "yellow", "blue", "orange", "green", "purple"};
 		while (operColorRanList.Count < operCount) {
 			int index = Random.Range(0, colorList.Count);
 			if (!operColorRanList.Contains(colorList[index])) {

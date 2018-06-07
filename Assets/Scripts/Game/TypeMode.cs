@@ -15,7 +15,6 @@ public class TypeMode : MonoBehaviour {
 	private int operCount, operChooseMemberCount, operFailedCount, numA, numB;
 	private bool isWin, isDraw, isAttackFailed, isSpecialCalculate, isInBracketA, isInBracketB;
 	private string chooseNpcType, operTmpStr;
-	private List<string> typeList = new List<string> {"wind", "fire", "water", "ground"};
 	private List<string> typeRanList = new List<string>();
 	private List<string> operChooseTypeList = new List<string>();
 	private List<int> operChooseBtnIndexList = new List<int>();
@@ -25,8 +24,8 @@ public class TypeMode : MonoBehaviour {
 	// set question
 	public int minNum, maxNum;
 	public List<string> quesTemplate;
-	private MathDatasControl MathDatas;
 	private QuesObj quesObj;
+	private MathDatasControl MathDatas;
 
 	// set user answer
 	private List<AnsObj> userAnsList = new List<AnsObj>();
@@ -131,6 +130,7 @@ public class TypeMode : MonoBehaviour {
 		// 	print(quesOperIndexList[i]);
 
 		// unrepeat random four types
+		List<string> typeList = new List<string> {"wind", "fire", "water", "ground"};
 		while (typeRanList.Count < operCount) {
 			int index = Random.Range(0, typeList.Count);
 			if (!typeRanList.Contains(typeList[index])) {

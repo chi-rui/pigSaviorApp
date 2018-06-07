@@ -18,8 +18,6 @@ public class RhythmMode : MonoBehaviour {
 	private Vector3 pos_L, pos_R;
 	private int remainCounts, hitbarCounts, operCount, operChooseBtnIndex, userCalculateCount, numA, numB;
 	private bool isRhythmStart, isPerfectHit, isChallengeFailed, isSpecialCalculate, isInBracketA, isInBracketB;
-	private List<int> tmpSortingList = new List<int>();
-	private List<int> hitBarsIndexList = new List<int>();
 	private List<string> quesOperList = new List<string>();
 	private List<int> quesOperIndexList = new List<int>();
 	private	List<string> misConceptions = new List<string>();
@@ -27,14 +25,14 @@ public class RhythmMode : MonoBehaviour {
 	// set question
 	public int minNum, maxNum;
 	public List<string> quesTemplate;
+	private QuesObj quesObj, temp;
 	private MathDatasControl MathDatas;
 	private MisIdentify MisIdent;
-	private QuesObj quesObj, temp;
+	// set user answer
+	private List<AnsObj> userAnsList = new List<AnsObj>();
 
 	private StageEvents stageEvents;
 	private DynamicAssessment dynamicAssessment;
-	// set user answer
-	private List<AnsObj> userAnsList = new List<AnsObj>();
 
 // test
 	private string testQues;
@@ -94,12 +92,14 @@ public class RhythmMode : MonoBehaviour {
 		// initial and clear question setting lists
 		quesOperList.Clear();
 		quesOperIndexList.Clear();
+
+		operCount = temp.answer.Count;
+		// print(operCount);
+
 		testQues = "";
 		for (int i = 0; i < temp.question.Count; i++)
 			testQues += temp.question[i];
 		print(testQues);
-		operCount = temp.answer.Count;
-		// print(operCount);
 
 		// set question numbers and operators position
 		switch (operCount) {
@@ -189,6 +189,9 @@ public class RhythmMode : MonoBehaviour {
 	}
 
 	void generateHitBars (int counts) {
+		List<int> tmpSortingList = new List<int>();
+		List<int> hitBarsIndexList = new List<int>();
+
 		isRhythmStart = true;
 		// clear random hitbar number list and change to original hitbar
 		tmpSortingList.Clear();
