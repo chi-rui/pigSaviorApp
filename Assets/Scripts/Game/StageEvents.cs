@@ -98,12 +98,13 @@ public class StageEvents : MonoBehaviour {
 	}
 
 	// Show the suit feedback after check the result of the game.(check is in game script)
-	public void showFeedBack( bool ans ){
+	public void showFeedBack( bool ans, string prompts ){
 		if(ans){
 			StartCoroutine(Feedback(correctPanel));
 			checkStageProgress();
 		}else{
 			StartCoroutine(Feedback(wrongPanel));
+			GameObject.Find("Feedbacks").transform.GetChild(1).GetChild(2).GetComponent<Text>().text = prompts;
 			// ... set wrong panel hints.
 			userLife--;
 			string life = "Life" + userLife.ToString();

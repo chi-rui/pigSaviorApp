@@ -22,12 +22,12 @@ public class DynamicAssessment : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		// countMistake = 0;
-		// MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
 
 		RuleType = false;
 		ProcessType = false;
 		OperType = false;
 
+		// MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
 		// for(int i = 0; i < 3; i++){
 		// 	QuesObj test = MathDatas.getQuestion(1, 200, "(A÷B)÷(C÷D)");
 		// 	setContents(test, test.answer, "迷思概念測試"+i.ToString());
@@ -115,11 +115,16 @@ public class DynamicAssessment : MonoBehaviour {
 		quesList.Add(question);
 		userList.Add(user);
 		misConceptions.Add(misConception);
+
+		// for(int i = 0; i < userList.Count; i++)
+		// 	print(userList[i][0].partAns +"\n");
+
 		if(quesList.Count > 3)
 			print("question too much.");
 	}
 
 	public void teachNum( int index ){
+
 		StartCoroutine(teaching(index));
 		if(index == -1){
 			selectionQues.SetActive(true);
@@ -165,10 +170,38 @@ public class DynamicAssessment : MonoBehaviour {
 		isTeaching = true;
 		List<string> left = new List<string>(question);
 		List<string> right = new List<string>(question);
-
 		string temp = "";
-		// teachingPanel.SetActive(true);
-		teachPage.transform.GetChild(9).GetComponent<Text>().text = misConception;
+		// set mis field to prompt words
+		switch(misConception){
+			case "mis01":
+				teachPage.transform.GetChild(9).GetComponent<Text>().text = "本次重點：括號裡面的運算要優先計算！";
+				break;
+			case "mis02":
+				teachPage.transform.GetChild(9).GetComponent<Text>().text = "本次重點：先乘除，後加減！";
+				break;
+			case "mis03":
+				teachPage.transform.GetChild(9).GetComponent<Text>().text = "本次重點：由左而右進行運算！";
+				break;
+			case "mis04":
+				teachPage.transform.GetChild(9).GetComponent<Text>().text = "本次重點：除了答案也要注意計算的過程！";
+				break;
+			case "mis05":
+				teachPage.transform.GetChild(9).GetComponent<Text>().text = "本次重點：填寫答案前記得檢查，確保沒有計算錯誤！";
+				break;
+			case "mis06":
+				teachPage.transform.GetChild(9).GetComponent<Text>().text = "本次重點：注意加法和減法的運算概念不同！";
+				break;
+			case "mis07":
+				teachPage.transform.GetChild(9).GetComponent<Text>().text = "本次重點：注意加法和乘法的運算概念不同！";
+				break;
+			case "mis08":
+				teachPage.transform.GetChild(9).GetComponent<Text>().text = "本次重點：注意乘法和除法的運算概念不同！";
+				break;
+			case "mis09":
+				teachPage.transform.GetChild(9).GetComponent<Text>().text = "本次重點：注意減法和除法的運算概念不同！";
+				break;
+		}
+
 		// initial test question
 		for(int i = 0; i < question.Count; i++){
 			temp += question[i];
@@ -200,12 +233,18 @@ public class DynamicAssessment : MonoBehaviour {
 			temp = "";
 			for(int j = 0; j < right.Count; j++){
 				if(right[j] != "@")
-					temp += right[j];
+					if(j == userAns[i].index)
+						if(right[j] != left[j])
+							temp += "<color=red>"+right[j]+"</color>";
+						else
+							temp += right[j];
+					else
+						temp += right[j];
 			}
 			if(TrueAnsAfter.text == temp)
 				UserAnsAfter.text = temp;
 			else
-				UserAnsAfter.text = "<color=red>"+temp+"</color>";
+				UserAnsAfter.text = temp;//"<color=red>"+temp+"</color>";
 				// Debug.Log("<color=red>"+temp+"</color>");
 
 			yield return new WaitForSeconds(2f);

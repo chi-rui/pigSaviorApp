@@ -72,9 +72,9 @@ public class PickMode : MonoBehaviour {
 	public void checkAns(){
 		StartCoroutine(gameFinish(2f));
 		if(this.itemsPicked == this.answer){
-			stageEvents.showFeedBack(true);
+			stageEvents.showFeedBack(true, "");
 		}else{
-			stageEvents.showFeedBack(false);
+			stageEvents.showFeedBack(false, "數量好像不太正確喔！");
 			initial();
 		}
 	}
