@@ -16,13 +16,13 @@ public class DynamicAssessment : MonoBehaviour {
 
 
 	// for test
-	private MathDatasControl MathDatas;
+	// private MathDatasControl MathDatas;
 	public Text TrueAnsBefore, TrueAnsAfter, UserAnsBefore, UserAnsAfter;
 
 	// Use this for initialization
 	void Start () {
 		// countMistake = 0;
-		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
+		// MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
 
 		RuleType = false;
 		ProcessType = false;
@@ -50,7 +50,6 @@ public class DynamicAssessment : MonoBehaviour {
 				}else{
 					return "括號裡面的運算要比誰都先做喔";
 				}
-				break;
 			case "mis02":
 				if(!RuleType){
 					RuleType = true;
@@ -58,7 +57,6 @@ public class DynamicAssessment : MonoBehaviour {
 				}else{
 					return "運算符號是有計算的先後順序的\n想一想再試一次吧";
 				}
-				break;
 			case "mis03":
 				if(!RuleType){
 					RuleType = true;
@@ -66,7 +64,6 @@ public class DynamicAssessment : MonoBehaviour {
 				}else{
 					return "運算要由左而右進行\n才不會導致結果錯誤喔";
 				}
-				break;
 			case "mis04":
 				if(!ProcessType){
 					ProcessType = true;
@@ -74,7 +71,6 @@ public class DynamicAssessment : MonoBehaviour {
 				}else{
 					return "運算的過程也是很重要的喔\n再嘗試一次吧";	
 				}
-				break;
 			case "mis05":
 				if(!ProcessType){
 					ProcessType = true;
@@ -82,7 +78,6 @@ public class DynamicAssessment : MonoBehaviour {
 				}else{
 					return "好像有些小地方沒有注意到喔\n算完了不要忘記再檢查一下喔";	
 				}
-				break;
 			case "mis06":
 				if(!OperType){
 					OperType = true;
@@ -90,7 +85,6 @@ public class DynamicAssessment : MonoBehaviour {
 				}else{
 					return "一直一橫是加號\n一橫結束的是減號\n想想看要怎麼使用他們呢";
 				}
-				break;
 			case "mis07":
 				if(!OperType){
 					OperType = true;
@@ -98,7 +92,6 @@ public class DynamicAssessment : MonoBehaviour {
 				}else{
 					return "一直一橫是加號\n長相叉叉是乘號\n他們是不一樣的東西喔";
 				}
-				break;
 			case "mis08":
 				if(!OperType){
 					OperType = true;
@@ -106,7 +99,6 @@ public class DynamicAssessment : MonoBehaviour {
 				}else{
 					return "長相叉叉是乘號\n上下點點是除號\n他們概念上是相反的喔";
 				}
-				break;
 			case "mis09":
 				if(!OperType){
 					OperType = true;
@@ -114,10 +106,8 @@ public class DynamicAssessment : MonoBehaviour {
 				}else{
 					return "一橫結束是減號\n上下點點是除號\n多了點點概念就不一樣囉";
 				}
-				break;
 			default:
 				return "哎呀！好像出了些小問題！";
-				break;
 		}
 	}
 

@@ -34,7 +34,7 @@ public class MisIdentify : MonoBehaviour {
 		/**** MisConception number ****/
 
 		List<string> misConception = new List<string>();
-		int bracketSep = -1, i = 0, nowOperIndex = 0, answer = 0;
+		int bracketSep = -1, i = 0, answer = 0;
 		string questionOper = "";
 		bool operSwitch = false;
 

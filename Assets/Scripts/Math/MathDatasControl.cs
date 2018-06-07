@@ -35,7 +35,7 @@ public class MathDatasControl : MonoBehaviour {
 	private QuesObj questionGenerator( int miniNum, int maxNum, string template ){		
 		QuesObj quesObj = new QuesObj();
 		string[] question;
-		List<char> numbers = new List<char>();
+		// List<char> numbers = new List<char>();
 		char[] formula = template.ToCharArray();
 		bool isInBracket = false, special = false;
 		int i, j, num = 0, tempNum=0;
