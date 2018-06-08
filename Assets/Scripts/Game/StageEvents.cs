@@ -127,13 +127,7 @@ public class StageEvents : MonoBehaviour {
 			mainCharacter.SetActive(true);
 		}
 		else{
-<<<<<<< HEAD
-			// teachingPanel.SetActive(true);
 			GameObject.Find("EventSystem").GetComponent<DynamicAssessment>().teachNum(-1);
-=======
-			// if(gameMode != "PICK")
-				GameObject.Find("EventSystem").GetComponent<DynamicAssessment>().teachNum(-1);
->>>>>>> 55784eb05fedc1605f604f9f24286252c3f85ff5
 		}
 	}
 
