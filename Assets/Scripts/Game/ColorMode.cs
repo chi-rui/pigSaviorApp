@@ -22,21 +22,28 @@ public class ColorMode : MonoBehaviour {
 	private List<string> tmpColorOperList = new List<string>();
 	private List<int> quesOperList = new List<int>();
 	private List<int> quesOperIndexList = new List<int>();
+	private	List<string> misConceptions = new List<string>();
 
 	// set question
 	public int minNum, maxNum;
 	public List<string> quesTemplate;
-	private QuesObj quesObj;
+	private QuesObj quesObj, temp;
 	private MathDatasControl MathDatas;
-
+	private MisIdentify MisIdent;
 	// set user answer
 	private List<AnsObj> userAnsList = new List<AnsObj>();
+
+	private StageEvents stageEvents;
+	private DynamicAssessment dynamicAssessment;
 
 // test
 	private string testQues;
 
 	void OnEnable () {
 		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
+		MisIdent = GameObject.Find("EventSystem").GetComponent<MisIdentify>();
+		stageEvents = GameObject.Find("EventSystem").GetComponent<StageEvents>();
+		dynamicAssessment = GameObject.Find("EventSystem").GetComponent<DynamicAssessment>();
 
 		generateNewQuestion(minNum, maxNum, quesTemplate);
 		clickRechallengeGame();
@@ -60,11 +67,15 @@ public class ColorMode : MonoBehaviour {
 
 	void generateNewQuestion (int min, int max, List<string> template) {
 		// generate question and get operator counts
-		quesObj = MathDatas.getQuestion(min, max, template[UnityEngine.Random.Range(0, template.Count)]);
-		for (int i = 0; i < quesObj.question.Count; i++)
-			testQues += quesObj.question[i];
+		quesObj = MathDatas.getQuestion(min, max, template[Random.Range(0, template.Count)]);
+		temp = new QuesObj();
+		temp.question = new List<string>(quesObj.question);
+		temp.answer = new List<AnsObj>(quesObj.answer);
+
+		for (int i = 0; i < temp.question.Count; i++)
+			testQues += temp.question[i];
 		print(testQues);
-		operCount = quesObj.answer.Count;
+		operCount = temp.answer.Count;
 		// print(operCount);
 
 		// set question numbers and operators position
@@ -84,10 +95,10 @@ public class ColorMode : MonoBehaviour {
 		}
 
 		// store operators index and operators in each list
-		for (int i = 0; i < quesObj.question.Count; i++) {
-			if (quesObj.question[i] == "+" || quesObj.question[i] == "-" || quesObj.question[i] == "x" || quesObj.question[i] == "÷") {
+		for (int i = 0; i < temp.question.Count; i++) {
+			if (temp.question[i] == "+" || temp.question[i] == "-" || temp.question[i] == "x" || temp.question[i] == "÷") {
 				quesOperIndexList.Add(i);
-				switch (quesObj.question[i]) {
+				switch (temp.question[i]) {
 					case "+":
 						quesOperList.Add(0);
 						break;
@@ -105,27 +116,27 @@ public class ColorMode : MonoBehaviour {
 		}
 
 		// delete operators and brackets in question
-		for (int i = 0; i < quesObj.question.Count; i++) {
-			if (quesObj.question[i] == "+" || quesObj.question[i] == "-" || quesObj.question[i] == "x" || quesObj.question[i] == "÷")
-				quesObj.question.Remove(quesObj.question[i]);
-			if (quesObj.question[i] == "(") {
-				quesObj.question[i+1] = quesObj.question[i] + quesObj.question[i+1];
-			} else if (quesObj.question[i] == ")") {
-				quesObj.question[i-1] = quesObj.question[i-1] + quesObj.question[i];
+		for (int i = 0; i < temp.question.Count; i++) {
+			if (temp.question[i] == "+" || temp.question[i] == "-" || temp.question[i] == "x" || temp.question[i] == "÷")
+				temp.question.Remove(temp.question[i]);
+			if (temp.question[i] == "(") {
+				temp.question[i+1] = temp.question[i] + temp.question[i+1];
+			} else if (temp.question[i] == ")") {
+				temp.question[i-1] = temp.question[i-1] + temp.question[i];
 			}
 		}
-		for (int i = 0; i < quesObj.question.Count; i++) {
-			if (quesObj.question[i] == "(")
-				quesObj.question.Remove(quesObj.question[i]);
+		for (int i = 0; i < temp.question.Count; i++) {
+			if (temp.question[i] == "(")
+				temp.question.Remove(temp.question[i]);
 		}
-		for (int i = 0; i < quesObj.question.Count; i++) {
-			if (quesObj.question[i] == ")")
-				quesObj.question.Remove(quesObj.question[i]);
+		for (int i = 0; i < temp.question.Count; i++) {
+			if (temp.question[i] == ")")
+				temp.question.Remove(temp.question[i]);
 		}
 
-		// print(quesObj.question.Count);
-		// for (int i = 0; i < quesObj.question.Count; i++)
-		// 	print(quesObj.question[i]);
+		// print(temp.question.Count);
+		// for (int i = 0; i < temp.question.Count; i++)
+		// 	print(temp.question[i]);
 		// for (int i = 0; i < quesOperList.Count; i++)
 		// 	print(quesOperList[i]);
 
@@ -149,11 +160,11 @@ public class ColorMode : MonoBehaviour {
 
 	void showQuestion () {
 		// show question number text
-		for (int i = 0; i < quesObj.question.Count; i++)
-			quesNumTextArr[i].GetComponent<Text>().text = quesObj.question[i];
+		for (int i = 0; i < temp.question.Count; i++)
+			quesNumTextArr[i].GetComponent<Text>().text = temp.question[i];
 
-		// for (int i = 0; i < quesObj.question.Count; i++)
-		// 	print(quesObj.question[i]);
+		// for (int i = 0; i < temp.question.Count; i++)
+		// 	print(temp.question[i]);
 
 		// set operator color and symbol
 		for (int i = 0; i < operCount; i++) {
@@ -512,13 +523,14 @@ public class ColorMode : MonoBehaviour {
 	}
 
 	public void checkUserAnswer () {
-		print("userAnsList.Count: " + userAnsList.Count);
-		for (int i = 0; i < userAnsList.Count; i++)
-			print(userAnsList[i].index + " " + userAnsList[i].operators + " " + userAnsList[i].partAns + " " + userAnsList[i].isInBracket + " " + userAnsList[i].numA + " " + userAnsList[i].numB);
+		misConceptions = MisIdent.getMisConception(quesObj.answer, userAnsList);
 
-		if (userAnsList[userAnsList.Count-1].partAns == quesObj.answer[quesObj.answer.Count-1].partAns)
-			print("答案正確");
-		else
-			print("答案錯誤");
+		if(quesObj.answer[quesObj.answer.Count-1].partAns == userAnsList[userAnsList.Count-1].partAns){
+			stageEvents.showFeedBack(true, "");
+		}else{
+			dynamicAssessment.setContents(quesObj, new List<AnsObj>(userAnsList), misConceptions[0]);
+			stageEvents.showFeedBack(false , dynamicAssessment.getPrompt(misConceptions));
+		}
+		GameObject.Find("Panel_ColorMode").SetActive(false);
 	}
 }

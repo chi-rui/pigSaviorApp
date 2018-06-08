@@ -98,16 +98,21 @@ public class StageEvents : MonoBehaviour {
 	}
 
 	// Show the suit feedback after check the result of the game.(check is in game script)
-	public void showFeedBack( bool ans ){
+	public void showFeedBack( bool ans, string prompts ){
 		if(ans){
 			StartCoroutine(Feedback(correctPanel));
 			checkStageProgress();
 		}else{
 			StartCoroutine(Feedback(wrongPanel));
+			GameObject.Find("Feedbacks").transform.GetChild(1).GetChild(2).GetComponent<Text>().text = prompts;
 			// ... set wrong panel hints.
 			userLife--;
 			string life = "Life" + userLife.ToString();
-			GameObject.Find("player life").transform.GetChild(1).GetComponent<Image>().sprite = Resources.Load<Sprite>(life) as Sprite;;
+			if(userLife == 0){
+				GameObject.Find("player life").transform.GetChild(1).gameObject.SetActive(false); //GetComponent<Image>().sprite = null;
+				GameObject.Find("player life").transform.GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("gg") as Sprite;
+			}else
+				GameObject.Find("player life").transform.GetChild(1).GetComponent<Image>().sprite = Resources.Load<Sprite>(life) as Sprite;
 			
 		}
 	}

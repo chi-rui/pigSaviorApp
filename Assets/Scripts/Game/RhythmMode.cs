@@ -448,18 +448,14 @@ public class RhythmMode : MonoBehaviour {
 	}
 
 	public void checkUserAnswer () {
-		// misConceptions.Clear();
 		misConceptions = MisIdent.getMisConception(quesObj.answer, userAnsList);
 
-		if(misConceptions.Count == 0){
-			stageEvents.showFeedBack(true);
-			// GameObject.Find("Panel_RhythmMode").SetActive(false);
+		if(quesObj.answer[quesObj.answer.Count-1].partAns == userAnsList[userAnsList.Count-1].partAns){
+			stageEvents.showFeedBack(true, "");
 		}else{
-			dynamicAssessment.setContents(quesObj, userAnsList, misConceptions[0]);
-			stageEvents.showFeedBack(false);
+			dynamicAssessment.setContents(quesObj, new List<AnsObj>(userAnsList), misConceptions[0]);
+			stageEvents.showFeedBack(false , dynamicAssessment.getPrompt(misConceptions));
 		}
-		// print("end");
-		// GameObject.Find("pointer").SetActive(false);
 		GameObject.Find("Panel_RhythmMode").SetActive(false);
 	}
 }
