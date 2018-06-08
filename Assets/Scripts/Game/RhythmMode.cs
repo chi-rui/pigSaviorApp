@@ -382,7 +382,8 @@ public class RhythmMode : MonoBehaviour {
 		string tmpAns = ""; string bracketStr = "";
 
 		// set user answer object and add to user answer list
-		AnsObj userAnsObj = new AnsObj();
+		AnsObj userAnsObj;
+		userAnsObj = new AnsObj();
 		userAnsObj.index = quesOperIndexList[operChooseBtnIndex];
 		userAnsObj.operators = System.Convert.ToChar(quesOperList[operChooseBtnIndex]);
 		if (Text_userans.text == null || Text_userans.text == "ANS") {
