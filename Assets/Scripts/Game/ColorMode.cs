@@ -36,9 +36,6 @@ public class ColorMode : MonoBehaviour {
 	private StageEvents stageEvents;
 	private DynamicAssessment dynamicAssessment;
 
-// test
-	private string testQues;
-
 	void OnEnable () {
 		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
 		MisIdent = GameObject.Find("EventSystem").GetComponent<MisIdentify>();
@@ -72,10 +69,18 @@ public class ColorMode : MonoBehaviour {
 		temp.question = new List<string>(quesObj.question);
 		temp.answer = new List<AnsObj>(quesObj.answer);
 
+		// initial and clear question setting lists
+		quesOperList.Clear();
+		quesOperIndexList.Clear();
+		operColorRanList.Clear();
+		tmpColorOperList.Clear();
+
+		operCount = temp.answer.Count;
+
+		string testQues = "";
 		for (int i = 0; i < temp.question.Count; i++)
 			testQues += temp.question[i];
 		print(testQues);
-		operCount = temp.answer.Count;
 		// print(operCount);
 
 		// set question numbers and operators position
@@ -150,6 +155,7 @@ public class ColorMode : MonoBehaviour {
 				colorList.Remove(colorList[index]);
 			}
 		}
+		// print("operColorRanList.Count: " + operColorRanList.Count);
 		for (int i = 0; i < operColorRanList.Count; i++) {
 			// print(operColorRanList[i]);
 			print(tmpColorOperList[i]);
@@ -326,6 +332,9 @@ public class ColorMode : MonoBehaviour {
 				operChooseColorIndex = i;
 		}
 		Image_operInResult.sprite = Resources.Load<Sprite>(colorResult+"Oper"+quesOperList[operChooseColorIndex]) as Sprite;
+		// print("tmpColorOperList.Count: " + tmpColorOperList.Count);
+		// for (int i = 0; i < tmpColorOperList.Count; i++)
+		// 	print(tmpColorOperList[i]);
 		for (int i = 0; i < tmpColorOperList.Count; i++) {
 			if (tmpColorOperList[i] == colorResult)
 				isPair = true;
@@ -448,6 +457,7 @@ public class ColorMode : MonoBehaviour {
 
 	public void clickRechallengeGame () {
 		calculatePanel.SetActive(false);
+		// print("userCalculateCount: " + userCalculateCount);
 		if (userCalculateCount != 0)
 			showQuestion();
 		userCalculateCount = 0;
@@ -455,9 +465,8 @@ public class ColorMode : MonoBehaviour {
 		isSpecialCalculate = false;
 		restartColorMode();
 		userAnsList.Clear();
-		tmpColorOperList.Clear();
-		for (int i = 0; i < operColorRanList.Count; i++)
-			tmpColorOperList.Add(operColorRanList[i]);
+		// for (int i = 0; i < operColorRanList.Count; i++)
+		// 	tmpColorOperList.Add(operColorRanList[i]);
 		// for (int i = 0; i < tmpColorOperList.Count; i++)
 		// 	print(tmpColorOperList[i]);
 	}

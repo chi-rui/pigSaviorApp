@@ -34,9 +34,6 @@ public class RhythmMode : MonoBehaviour {
 	private StageEvents stageEvents;
 	private DynamicAssessment dynamicAssessment;
 
-// test
-	private string testQues;
-
 	void OnEnable () {
 		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
 		MisIdent = GameObject.Find("EventSystem").GetComponent<MisIdentify>();
@@ -96,7 +93,7 @@ public class RhythmMode : MonoBehaviour {
 		operCount = temp.answer.Count;
 		// print(operCount);
 
-		testQues = "";
+		string testQues = "";
 		for (int i = 0; i < temp.question.Count; i++)
 			testQues += temp.question[i];
 		print(testQues);

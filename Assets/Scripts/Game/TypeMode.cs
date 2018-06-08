@@ -35,22 +35,20 @@ public class TypeMode : MonoBehaviour {
 	private StageEvents stageEvents;
 	private DynamicAssessment dynamicAssessment;
 
-// test
-	private string testQues;
-
 	void OnEnable () {
 		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
 		MisIdent = GameObject.Find("EventSystem").GetComponent<MisIdentify>();
 		stageEvents = GameObject.Find("EventSystem").GetComponent<StageEvents>();
 		dynamicAssessment = GameObject.Find("EventSystem").GetComponent<DynamicAssessment>();
 		
+		Anim_characterAction.Play("character game action_fighting");
 		generateNewQuestion(minNum, maxNum, quesTemplate);
 		clickRechallengeGame();
 	}
 
 	// Use this for initialization
 	void Start () {
-		Anim_characterAction.Play("character game action_fighting");
+
 	}
 	
 	// Update is called once per frame
@@ -71,11 +69,18 @@ public class TypeMode : MonoBehaviour {
 		temp.question = new List<string>(quesObj.question);
 		temp.answer = new List<AnsObj>(quesObj.answer);
 
+		// initial and clear question setting lists
+		quesOperList.Clear();
+		quesOperIndexList.Clear();
+		typeRanList.Clear();
+
+		operCount = temp.answer.Count;
+		// print(operCount);
+
+		string testQues = "";
 		for (int i = 0; i < temp.question.Count; i++)
 			testQues += temp.question[i];
 		print(testQues);
-		operCount = temp.answer.Count;
-		// print(operCount);
 
 		// set question numbers and operators position
 		switch (operCount) {
@@ -150,6 +155,7 @@ public class TypeMode : MonoBehaviour {
 				typeList.Remove(typeList[index]);
 			}
 		}
+		print("typeRanList.Count: " + typeRanList.Count);
 		for (int i = 0; i < typeRanList.Count; i++)
 			print(typeRanList[i]);
 
@@ -453,8 +459,11 @@ public class TypeMode : MonoBehaviour {
 	public void clickRechallengeGame () {
 		calculatePanel.SetActive(false);
 		fightingPanel.SetActive(false);
-		if (operFailedCount != 0)
+		if (operFailedCount != 0) {
+			for (int i = 0; i < operFailedCount; i++)
+				operTeamFailedImageArr[i].SetActive(false);
 			showQuestion();
+		}
 		operFailedCount = 0;
 		Text_userans.text = "ANS";
 		isSpecialCalculate = false;
