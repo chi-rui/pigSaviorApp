@@ -291,7 +291,8 @@ public class DynamicAssessment : MonoBehaviour {
 		List<string> question = new List<string>(q);
 		bool upBracket = false;
 		bool downBracket = false;
-		int b = 0, a = 0;
+		int b = 0, a = 0, result;
+		string temp = "";
 
 		for(b = operIndex-1; b >= 0; b--){
 			if(question[b] == "("){
@@ -316,6 +317,17 @@ public class DynamicAssessment : MonoBehaviour {
 		if(upBracket && downBracket){
 			question[a] = "@";
 			question[b] = "@";
+		}
+		if(a-b == 3){
+			if(int.TryParse(question[b+1], out result)){
+				temp = question[a+1];
+				question[a+1] = question[a];
+				question[a] = temp;
+			}else{
+				temp = question[b-1];
+				question[b-1] = question[b];
+				question[b] = temp;
+			}
 		}
 		return question;
 	}
