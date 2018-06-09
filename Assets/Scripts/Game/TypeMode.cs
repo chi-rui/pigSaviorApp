@@ -551,6 +551,6 @@ public class TypeMode : MonoBehaviour {
 			dynamicAssessment.setContents(quesObj, new List<AnsObj>(userAnsList), misConceptions[0]);
 			stageEvents.showFeedBack(false , dynamicAssessment.getPrompt(misConceptions));
 		}
-		GameObject.Find("Panel_TypeMode").SetActive(false);
+		GameObject.Find("Panel_" + npc + " Type").SetActive(false);
 	}
 }

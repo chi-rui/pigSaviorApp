@@ -300,7 +300,6 @@ public class DynamicAssessment : MonoBehaviour {
 					break;
 				case ")":
 					downBracket = i;
-					print("Type:" + counter + " at " + i);
 					if(counter == 1){
 						question[i] = "@";
 						for(int j = i-1; j >= 0; j--){
@@ -313,7 +312,6 @@ public class DynamicAssessment : MonoBehaviour {
 						for(int j = i-1; j >= 0; j--){
 							if(question[j] != "@"){
 								if(int.TryParse(question[j], out result)){
-									print("found a num " + result);
 									for(int k = upBracket-1; k >= 0; k--){
 										if( question[k] != "@"){
 											if(question[k] == ")"){
@@ -330,7 +328,6 @@ public class DynamicAssessment : MonoBehaviour {
 										}
 									}
 								}else{
-									print("found an oper " + question[j]);
 									for(int k = i+1; k < question.Count; k++){
 										if(question[k] != "@"){
 											temp = question[i];
