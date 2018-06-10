@@ -229,18 +229,18 @@ public class DynamicAssessment : MonoBehaviour {
 			right[userAns[i].index] = userAns[i].partAns.ToString();
 			right = caculatedNumProcess( right, userAns[i].index );
 			right = bracketsProcess(right, userAns[i].index);
-
 			temp = "";
 			for(int j = 0; j < right.Count; j++){
 				if(right[j] != "@")
-					if(j == userAns[i].index)
-						if(right[j] != left[j])
+					if(right[j] == userAns[i].partAns.ToString())
+						if(trueAns[i].partAns != userAns[i].partAns)
 							temp += "<color=red>"+right[j]+"</color>";
 						else
 							temp += right[j];
 					else
 						temp += right[j];
 			}
+
 			if(TrueAnsAfter.text == temp)
 				UserAnsAfter.text = temp;
 			else
@@ -289,50 +289,69 @@ public class DynamicAssessment : MonoBehaviour {
 
 	private List<string> bracketsProcess( List<string> q, int operIndex ){
 		List<string> question = new List<string>(q);
-		bool upBracket = false;
-		bool downBracket = false;
-		int b = 0, a = 0, result;
+		int upBracket = -1, downBracket = -1, counter = 0, result;
 		string temp = "";
 
-		for(b = operIndex-1; b >= 0; b--){
-			if(question[b] == "("){
-				upBracket = true;
-				break;
-			}else if(question[b] == "@"){
-				continue;
-			}else{
-				break;
-			}
-		}
-		for(a = operIndex+1; a < question.Count; a++){
-			if(question[a] == ")"){
-				downBracket = true;
-				break;
-			}else if(question[a] == "@"){
-				continue;
-			}else{
-				break;
-			}
-		}
-		if(upBracket && downBracket){
-			question[a] = "@";
-			question[b] = "@";
-		}
-		if(a-b == 3){
-			if(int.TryParse(question[b+1], out result)){
-				temp = question[a+1];
-				question[a+1] = question[a];
-				question[a] = temp;
-			}else{
-				temp = question[b-1];
-				question[b-1] = question[b];
-				question[b] = temp;
+		for(int i = 0; i < question.Count; i++){
+			switch(question[i]){
+				case "(":
+					upBracket = i;
+					counter = 0;
+					break;
+				case ")":
+					downBracket = i;
+					if(counter == 1){
+						question[i] = "@";
+						for(int j = i-1; j >= 0; j--){
+							if(question[j] == "("){
+								question[j] = "@";
+								break;
+							}
+						}
+					}else if(counter % 2 == 0){
+						for(int j = i-1; j >= 0; j--){
+							if(question[j] != "@"){
+								if(int.TryParse(question[j], out result)){
+									for(int k = upBracket-1; k >= 0; k--){
+										if( question[k] != "@"){
+											if(question[k] == ")"){
+												question[k] = "@";
+												question[upBracket] = "@";
+												upBracket = -1;
+											}else{
+												temp = question[upBracket];
+												question[upBracket] = question[k];
+												question[k] = temp;
+												upBracket = k;
+											}
+											break;
+										}
+									}
+								}else{
+									for(int k = i+1; k < question.Count; k++){
+										if(question[k] != "@"){
+											temp = question[i];
+											question[i] = question[k];
+											question[k] = temp;
+											downBracket = k;
+											i++;
+										}
+										break;
+									}
+								}
+							break;
+							}
+						}
+					}
+					break;
+				case "@":
+					break;
+				default:
+					counter++;
+					break;
 			}
 		}
 		return question;
 	}
 
-	// private void showSelections(){
-		
-	// }
 }

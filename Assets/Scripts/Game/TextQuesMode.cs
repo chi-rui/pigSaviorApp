@@ -5,9 +5,11 @@ using UnityEngine.UI;
 using System.IO;
 
 public class TextQuesMode : MonoBehaviour {
+	public string npc;
+
 	// set question
 	public int minNum, maxNum, templateIndex;
-	public List<string> quesTemplate, quesNumSymbol;
+	public List<string> quesTemplate, quesNumSymbol, quesKeywords;
 	public string textQuesFilePath;
 	private List<string> textQuesList = new List<string>();
 	private List<int> quesIndexList = new List<int>();

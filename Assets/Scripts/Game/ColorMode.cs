@@ -540,6 +540,6 @@ public class ColorMode : MonoBehaviour {
 			dynamicAssessment.setContents(quesObj, new List<AnsObj>(userAnsList), misConceptions[0]);
 			stageEvents.showFeedBack(false , dynamicAssessment.getPrompt(misConceptions));
 		}
-		GameObject.Find("Panel_ColorMode").SetActive(false);
+		GameObject.Find("Panel_" + npc + " Color").SetActive(false);
 	}
 }

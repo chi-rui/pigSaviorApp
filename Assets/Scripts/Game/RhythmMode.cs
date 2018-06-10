@@ -13,7 +13,7 @@ public class RhythmMode : MonoBehaviour {
 	public Image[] hitbarArr;
 	public Text Text_remainCounts, Text_userans, Text_partQues;
 	public float speed;
-	public string characterPerfectAnimStr, npcPerfectAnimStr;
+	public string characterPerfectAnimStr, npcPerfectAnimStr, npc;
 	
 	private Vector3 pos_L, pos_R;
 	private int remainCounts, hitbarCounts, operCount, operChooseBtnIndex, userCalculateCount, numA, numB;
@@ -46,8 +46,8 @@ public class RhythmMode : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		pos_L = new Vector3(-1860f, pointer.transform.position.y, 0);
-		pos_R = new Vector3(-530f, pointer.transform.position.y, 0);
+		pos_L = new Vector3(GameObject.Find("hit bar 0").transform.position.x-100f, pointer.transform.position.y, 0);
+		pos_R = new Vector3(GameObject.Find("hit bar 6").transform.position.x+100f, pointer.transform.position.y, 0);
 		speed = 0.5f;
 	}
 
@@ -453,6 +453,6 @@ public class RhythmMode : MonoBehaviour {
 			dynamicAssessment.setContents(quesObj, new List<AnsObj>(userAnsList), misConceptions[0]);
 			stageEvents.showFeedBack(false , dynamicAssessment.getPrompt(misConceptions));
 		}
-		GameObject.Find("Panel_RhythmMode").SetActive(false);
+		GameObject.Find("Panel_" + npc + " Rhythm").SetActive(false);
 	}
 }
