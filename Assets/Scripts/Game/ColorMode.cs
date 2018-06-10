@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ColorMode : MonoBehaviour {
-	public GameObject warningPanel, waterGunImage, colorPainterImage, mixingColorResult, calculatePanel, clickAnyPositionImage, rechallengeBtn;
+	public GameObject warningPanel, waterGunImage, colorPainterImage, mixingColorResult, calculatePanel, clickAnyPositionImage;
 	public GameObject[] quesNumTextArr, quesOperImageArr;
 	public Animator Anim_npcColored, Anim_npcMixingColor, Anim_operatorPairResult;
 	public Image[] colorChooseMemberArr;
@@ -48,7 +48,21 @@ public class ColorMode : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
+		// set question numbers and operators position
+		switch (operCount) {
+			case 2:
+				for (int i = 0; i <= operCount; i++) {
+					quesNumTextArr[i].transform.position += new Vector3(50f, 0, 0);
+					quesOperImageArr[i].transform.position += new Vector3(50f, 0, 0);
+				}
+				break;
+			case 1:
+				for (int i = 0; i <= operCount; i++) {
+					quesNumTextArr[i].transform.position += new Vector3(200f, 0, 0);
+					quesOperImageArr[i].transform.position += new Vector3(200f, 0, 0);
+				}
+				break;
+		}
 	}
 	
 	// Update is called once per frame
@@ -82,22 +96,6 @@ public class ColorMode : MonoBehaviour {
 			testQues += temp.question[i];
 		print(testQues);
 		// print(operCount);
-
-		// set question numbers and operators position
-		switch (operCount) {
-			case 2:
-				for (int i = 0; i <= operCount; i++) {
-					quesNumTextArr[i].transform.position += new Vector3(50f, 0, 0);
-					quesOperImageArr[i].transform.position += new Vector3(50f, 0, 0);
-				}
-				break;
-			case 1:
-				for (int i = 0; i <= operCount; i++) {
-					quesNumTextArr[i].transform.position += new Vector3(200f, 0, 0);
-					quesOperImageArr[i].transform.position += new Vector3(200f, 0, 0);
-				}
-				break;
-		}
 
 		// store operators index and operators in each list
 		for (int i = 0; i < temp.question.Count; i++) {
@@ -458,15 +456,16 @@ public class ColorMode : MonoBehaviour {
 	public void clickRechallengeGame () {
 		calculatePanel.SetActive(false);
 		// print("userCalculateCount: " + userCalculateCount);
-		if (userCalculateCount != 0)
+		if (userCalculateCount != 0) {
+			for (int i = 0; i < operColorRanList.Count; i++)
+				tmpColorOperList.Add(operColorRanList[i]);
 			showQuestion();
+		}
 		userCalculateCount = 0;
 		Text_userans.text = "ANS";
 		isSpecialCalculate = false;
 		restartColorMode();
 		userAnsList.Clear();
-		// for (int i = 0; i < operColorRanList.Count; i++)
-		// 	tmpColorOperList.Add(operColorRanList[i]);
 		// for (int i = 0; i < tmpColorOperList.Count; i++)
 		// 	print(tmpColorOperList[i]);
 	}
@@ -520,7 +519,6 @@ public class ColorMode : MonoBehaviour {
 					quesNumTextArr[operChooseColorIndex+2].GetComponent<Text>().text = null;
 			}
 		} else {
-			rechallengeBtn.SetActive(false);
 			print("計算完成！");
 			checkUserAnswer();
 		}
