@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine;
 
@@ -266,7 +267,7 @@ public class DynamicAssessment : MonoBehaviour {
 		userList.Clear();
 		misConceptions.Clear();
 		teachingPanel.SetActive(false);
-		// back to chapter
+		SceneManager.LoadScene("Chapter"+GameObject.Find("Datas").GetComponent<DatasControl>().chapter.ToString());
 	}
 
 	private List<string> caculatedNumProcess( List<string> q, int operIndex ){

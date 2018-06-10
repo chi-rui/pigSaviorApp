@@ -20,6 +20,7 @@ public class DatasControl : MonoBehaviour {
 	public int stageGoal = 0;	// keep the data of the max stage plots number. 
 
 	// Game setting
+	public static string GameMode;
 	// music...etc
 
 	// Loading Image
@@ -34,6 +35,7 @@ public class DatasControl : MonoBehaviour {
 		chapter = 1;
 		progress = 1;
 		nowStage = 1;
+		GameMode = "";
 		setGameObjects();
 	}
 	

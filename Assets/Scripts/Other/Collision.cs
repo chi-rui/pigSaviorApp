@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Collision : MonoBehaviour {
 	public Animator Anim_character;
+	public static bool isCollision;
 
 	// Use this for initialization
 	void Start () {
@@ -18,12 +19,14 @@ public class Collision : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D collider) {
 		if (collider.gameObject.tag == "npc") {
 			// print("碰到npc了！");
+			isCollision = true;
 			Anim_character.Play("Image_character meet npc");
 		}
 	}
 
 	void OnTriggerExit2D(Collider2D collider) {
 		// print("離開npc了！");
+		isCollision = false;
 		Anim_character.Play("Image_character stage");
     }
 }

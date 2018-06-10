@@ -11,13 +11,14 @@ public class StageEvents : MonoBehaviour {
 	private DatasControl dataControl;
 
 	public float speed;
-	public GameObject mainCharacter, mainCamera, TalkWindow, gamePanel, correctPanel, wrongPanel, warningPanel, enterPanel, teachingPanel, plotsImage, NPCs;
+	public GameObject mainCharacter, mainCamera, TalkWindow, gamePanel, correctPanel, wrongPanel, enterPanel, teachingPanel, plotsImage, NPCs, stageClear;
 	private Vector3 newPosition, newCameraPosition;
 	public int userProgress;
 	private bool isGameStart = false;
 	private bool isProgressIncrease = false;
 	// saved npc plots contents 
 	private List<string> plots = new List<string>();
+	private GameObject npc, newNpc;
 	private int page, userLife;
 	// prompt for next plots
 	public List<StagePrompts> prompts = new List<StagePrompts>();
@@ -32,7 +33,7 @@ public class StageEvents : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if(Input.GetMouseButton(0) && !isGameStart){
+		if(Input.GetMouseButton(0) && !isGameStart && !plotsImage.active){
 			if(EventSystem.current.currentSelectedGameObject == null && !TalkWindow.activeInHierarchy){
 				characterMove();
 			}
@@ -61,14 +62,17 @@ public class StageEvents : MonoBehaviour {
 	}
 
 	// Set the game info of the plots.
-	public void setGameInfo( GameObject game, Sprite header, string title, string npcPlots, bool isCorrectPlot ){
+	public void setGameInfo( GameObject npcObj, GameObject npcFinish, GameObject game, Sprite header, string title, string npcPlots, bool isCorrectPlot ){
 		TalkWindow.SetActive(true);
 		TalkWindow.transform.GetChild(0).GetComponentInChildren<Image>().sprite = header;
 		TalkWindow.transform.GetChild(1).GetComponentInChildren<Text>().text = title;
+		TalkWindow.transform.GetChild(3).GetChild(0).GetComponent<Text>().text = "繼續";
 		plots = npcPlots.Split('#').ToList();
 		gamePanel = game;
 		isProgressIncrease = isCorrectPlot;
 		page = 0;
+		npc = npcObj;
+		newNpc = npcFinish;
 		nextPagePlots();
 	}
 	
@@ -86,6 +90,8 @@ public class StageEvents : MonoBehaviour {
 		}else{
 			TalkWindow.transform.GetChild(2).GetComponentInChildren<Text>().text = plots[page];
 			page++;
+			if(page == plots.Count-1)
+				TalkWindow.transform.GetChild(3).GetChild(0).GetComponent<Text>().text = "結束";
 		}
 	}
 
@@ -103,16 +109,17 @@ public class StageEvents : MonoBehaviour {
 			StartCoroutine(Feedback(correctPanel));
 			checkStageProgress();
 		}else{
-			StartCoroutine(Feedback(wrongPanel));
 			GameObject.Find("Feedbacks").transform.GetChild(1).GetChild(2).GetComponent<Text>().text = prompts;
 			// ... set wrong panel hints.
 			userLife--;
-			string life = "Life" + userLife.ToString();
 			if(userLife == 0){
+				StartCoroutine(Feedback(wrongPanel));
 				GameObject.Find("player life").transform.GetChild(1).gameObject.SetActive(false); //GetComponent<Image>().sprite = null;
 				GameObject.Find("player life").transform.GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("gg") as Sprite;
-			}else
+			}else{
+				string life = "Life" + userLife.ToString();
 				GameObject.Find("player life").transform.GetChild(1).GetComponent<Image>().sprite = Resources.Load<Sprite>(life) as Sprite;
+			}
 			
 		}
 	}
@@ -121,27 +128,32 @@ public class StageEvents : MonoBehaviour {
 		imageFeedBack.SetActive(true);
 		yield return new WaitForSeconds(2f);
 		imageFeedBack.SetActive(false);
+		NPCs.SetActive(true);
+		mainCharacter.SetActive(true);
 		if(userLife > 0){
 			isGameStart = false;
-			NPCs.SetActive(true);
-			mainCharacter.SetActive(true);
-		}
-		else{
-			GameObject.Find("EventSystem").GetComponent<DynamicAssessment>().teachNum(-1);
+		}else{
+			if(DatasControl.GameMode == "PICK")
+				print("PICK");
+			else
+				GameObject.Find("EventSystem").GetComponent<DynamicAssessment>().teachNum(-1);
 		}
 	}
 
 	// Increase the stage progress and check if the stage is finish.
 	public void checkStageProgress(){
 		userProgress += 1;
-		// print(userProgress);
-		// show prompts.
-		StartCoroutine(showPlots());
+		if(newNpc != null){
+			npc.SetActive(false);
+			newNpc.SetActive(true);
+		}
 		if(userProgress == dataControl.stageGoal){
-			// show stage finish animation.
-			// print("stage finish.");
+			stageClear.SetActive(true);
+			// wait
 			dataControl.progress += 1;
 			SceneManager.LoadScene("Chapter"+dataControl.chapter.ToString());
+		}else{
+			StartCoroutine(showPlots());
 		}
 	}
 

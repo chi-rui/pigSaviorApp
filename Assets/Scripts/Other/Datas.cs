@@ -55,8 +55,8 @@ public class Plot
 	public int sequence;		// 劇情事件的次序
 	public int plotNumber;		// 劇情對應的正確回應索引
 	public GameObject gamePanel;	// 劇情對應的遊戲名稱
-	public GameObject targetGameObj;
-	public Sprite newSkin;
+	public GameObject changeGameObj;
+	// public Sprite newSkin;
 }
 
 [System.Serializable]

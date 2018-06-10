@@ -16,7 +16,7 @@ public class PickMode : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		stageEvents = GameObject.Find("EventSystem").GetComponent<StageEvents>();
-
+		DatasControl.GameMode = "PICK";
 	}
 
 	// execute when gameobject is Active. 
