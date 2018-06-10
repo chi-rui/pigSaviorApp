@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 // only onion npc problem
 public class RhythmMode : MonoBehaviour {
-	public GameObject pointer, characterAction, challengeFailedPanel, chooseOperatorPanel, calculatePanel, hitResult, remainingText, hitResultText, clickAnyPositionImage;
+	public GameObject scenario, pointer, characterAction, challengeFailedPanel, chooseOperatorPanel, calculatePanel, hitResult, remainingText, hitResultText, clickAnyPositionImage;
 	public GameObject[] quesNumTextArr, quesOperTextArr, quesNumTextChooseArr, quesOperBtnChooseArr;
 	public Animator Anim_characterPerfect, Anim_npcPerfect;
 	public Sprite Sprite_characterAction;
@@ -49,6 +49,26 @@ public class RhythmMode : MonoBehaviour {
 		pos_L = new Vector3(GameObject.Find("hit bar 0").transform.position.x-100f, pointer.transform.position.y, 0);
 		pos_R = new Vector3(GameObject.Find("hit bar 6").transform.position.x+100f, pointer.transform.position.y, 0);
 		speed = 0.5f;
+
+		// set question numbers and operators position
+		switch (operCount) {
+			case 2:
+				for (int i = 0; i <= operCount; i++) {
+					quesNumTextArr[i].transform.position += new Vector3(100f, 0, 0);
+					quesOperTextArr[i].transform.position += new Vector3(100f, 0, 0);
+					quesNumTextChooseArr[i].transform.position += new Vector3(150f, 0, 0);
+					quesOperBtnChooseArr[i].transform.position += new Vector3(150f, 0, 0);
+				}
+				break;
+			case 1:
+				for (int i = 0; i <= operCount; i++) {
+					quesNumTextArr[i].transform.position += new Vector3(200f, 0, 0);
+					quesOperTextArr[i].transform.position += new Vector3(200f, 0, 0);
+					quesNumTextChooseArr[i].transform.position += new Vector3(300f, 0, 0);
+					quesOperBtnChooseArr[i].transform.position += new Vector3(300f, 0, 0);
+				}
+				break;
+		}
 	}
 
 	// Update is called once per frame
@@ -62,9 +82,13 @@ public class RhythmMode : MonoBehaviour {
 			characterAction.transform.position = new Vector3(characterAction.transform.position.x, 60, characterAction.transform.position.z);
 			characterAction.GetComponent<Animator>().enabled = true;
 
+			scenario.SetActive(true);
+
 			if (Input.GetMouseButtonDown(0)) {
-				if (isPerfectHit)
+				if (isPerfectHit) {
 					StartCoroutine(clickInRhythm(1.3f));
+					scenario.SetActive(false);
+				}
 				else
 					StartCoroutine(clickInRhythm(0.8f));
 			}
@@ -97,26 +121,6 @@ public class RhythmMode : MonoBehaviour {
 		for (int i = 0; i < temp.question.Count; i++)
 			testQues += temp.question[i];
 		print(testQues);
-
-		// set question numbers and operators position
-		switch (operCount) {
-			case 2:
-				for (int i = 0; i <= operCount; i++) {
-					quesNumTextArr[i].transform.position += new Vector3(100f, 0, 0);
-					quesOperTextArr[i].transform.position += new Vector3(100f, 0, 0);
-					quesNumTextChooseArr[i].transform.position += new Vector3(150f, 0, 0);
-					quesOperBtnChooseArr[i].transform.position += new Vector3(150f, 0, 0);
-				}
-				break;
-			case 1:
-				for (int i = 0; i <= operCount; i++) {
-					quesNumTextArr[i].transform.position += new Vector3(200f, 0, 0);
-					quesOperTextArr[i].transform.position += new Vector3(200f, 0, 0);
-					quesNumTextChooseArr[i].transform.position += new Vector3(300f, 0, 0);
-					quesOperBtnChooseArr[i].transform.position += new Vector3(300f, 0, 0);
-				}
-				break;
-		}
 
 		// store operators index and operators in each list
 		for (int i = 0; i < temp.question.Count; i++) {

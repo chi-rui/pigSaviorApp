@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class TypeMode : MonoBehaviour {
-	public GameObject warningPanel, showTeamBeforeFighting, fightingPanel, fightingResult, calculatePanel, clickAnyPositionImage, rechallengeBtn;
+	public GameObject warningPanel, showTeamBeforeFighting, fightingPanel, fightingResult, calculatePanel, clickAnyPositionImage;
 	public GameObject[] operTeamFieldImageArr, chooseOperMemberBtnArr, operTeamFailedImageArr, quesNumTextArr, quesOperImageArr;
 	public Animator Anim_characterAction, Anim_npcFightingType, Anim_npcFightingResult, Anim_operFightingResult;
 	public Image Image_nextFightOper, Image_fightResultHint;
@@ -48,7 +48,21 @@ public class TypeMode : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
+		// set question numbers and operators position
+		switch (operCount) {
+			case 2:
+				for (int i = 0; i <= operCount; i++) {
+					quesNumTextArr[i].transform.position += new Vector3(50f, 0, 0);
+					quesOperImageArr[i].transform.position += new Vector3(50f, 0, 0);
+				}
+				break;
+			case 1:
+				for (int i = 0; i <= operCount; i++) {
+					quesNumTextArr[i].transform.position += new Vector3(200f, 0, 0);
+					quesOperImageArr[i].transform.position += new Vector3(200f, 0, 0);
+				}
+				break;
+		}
 	}
 	
 	// Update is called once per frame
@@ -81,22 +95,6 @@ public class TypeMode : MonoBehaviour {
 		for (int i = 0; i < temp.question.Count; i++)
 			testQues += temp.question[i];
 		print(testQues);
-
-		// set question numbers and operators position
-		switch (operCount) {
-			case 2:
-				for (int i = 0; i <= operCount; i++) {
-					quesNumTextArr[i].transform.position += new Vector3(50f, 0, 0);
-					quesOperImageArr[i].transform.position += new Vector3(50f, 0, 0);
-				}
-				break;
-			case 1:
-				for (int i = 0; i <= operCount; i++) {
-					quesNumTextArr[i].transform.position += new Vector3(200f, 0, 0);
-					quesOperImageArr[i].transform.position += new Vector3(200f, 0, 0);
-				}
-				break;
-		}
 
 		// store operators index and operators in each list
 		for (int i = 0; i < temp.question.Count; i++) {
@@ -235,23 +233,23 @@ public class TypeMode : MonoBehaviour {
 	IEnumerator setOperTeamPosition (string state) {
 		switch (state) {
 			case "chooseOperMember":
-				operTeamFieldImageArr[0].transform.position = new Vector3(-1690f, -10f, 0);
-				operTeamFieldImageArr[1].transform.position = new Vector3(-1490f, -10f, 0);
-				operTeamFieldImageArr[2].transform.position = new Vector3(-1290f, -10f, 0);
+				operTeamFieldImageArr[0].transform.position = new Vector3(chooseOperMemberBtnArr[0].transform.position.x, -10f, 0);
+				operTeamFieldImageArr[1].transform.position = new Vector3(chooseOperMemberBtnArr[1].transform.position.x, -10f, 0);
+				operTeamFieldImageArr[2].transform.position = new Vector3(chooseOperMemberBtnArr[2].transform.position.x, -10f, 0);
 				yield return new WaitForSeconds(1f);
 				break;
 			case "beforeFight":
-				operTeamFieldImageArr[0].transform.position = new Vector3(-1000f, -20f, 0);
-				operTeamFieldImageArr[1].transform.position = new Vector3(-830f, -20f, 0);
-				operTeamFieldImageArr[2].transform.position = new Vector3(-660f, -20f, 0);
+				operTeamFieldImageArr[0].transform.position = new Vector3(chooseOperMemberBtnArr[0].transform.position.x+690f, -20f, 0);
+				operTeamFieldImageArr[1].transform.position = new Vector3(chooseOperMemberBtnArr[1].transform.position.x+660f, -20f, 0);
+				operTeamFieldImageArr[2].transform.position = new Vector3(chooseOperMemberBtnArr[2].transform.position.x+630f, -20f, 0);
 				yield return new WaitForSeconds(1.5f);
 				for (int i = 0; i < operCount; i++)
 					operTeamFieldImageArr[i].SetActive(true);
 				break;
 			case "fightPanel":
-				operTeamFieldImageArr[0].transform.position = new Vector3(-810f, 110f, 0);
-				operTeamFieldImageArr[1].transform.position = new Vector3(-810f, -10f, 0);
-				operTeamFieldImageArr[2].transform.position = new Vector3(-810f, -130f, 0);
+				operTeamFieldImageArr[0].transform.position = new Vector3(chooseOperMemberBtnArr[0].transform.position.x+880f, 110f, 0);
+				operTeamFieldImageArr[1].transform.position = new Vector3(chooseOperMemberBtnArr[1].transform.position.x+680f, -10f, 0);
+				operTeamFieldImageArr[2].transform.position = new Vector3(chooseOperMemberBtnArr[2].transform.position.x+480f, -130f, 0);
 				yield return new WaitForSeconds(1f);
 				break;
 		}
@@ -539,7 +537,6 @@ public class TypeMode : MonoBehaviour {
 			}
 			operChooseBtnIndexList.Remove(operChooseBtnIndexList[0]);
 		} else {
-			rechallengeBtn.SetActive(false);
 			print("計算完成！");
 			checkUserAnswer();
 		}
