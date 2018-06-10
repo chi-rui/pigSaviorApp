@@ -64,7 +64,7 @@
      <Compile Include="Assets\Scripts\Game\TypeMode.cs" />
      <Compile Include="Assets\Scripts\Math\DynamicAssessment.cs" />
      <Compile Include="Assets\Scripts\Math\MathDatasControl.cs" />
-     <Compile Include="Assets\Scripts\Math\MisIdentify.cs" />
+     <Compile Include="Assets\Scripts\Math\misIdentify.cs" />
      <Compile Include="Assets\Scripts\Other\Collision.cs" />
      <Compile Include="Assets\Scripts\Other\Datas.cs" />
      <Compile Include="Assets\Scripts\Other\GameSetting.cs" />

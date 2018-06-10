@@ -90,8 +90,9 @@ public class StageEvents : MonoBehaviour {
 		}else{
 			TalkWindow.transform.GetChild(2).GetComponentInChildren<Text>().text = plots[page];
 			page++;
-			if(page == plots.Count-1)
+			if(page == plots.Count){
 				TalkWindow.transform.GetChild(3).GetChild(0).GetComponent<Text>().text = "結束";
+			}
 		}
 	}
 
@@ -159,7 +160,7 @@ public class StageEvents : MonoBehaviour {
 
 	private IEnumerator showPlots(){
 		// prompts > userProgress --;
-		print(userProgress);
+		// print(userProgress);
 		if(prompts[userProgress-1].pictures.Count == 0){
 			print("nothing");
 		}else{
