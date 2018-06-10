@@ -219,11 +219,16 @@ public class TypeMode : MonoBehaviour {
 			warningPanel.SetActive(true);
 			Text_warning.text = "你尚未指定運算符號攻擊順序";
 		} else {
-			showTeamBeforeFighting.SetActive(true);
-			for (int i = 0; i < operCount; i++)
-				operTeamFieldImageArr[i].SetActive(false);
-			StartCoroutine(setOperTeamPosition("beforeFight"));
-			StartCoroutine(showFightingPanel(3.3f));
+			if (operChooseMemberCount != operCount) {
+				warningPanel.SetActive(true);
+				Text_warning.text = "你指定的運算符號數量不到"+operCount+"個";
+			} else {
+				showTeamBeforeFighting.SetActive(true);
+				for (int i = 0; i < operCount; i++)
+					operTeamFieldImageArr[i].SetActive(false);
+				StartCoroutine(setOperTeamPosition("beforeFight"));
+				StartCoroutine(showFightingPanel(3.3f));
+			}
 		}
 	}
 
