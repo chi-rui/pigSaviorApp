@@ -531,7 +531,6 @@ public class ColorMode : MonoBehaviour {
 
 	public void checkUserAnswer () {
 		misConceptions = MisIdent.getMisConception(quesObj.answer, userAnsList);
-
 		if(quesObj.answer[quesObj.answer.Count-1].partAns == userAnsList[userAnsList.Count-1].partAns){
 			stageEvents.showFeedBack(true, "");
 		}else{
