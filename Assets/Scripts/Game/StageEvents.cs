@@ -114,14 +114,13 @@ public class StageEvents : MonoBehaviour {
 			// ... set wrong panel hints.
 			userLife--;
 			if(userLife == 0){
-				StartCoroutine(Feedback(wrongPanel));
 				GameObject.Find("player life").transform.GetChild(1).gameObject.SetActive(false); //GetComponent<Image>().sprite = null;
 				GameObject.Find("player life").transform.GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("gg") as Sprite;
 			}else{
 				string life = "Life" + userLife.ToString();
 				GameObject.Find("player life").transform.GetChild(1).GetComponent<Image>().sprite = Resources.Load<Sprite>(life) as Sprite;
 			}
-			
+			StartCoroutine(Feedback(wrongPanel));
 		}
 	}
 
@@ -134,8 +133,10 @@ public class StageEvents : MonoBehaviour {
 		if(userLife > 0){
 			isGameStart = false;
 		}else{
-			if(DatasControl.GameMode == "PICK")
+			if (DatasControl.GameMode == "PICK")
 				print("PICK");
+			else if (DatasControl.GameMode == "TEXTQUES")
+				GameObject.Find("EventSystem").GetComponent<TextQuesDynamicAssessment>().teachNum(-1);
 			else
 				GameObject.Find("EventSystem").GetComponent<DynamicAssessment>().teachNum(-1);
 		}
