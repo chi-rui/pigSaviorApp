@@ -290,7 +290,7 @@ public class DynamicAssessment : MonoBehaviour {
 
 	private List<string> bracketsProcess( List<string> q, int operIndex ){
 		List<string> question = new List<string>(q);
-		int upBracket = -1, downBracket = -1, counter = 0, result;
+		int upBracket = -1, counter = 0, result;
 		string temp = "";
 
 		for(int i = 0; i < question.Count; i++){
@@ -300,7 +300,6 @@ public class DynamicAssessment : MonoBehaviour {
 					counter = 0;
 					break;
 				case ")":
-					downBracket = i;
 					if(counter == 1){
 						question[i] = "@";
 						for(int j = i-1; j >= 0; j--){
@@ -334,7 +333,6 @@ public class DynamicAssessment : MonoBehaviour {
 											temp = question[i];
 											question[i] = question[k];
 											question[k] = temp;
-											downBracket = k;
 											i++;
 										}
 										break;

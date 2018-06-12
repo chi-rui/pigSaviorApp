@@ -29,6 +29,7 @@ public class StageEvents : MonoBehaviour {
 		dataControl = GameObject.Find("Datas").GetComponent<DatasControl>();
 		userProgress = 0;
 		userLife = 3;
+
 	}
 
 	// Update is called once per frame
@@ -162,9 +163,7 @@ public class StageEvents : MonoBehaviour {
 	private IEnumerator showPlots(){
 		// prompts > userProgress --;
 		// print(userProgress);
-		if(prompts[userProgress-1].pictures.Count == 0){
-			print("nothing");
-		}else{
+		if(prompts[userProgress-1].pictures.Count != 0){
 			plotsImage.SetActive(true);
 			for(int i = 0; i < prompts[userProgress-1].pictures.Count; i++){
 				plotsImage.transform.GetChild(0).GetComponent<Image>().sprite = prompts[userProgress-1].pictures[i];

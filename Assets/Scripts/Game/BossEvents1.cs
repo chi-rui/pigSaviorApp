@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class BossEvents1 : MonoBehaviour {
 	private MathDatasControl MathDatas;
 	private MisIdentify MisIdent;
-	private GameObject questionShield, OperatorPanel, CaculatePanel, AnswerPanel, BossLife, PlayerLife;
+	public GameObject questionShield, OperatorPanel, CaculatePanel, AnswerPanel, BossLife, PlayerLife, teachPanel, Boss, Image_operator;
 	private bool isClicked;
 	private QuesObj question;
 
@@ -24,6 +24,8 @@ public class BossEvents1 : MonoBehaviour {
 	private int attackTime;
 	private bool isTimeUp;
 
+	public StagePrompts BossTeach;
+
 	// save user's answer to detect misConception.
 	// private List<AnsObj> userAns = new List<AnsObj>();
 	// private AnsObj userAnsObj;
@@ -33,17 +35,18 @@ public class BossEvents1 : MonoBehaviour {
 		// set used variables.
 		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
 		// MisIdent = GameObject.Find("EventSystem").GetComponent<MisIdentify>();
-		questionShield = GameObject.Find("Image_shield");
-		questionShield.SetActive(false);
-		OperatorPanel = GameObject.Find("Panel_operator");
-		OperatorPanel.SetActive(false);
-		CaculatePanel = GameObject.Find("Panel_calculate");
-		CaculatePanel.SetActive(false);
-		AnswerPanel = GameObject.Find("Panel_enterAns");
-		AnswerPanel.SetActive(false);		
-		BossLife = GameObject.Find("Image_LifeBoss");
-		BossLife.SetActive(false);
+		// questionShield = GameObject.Find("Image_shield");
+		// questionShield.SetActive(false);
+		// OperatorPanel = GameObject.Find("Panel_operator");
+		// OperatorPanel.SetActive(false);
+		// CaculatePanel = GameObject.Find("Panel_calculate");
+		// CaculatePanel.SetActive(false);
+		// AnswerPanel = GameObject.Find("Panel_enterAns");
+		// AnswerPanel.SetActive(false);		
+		// BossLife = GameObject.Find("Image_LifeBoss");
+		// BossLife.SetActive(false);
 
+		GameObject.Find("Image_main_character").GetComponent<Animator>().Play("Image_character_stand by");
 
 		bossLife = 1f;
 		playerLife = 1f;
@@ -51,13 +54,26 @@ public class BossEvents1 : MonoBehaviour {
 		initial();
 
 		// set Boss and get a question.
-		StartCoroutine(Animation_BossAppear());
-
+		StartCoroutine(teachBoss());
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
+	}
+
+	private IEnumerator teachBoss(){
+		if(GameObject.Find("Datas").GetComponent<DatasControl>().progress < 5){
+			teachPanel.SetActive(true);
+			for(int i = 0; i < BossTeach.pictures.Count; i++){
+				teachPanel.transform.GetChild(0).GetComponent<Image>().sprite = BossTeach.pictures[i];
+				teachPanel.transform.GetChild(1).GetComponent<Text>().text = BossTeach.words[i];
+				yield return new WaitForSeconds(5f);
+			}
+			teachPanel.SetActive(false);
+		}
+		Boss.SetActive(true);
+		StartCoroutine(Animation_BossAppear());
 	}
 
 	private IEnumerator Animation_BossAppear(){
@@ -134,8 +150,13 @@ public class BossEvents1 : MonoBehaviour {
 		}else{
 			print("no selected operator");
 			isClicked = false;
-			// play false anim, and restart selectOperator. 
-			StartCoroutine(selectOperator());			
+			// play false anim, and restart selectOperator.
+			Image_operator.SetActive(false);
+			GameObject.Find("Image_energyBall").GetComponent<Animator>().Play("miss match");
+			yield return new WaitForSeconds(1f);
+			Image_operator.SetActive(true);
+			GameObject.Find("Image_energyBall").GetComponent<Animator>().Play("Boss_energy");
+			StartCoroutine(selectOperator());
 		}
 	}
 
@@ -234,6 +255,8 @@ public class BossEvents1 : MonoBehaviour {
 				StartCoroutine(BreakShield());
 			}else{
 				print("your ans is " + ans.ToString() + ", wrong.");
+				// ... boss attack and new question
+				StartCoroutine(bossAttackPlayer());
 			}
 		}else{
 			print("error : not a num.");
@@ -264,7 +287,7 @@ public class BossEvents1 : MonoBehaviour {
 				GameObject.Find("Image_main_character").GetComponent<Animator>().Play("Image_character attack", -1, 0f);
 				GameObject.Find("Image_Boss").GetComponent<Animator>().Play("Boss04_beAttacked", -1, 0f);
 				bossLife -= 0.01f;
-				BossLife.GetComponent<Image>().fillAmount = bossLife;
+				BossLife.transform.GetChild(0).GetComponent<Image>().fillAmount = bossLife;
 			}
 			yield return 0;
 		}
@@ -279,6 +302,26 @@ public class BossEvents1 : MonoBehaviour {
 			BossLife.SetActive(false);
 			StartCoroutine(createQuestionShield(miniNum, maxNum, templates));
 		}
+	}
+
+	private IEnumerator bossAttackPlayer(){
+		GameObject.Find("Text_userans").GetComponent<Text>().text = "ANS";
+		AnswerPanel.SetActive(false);
+		OperatorPanel.SetActive(false);
+		CaculatePanel.SetActive(false);
+		GameObject.Find("Image_Boss").GetComponent<Animator>().Play("Boss06_attack");
+		GameObject.Find("Image_main_character").GetComponent<Animator>().Play("Image_character_be attacked");
+		playerLife -= 0.3f;
+		yield return new WaitForSeconds(1.5f);
+		while(GameObject.Find("Image_LifeDGC").GetComponent<Image>().fillAmount > playerLife){
+			GameObject.Find("Image_LifeDGC").GetComponent<Image>().fillAmount -= 0.02f;
+			yield return new WaitForSeconds(0.1f);
+		}
+
+		GameObject.Find("Image_main_character").GetComponent<Animator>().Play("Image_character_stand by");
+		// if user life = 0?
+
+		StartCoroutine(createQuestionShield(miniNum, maxNum, templates));
 	}
 
 	private void timer(){

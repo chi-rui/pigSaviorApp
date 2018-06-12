@@ -54,7 +54,6 @@
      <Compile Include="Assets\Scripts\Game\BossEvents1.cs" />
      <Compile Include="Assets\Scripts\Game\ChapterEvents.cs" />
      <Compile Include="Assets\Scripts\Game\ColorMode.cs" />
-     <Compile Include="Assets\Scripts\Game\DatasControl.cs" />
      <Compile Include="Assets\Scripts\Game\Npc.cs" />
      <Compile Include="Assets\Scripts\Game\PickMode.cs" />
      <Compile Include="Assets\Scripts\Game\RhythmMode.cs" />
@@ -68,6 +67,7 @@
      <Compile Include="Assets\Scripts\Math\TextQuesDynamicAssessment.cs" />
      <Compile Include="Assets\Scripts\Other\Collision.cs" />
      <Compile Include="Assets\Scripts\Other\Datas.cs" />
+     <Compile Include="Assets\Scripts\Other\DatasControl.cs" />
      <Compile Include="Assets\Scripts\Other\GameSetting.cs" />
      <Compile Include="Assets\Scripts\Other\InfinityBackground.cs" />
      <None Include="Assets\Resources\TextQuestionFile\stage13.txt" />
