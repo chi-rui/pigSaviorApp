@@ -175,31 +175,31 @@ public class DynamicAssessment : MonoBehaviour {
 		// set mis field to prompt words
 		switch(misConception){
 			case "mis01":
-				teachPage.transform.GetChild(9).GetComponent<Text>().text = "本次重點：括號裡面的運算要優先計算！";
+				teachPage.transform.GetChild(9).GetComponent<Text>().text = "括號裡面的運算要優先計算！";
 				break;
 			case "mis02":
-				teachPage.transform.GetChild(9).GetComponent<Text>().text = "本次重點：先乘除，後加減！";
+				teachPage.transform.GetChild(9).GetComponent<Text>().text = "先乘除，後加減！";
 				break;
 			case "mis03":
-				teachPage.transform.GetChild(9).GetComponent<Text>().text = "本次重點：由左而右進行運算！";
+				teachPage.transform.GetChild(9).GetComponent<Text>().text = "由左而右進行運算！";
 				break;
 			case "mis04":
-				teachPage.transform.GetChild(9).GetComponent<Text>().text = "本次重點：除了答案也要注意計算的過程！";
+				teachPage.transform.GetChild(9).GetComponent<Text>().text = "除了答案也要注意計算的過程！";
 				break;
 			case "mis05":
-				teachPage.transform.GetChild(9).GetComponent<Text>().text = "本次重點：填寫答案前記得檢查，確保沒有計算錯誤！";
+				teachPage.transform.GetChild(9).GetComponent<Text>().text = "填寫答案前記得檢查，確保沒有計算錯誤！";
 				break;
 			case "mis06":
-				teachPage.transform.GetChild(9).GetComponent<Text>().text = "本次重點：注意加法和減法的運算概念不同！";
+				teachPage.transform.GetChild(9).GetComponent<Text>().text = "注意加法和減法的運算概念不同！";
 				break;
 			case "mis07":
-				teachPage.transform.GetChild(9).GetComponent<Text>().text = "本次重點：注意加法和乘法的運算概念不同！";
+				teachPage.transform.GetChild(9).GetComponent<Text>().text = "注意加法和乘法的運算概念不同！";
 				break;
 			case "mis08":
-				teachPage.transform.GetChild(9).GetComponent<Text>().text = "本次重點：注意乘法和除法的運算概念不同！";
+				teachPage.transform.GetChild(9).GetComponent<Text>().text = "注意乘法和除法的運算概念不同！";
 				break;
 			case "mis09":
-				teachPage.transform.GetChild(9).GetComponent<Text>().text = "本次重點：注意減法和除法的運算概念不同！";
+				teachPage.transform.GetChild(9).GetComponent<Text>().text = "注意減法和除法的運算概念不同！";
 				break;
 		}
 

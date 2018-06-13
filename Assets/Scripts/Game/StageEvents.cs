@@ -40,19 +40,19 @@ public class StageEvents : MonoBehaviour {
 			}
 		}
 	}
-
+	// 1575 1600
 	// Control the move of the main character.
 	void characterMove () {
 		if(Input.mousePosition.x < (Screen.width / 2)){
 			mainCharacter.transform.eulerAngles = new Vector3(0,180,0);
-			newPosition = new Vector3(Mathf.Clamp(mainCharacter.transform.position.x - 50f, -1750f, 1750f), mainCharacter.transform.position.y, 0f);
+			newPosition = new Vector3(Mathf.Clamp(mainCharacter.transform.position.x - 50f, -1575f, 1600f), mainCharacter.transform.position.y, 0f);
 			if(newPosition.x < 1150f)
 				newCameraPosition = new Vector3(Mathf.Clamp(mainCamera.transform.position.x - 50f, -1200f, 1200f), mainCamera.transform.position.y, mainCamera.transform.position.z);
 			else
 				newCameraPosition = mainCamera.transform.position;
 		}else if (Input.mousePosition.x > (Screen.width / 2)){
 			mainCharacter.transform.eulerAngles = new Vector3(0,0,0);
-			newPosition = new Vector3(Mathf.Clamp(mainCharacter.transform.position.x + 50f, -1750f, 1750f), mainCharacter.transform.position.y, 0f);
+			newPosition = new Vector3(Mathf.Clamp(mainCharacter.transform.position.x + 50f, -1575f, 1600f), mainCharacter.transform.position.y, 0f);
 			if(newPosition.x > -1150f)
 				newCameraPosition = new Vector3(Mathf.Clamp(mainCamera.transform.position.x + 50f, -1200f, 1200f), mainCamera.transform.position.y, mainCamera.transform.position.z);
 			else
