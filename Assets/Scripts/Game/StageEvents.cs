@@ -82,7 +82,7 @@ public class StageEvents : MonoBehaviour {
 			TalkWindow.SetActive(false);
 			if(isProgressIncrease){
 				if(gamePanel == null)
-					checkStageProgress();	
+					StartCoroutine(checkStageProgress());
 				else
 					enterPanel.SetActive(true);
 			}else{
@@ -109,7 +109,7 @@ public class StageEvents : MonoBehaviour {
 	public void showFeedBack( bool ans, string prompts ){
 		if(ans){
 			StartCoroutine(Feedback(correctPanel));
-			checkStageProgress();
+			StartCoroutine(checkStageProgress());
 		}else{
 			GameObject.Find("Feedbacks").transform.GetChild(1).GetChild(2).GetComponent<Text>().text = prompts;
 			// ... set wrong panel hints.
@@ -144,7 +144,8 @@ public class StageEvents : MonoBehaviour {
 	}
 
 	// Increase the stage progress and check if the stage is finish.
-	public void checkStageProgress(){
+	public IEnumerator checkStageProgress(){
+		yield return new WaitForSeconds(0f);
 		userProgress += 1;
 		if(newNpc != null){
 			npc.SetActive(false);
@@ -152,7 +153,9 @@ public class StageEvents : MonoBehaviour {
 		}
 		if(userProgress == dataControl.stageGoal){
 			stageClear.SetActive(true);
+			StartCoroutine(showPlots());
 			// wait
+			yield return new WaitForSeconds(2f);
 			dataControl.progress += 1;
 			SceneManager.LoadScene("Chapter"+dataControl.chapter.ToString());
 		}else{
