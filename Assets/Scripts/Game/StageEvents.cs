@@ -34,7 +34,7 @@ public class StageEvents : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if(Input.GetMouseButton(0) && !isGameStart && !plotsImage.active){
+		if(Input.GetMouseButton(0) && !isGameStart && !plotsImage.activeInHierarchy && !enterPanel.activeInHierarchy){
 			if(EventSystem.current.currentSelectedGameObject == null && !TalkWindow.activeInHierarchy){
 				characterMove();
 			}
@@ -163,12 +163,15 @@ public class StageEvents : MonoBehaviour {
 	private IEnumerator showPlots(){
 		// prompts > userProgress --;
 		// print(userProgress);
+		while(correctPanel.activeInHierarchy || wrongPanel.activeInHierarchy){
+			yield return new WaitForSeconds(0.1f);
+		}
 		if(prompts[userProgress-1].pictures.Count != 0){
 			plotsImage.SetActive(true);
 			for(int i = 0; i < prompts[userProgress-1].pictures.Count; i++){
 				plotsImage.transform.GetChild(0).GetComponent<Image>().sprite = prompts[userProgress-1].pictures[i];
 				plotsImage.transform.GetChild(1).GetComponent<Text>().text = prompts[userProgress-1].words[i];
-				yield return new WaitForSeconds(5f);
+				yield return new WaitForSeconds(4f);
 			}
 			plotsImage.SetActive(false);
 		}

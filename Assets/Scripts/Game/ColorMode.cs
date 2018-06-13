@@ -520,7 +520,7 @@ public class ColorMode : MonoBehaviour {
 			}
 		} else {
 			print("計算完成！");
-			checkUserAnswer();
+			StartCoroutine(checkUserAnswer());
 		}
 
 		// for (int i = 0; i < operColorRanList.Count; i++)
@@ -529,7 +529,7 @@ public class ColorMode : MonoBehaviour {
 		// 	print(tmpColorOperList[i]);
 	}
 
-	public void checkUserAnswer () {
+	public IEnumerator checkUserAnswer () {
 		misConceptions = MisIdent.getMisConception(quesObj.answer, userAnsList);
 		if(quesObj.answer[quesObj.answer.Count-1].partAns == userAnsList[userAnsList.Count-1].partAns){
 			stageEvents.showFeedBack(true, "");
@@ -537,6 +537,7 @@ public class ColorMode : MonoBehaviour {
 			dynamicAssessment.setContents(quesObj, new List<AnsObj>(userAnsList), misConceptions[0]);
 			stageEvents.showFeedBack(false , dynamicAssessment.getPrompt(misConceptions));
 		}
+		yield return new WaitForSeconds(2f);
 		GameObject.Find("Panel_" + npc + " Color").SetActive(false);
 	}
 }

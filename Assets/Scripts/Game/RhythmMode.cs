@@ -443,12 +443,12 @@ public class RhythmMode : MonoBehaviour {
 			}
 			generateHitBars(hitbarCounts);
 		} else {
-			print("計算完成！");
-			checkUserAnswer();
+			// print("計算完成！");
+			StartCoroutine(checkUserAnswer());
 		}
 	}
 
-	public void checkUserAnswer () {
+	public IEnumerator checkUserAnswer () {
 		misConceptions = MisIdent.getMisConception(quesObj.answer, userAnsList);
 
 		if(quesObj.answer[quesObj.answer.Count-1].partAns == userAnsList[userAnsList.Count-1].partAns){
@@ -457,6 +457,7 @@ public class RhythmMode : MonoBehaviour {
 			dynamicAssessment.setContents(quesObj, new List<AnsObj>(userAnsList), misConceptions[0]);
 			stageEvents.showFeedBack(false , dynamicAssessment.getPrompt(misConceptions));
 		}
+		yield return new WaitForSeconds(2f);
 		GameObject.Find("Panel_" + npc + " Rhythm").SetActive(false);
 	}
 }
