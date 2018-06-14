@@ -233,23 +233,23 @@ public class TypeMode : MonoBehaviour {
 	IEnumerator setOperTeamPosition (string state) {
 		switch (state) {
 			case "chooseOperMember":
-				operTeamFieldImageArr[0].transform.position = new Vector3(chooseOperMemberBtnArr[0].transform.position.x, -10f, 0);
-				operTeamFieldImageArr[1].transform.position = new Vector3(chooseOperMemberBtnArr[1].transform.position.x, -10f, 0);
-				operTeamFieldImageArr[2].transform.position = new Vector3(chooseOperMemberBtnArr[2].transform.position.x, -10f, 0);
+				operTeamFieldImageArr[0].transform.position = new Vector3(chooseOperMemberBtnArr[0].transform.position.x, -30f, 0);
+				operTeamFieldImageArr[1].transform.position = new Vector3(chooseOperMemberBtnArr[1].transform.position.x, -30f, 0);
+				operTeamFieldImageArr[2].transform.position = new Vector3(chooseOperMemberBtnArr[2].transform.position.x, -30f, 0);
 				yield return new WaitForSeconds(1f);
 				break;
 			case "beforeFight":
-				operTeamFieldImageArr[0].transform.position = new Vector3(chooseOperMemberBtnArr[0].transform.position.x+690f, -20f, 0);
-				operTeamFieldImageArr[1].transform.position = new Vector3(chooseOperMemberBtnArr[1].transform.position.x+660f, -20f, 0);
-				operTeamFieldImageArr[2].transform.position = new Vector3(chooseOperMemberBtnArr[2].transform.position.x+630f, -20f, 0);
+				operTeamFieldImageArr[0].transform.position = new Vector3(chooseOperMemberBtnArr[0].transform.position.x+580f, -20f, 0);
+				operTeamFieldImageArr[1].transform.position = new Vector3(chooseOperMemberBtnArr[1].transform.position.x+530f, -20f, 0);
+				operTeamFieldImageArr[2].transform.position = new Vector3(chooseOperMemberBtnArr[2].transform.position.x+480f, -20f, 0);
 				yield return new WaitForSeconds(1.5f);
 				for (int i = 0; i < operCount; i++)
 					operTeamFieldImageArr[i].SetActive(true);
 				break;
 			case "fightPanel":
-				operTeamFieldImageArr[0].transform.position = new Vector3(chooseOperMemberBtnArr[0].transform.position.x+880f, 110f, 0);
-				operTeamFieldImageArr[1].transform.position = new Vector3(chooseOperMemberBtnArr[1].transform.position.x+680f, -10f, 0);
-				operTeamFieldImageArr[2].transform.position = new Vector3(chooseOperMemberBtnArr[2].transform.position.x+480f, -130f, 0);
+				operTeamFieldImageArr[0].transform.position = new Vector3(chooseOperMemberBtnArr[0].transform.position.x+685f, 110f, 0);
+				operTeamFieldImageArr[1].transform.position = new Vector3(chooseOperMemberBtnArr[1].transform.position.x+505f, -10f, 0);
+				operTeamFieldImageArr[2].transform.position = new Vector3(chooseOperMemberBtnArr[2].transform.position.x+325f, -130f, 0);
 				yield return new WaitForSeconds(1f);
 				break;
 		}
