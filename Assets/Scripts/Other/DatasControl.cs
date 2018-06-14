@@ -44,9 +44,9 @@ public class DatasControl : MonoBehaviour {
 	void Start () {
 		// get the save of the user.
 		// progress = userData.gameProgress;
-		chapter = 2;
-		progress = 6;
-		nowStage = 6;
+		chapter = 1;
+		progress = 0;
+		nowStage = 0;
 		GameMode = "";
 		setGameObjects();
 	}
