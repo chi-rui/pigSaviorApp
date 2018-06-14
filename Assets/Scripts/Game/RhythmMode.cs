@@ -56,16 +56,16 @@ public class RhythmMode : MonoBehaviour {
 				for (int i = 0; i <= operCount; i++) {
 					quesNumTextArr[i].transform.position += new Vector3(100f, 0, 0);
 					quesOperTextArr[i].transform.position += new Vector3(100f, 0, 0);
-					quesNumTextChooseArr[i].transform.position += new Vector3(150f, 0, 0);
-					quesOperBtnChooseArr[i].transform.position += new Vector3(150f, 0, 0);
+					quesNumTextChooseArr[i].transform.position += new Vector3(100f, 0, 0);
+					quesOperBtnChooseArr[i].transform.position += new Vector3(100f, 0, 0);
 				}
 				break;
 			case 1:
 				for (int i = 0; i <= operCount; i++) {
 					quesNumTextArr[i].transform.position += new Vector3(200f, 0, 0);
 					quesOperTextArr[i].transform.position += new Vector3(200f, 0, 0);
-					quesNumTextChooseArr[i].transform.position += new Vector3(300f, 0, 0);
-					quesOperBtnChooseArr[i].transform.position += new Vector3(300f, 0, 0);
+					quesNumTextChooseArr[i].transform.position += new Vector3(250f, 0, 0);
+					quesOperBtnChooseArr[i].transform.position += new Vector3(250f, 0, 0);
 				}
 				break;
 		}
