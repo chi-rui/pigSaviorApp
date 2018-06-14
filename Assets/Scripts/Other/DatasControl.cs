@@ -165,7 +165,7 @@ public class DatasControl : MonoBehaviour {
 		}
 	}
 
-	private void upload_HISTORY( string question, List<AnsObj> correctAns, List<AnsObj> userAns, bool isCorrect){
+	private void upload_HISTORY(string question, List<AnsObj> correctAns, List<AnsObj> userAns, bool isCorrect){
 		/***
 		 	id > id(V)
 			stage > nowStage(V)
