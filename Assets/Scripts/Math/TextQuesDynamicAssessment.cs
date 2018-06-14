@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class TextQuesDynamicAssessment : MonoBehaviour {
-	public GameObject teachingPanel, promptQues, teachPage;
+	public GameObject teachingPanel, promptQues, teachPage, selectionFunc, selectionQues;
 
 	private bool isTeaching;
 
@@ -51,39 +52,56 @@ public class TextQuesDynamicAssessment : MonoBehaviour {
 	}
 
 	public void teachNum (int index) {
-		StartCoroutine(teaching());
+		StartCoroutine(teaching(index));
 		if (index == -1) {
-			// selectionQues.SetActive(true);
-			// for(int i = 0; i < quesList.Count; i++)
-			// 	print(quesList[i]);
-			// selectionQues.SetActive(false);
-
-			// for (int i = 0; i < quesKeyword.Count; i++)
-			// 	print(quesKeyword[i]);
-			// for (int i = 0; i < ansList.Count; i++)
-			// 	print(ansList[i]);
+			selectionQues.SetActive(true);
+			for (int i = 0; i < 3; i++)
+				selectionQues.transform.GetChild(0).GetChild(0).GetChild(i).GetChild(0).GetComponent<Text>().text = "第"+(i+1)+"題";
+			selectionQues.SetActive(false);
 		}
 	}
 
-	IEnumerator teaching() {
+	IEnumerator teaching (int index) {
 		teachingPanel.SetActive(true);
-		for (int i = 0; i < 3; i++) {
-			promptQues.SetActive(true);
-			promptQues.transform.GetChild(2).GetComponent<Text>().text = "第 "+(i+1).ToString()+" 題";
-			yield return new WaitForSeconds(4f);
-			promptQues.SetActive(false);
+		if (index == -1) {
+			for (int i = 0; i < 3; i++) {
+				promptQues.SetActive(true);
+				promptQues.transform.GetChild(2).GetComponent<Text>().text = "第 "+(i+1).ToString()+" 題";
+				yield return new WaitForSeconds(4f);
+				promptQues.SetActive(false);
+				teachPage.SetActive(true);
+				StartCoroutine(teachingProcess(i, quesList, quesKeyword, ansList));
+				while (isTeaching)
+					yield return new WaitForSeconds(0.1f);
+				teachPage.SetActive(false);
+			}
+		} else {
 			teachPage.SetActive(true);
-			StartCoroutine(teachingProcess(quesList, quesKeyword, ansList));
+			StartCoroutine(teachingProcess(index, quesList, quesKeyword, ansList));
 			while (isTeaching)
 				yield return new WaitForSeconds(0.1f);
+			teachPage.SetActive(false);
 		}
+		selectionFunc.SetActive(true);
 	}
 
-	IEnumerator teachingProcess(List<string> question, List<string> keyword, List<string> answer) {
+	IEnumerator teachingProcess (int quesNo, List<string> question, List<string> keyword, List<string> answer) {
 		isTeaching = true;
-		yield return new WaitForSeconds(2f);
 
-		for(int i = 0; i < question.Count; i++)
-			print(question[i]);
+		teachPage.transform.GetChild(0).GetComponent<Text>().text = question[quesNo];
+		teachPage.transform.GetChild(1).GetComponent<Text>().text = keyword[quesNo];
+		teachPage.transform.GetChild(2).GetComponent<Text>().text = answer[quesNo];
+
+		yield return new WaitForSeconds(5f);
+
+		isTeaching = false;
+	}
+
+	public void finishTeaching (){
+		quesList.Clear();
+		quesKeyword.Clear();
+		ansList.Clear();
+		teachingPanel.SetActive(false);
+		SceneManager.LoadScene("Chapter"+GameObject.Find("Datas").GetComponent<DatasControl>().chapter.ToString());
 	}
 }
