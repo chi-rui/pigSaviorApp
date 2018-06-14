@@ -283,7 +283,7 @@ public class BossEvents1 : MonoBehaviour {
 		// can be attack.
 		while(attackTime > 0 && !isTimeUp){
 			if(Input.GetMouseButtonDown(0)){
-				print("attacked");
+				// print("attacked");
 				GameObject.Find("Image_main_character").GetComponent<Animator>().Play("Image_character attack", -1, 0f);
 				GameObject.Find("Image_Boss").GetComponent<Animator>().Play("Boss04_beAttacked", -1, 0f);
 				bossLife -= 0.01f;
@@ -326,7 +326,7 @@ public class BossEvents1 : MonoBehaviour {
 
 	private void timer(){
 		attackTime -= 1;
-		print(attackTime);
+		// print(attackTime);
 		if(attackTime == -1){
 			isTimeUp = true;
 		}

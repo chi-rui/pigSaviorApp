@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
+
 
 public class DatasControl : MonoBehaviour {
 
@@ -28,6 +30,16 @@ public class DatasControl : MonoBehaviour {
 	public Slider loadingBar;
 	private AsyncOperation async;
 
+	// history saved
+	private int id;
+	private bool saverBlock = false;
+	private List<string> actionsA = new List<string>();
+	private List<string> targetsA = new List<string>();
+	private List<string> scenesA = new List<string>();
+	private List<string> actionsB = new List<string>();
+	private List<string> targetsB = new List<string>();
+	private List<string> scenesB = new List<string>();
+
 	// Use this for initialization
 	void Start () {
 		// get the save of the user.
@@ -41,7 +53,24 @@ public class DatasControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+		// save behavior history.
+		if(Input.GetMouseButtonDown(0)){
+			if(EventSystem.current.currentSelectedGameObject != null){
+				if(saverBlock){
+					actionsA.Add("CLICK");
+					targetsA.Add(EventSystem.current.currentSelectedGameObject.name);
+					scenesA.Add(SceneManager.GetActiveScene().name);
+				}else{
+					actionsB.Add("CLICK");
+					targetsB.Add(EventSystem.current.currentSelectedGameObject.name);
+					scenesB.Add(SceneManager.GetActiveScene().name);
+				}
+
+				if(actionsA.Count >= 5 || actionsB.Count > 5){
+					upload_BEHAVIOR();
+				}
+			}
+		}
 	}
 
 	// Make datas always alive.
@@ -109,5 +138,48 @@ public class DatasControl : MonoBehaviour {
 	public void cheat(int value){
 		this.progress = value;
 		print("Progress already change to " + progress + ".");	
+	}
+
+	private void upload_BEHAVIOR(){
+		/***
+		 	id > id(V)
+			scene > scenesA, scenesB
+			time > solved in php
+			action > actionsA, actionB
+			object > targetA, targetB
+		***/
+
+		saverBlock = !saverBlock;
+		if(!saverBlock){
+			// upload A block to db.
+			print(actionsA.Count);
+			actionsA.Clear();
+			targetsA.Clear();
+			scenesA.Clear();
+		}else{
+			// upload B block to db.
+			print(actionsB.Count);
+			actionsB.Clear();
+			targetsB.Clear();
+			scenesB.Clear();
+		}
+	}
+
+	private void upload_HISTORY( string question, List<AnsObj> correctAns, List<AnsObj> userAns, bool isCorrect){
+		/***
+		 	id > id(V)
+			stage > nowStage(V)
+			question > question(P)
+			correctAns > correctAnswer
+			userAns > userAnswer
+			isCorrect > isCorrect(P)
+			time > php
+		***/
+
+		string correctAnswer = JsonUtility.ToJson(correctAns);
+		string userAnswer = JsonUtility.ToJson(userAns);
+
+		print(correctAnswer);
+		print(userAnswer);
 	}
 }
