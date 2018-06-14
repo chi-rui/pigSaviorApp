@@ -92,7 +92,7 @@ public class TextQuesDynamicAssessment : MonoBehaviour {
 		teachPage.transform.GetChild(1).GetComponent<Text>().text = keyword[quesNo];
 		teachPage.transform.GetChild(2).GetComponent<Text>().text = answer[quesNo];
 
-		yield return new WaitForSeconds(5f);
+		yield return new WaitForSeconds(15f);
 
 		isTeaching = false;
 	}
