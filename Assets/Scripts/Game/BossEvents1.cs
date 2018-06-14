@@ -257,11 +257,12 @@ public class BossEvents1 : MonoBehaviour {
 			if(userAnsObj.partAns == question.answer[0].partAns){
 				// print("correct");
 				GameObject.Find("Text_userans").GetComponent<Text>().text = "";
-				GameObject.Find("Datas").GetComponent<DatasControl>().upload_HISTORY(question.question, question.answer, userAns, true, misConceptions);
+				GameObject.Find("Datas").GetComponent<DatasControl>().getGameHistoryData(question.question, question.answer, userAns, true, misConceptions);
 				StartCoroutine(BreakShield());
 			}else{
 				// print("your ans is " + userAnsObj.partAns.ToString() + ", wrong.");
 				// ... boss attack and new question
+				GameObject.Find("Datas").GetComponent<DatasControl>().getGameHistoryData(question.question, question.answer, userAns, false, misConceptions);
 				StartCoroutine(bossAttackPlayer());
 			}
 		}else{
