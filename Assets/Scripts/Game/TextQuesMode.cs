@@ -16,6 +16,7 @@ public class TextQuesMode : MonoBehaviour {
 	private List<string> textQuesList = new List<string>();
 	private List<int> quesIndexList = new List<int>();
 	private List<string> quesKeywordList = new List<string>();
+	private string quesAnsFormula;
 	private QuesObj quesObj, temp;
 	private MathDatasControl MathDatas;
 
@@ -28,13 +29,12 @@ public class TextQuesMode : MonoBehaviour {
 		stageEvents = GameObject.Find("EventSystem").GetComponent<StageEvents>();
 		textQuesDynamicAssessment = GameObject.Find("EventSystem").GetComponent<TextQuesDynamicAssessment>();
 
-		generateNewQuestion(minNum, maxNum, quesTemplate);
 		restartTextQuesMode();
+		generateNewQuestion(minNum, maxNum, quesTemplate);
 	}
 
 	// Use this for initialization
 	void Start () {
-		showQuestion();
 		DatasControl.GameMode = "TEXTQUES";
 	}
 	
@@ -50,11 +50,10 @@ public class TextQuesMode : MonoBehaviour {
 		temp.question = new List<string>(quesObj.question);
 		temp.answer = new List<AnsObj>(quesObj.answer);
 
-		// test
-		string testQues = "";
+		quesAnsFormula = "";
 		for (int i = 0; i < temp.question.Count; i++)
-			testQues += temp.question[i];
-		print(testQues);
+			quesAnsFormula += temp.question[i];
+		print(quesAnsFormula);
 
 		// read text question file and set question in a list
 		StreamReader textQuesFile = new StreamReader(textQuesFilePath);
@@ -67,23 +66,27 @@ public class TextQuesMode : MonoBehaviour {
 		// for (int i = 0; i < textQuesList.Count; i++)
 		// 	print(textQuesList[i]);
 		textQuesFile.Close();
+
+		showQuestion();
 	}
 
 	void showQuestion () {
 		// random question index
-		List<int> tmpQuesIndexList = new List<int> {0, 1, 2};
-		int tmpQuesIndexCount = tmpQuesIndexList.Count;
-		while (quesIndexList.Count < tmpQuesIndexCount) {
-			int index = Random.Range(0, tmpQuesIndexList.Count);
-			if (!quesIndexList.Contains(tmpQuesIndexList[index])) {
-				quesIndexList.Add(tmpQuesIndexList[index]);
-				tmpQuesIndexList.Remove(tmpQuesIndexList[index]);
+		if (userAnswerCount == 0) {
+			List<int> tmpQuesIndexList = new List<int> {0, 1, 2};
+			int tmpQuesIndexCount = tmpQuesIndexList.Count;
+			while (quesIndexList.Count < tmpQuesIndexCount) {
+				int index = Random.Range(0, tmpQuesIndexList.Count);
+				if (!quesIndexList.Contains(tmpQuesIndexList[index])) {
+					quesIndexList.Add(tmpQuesIndexList[index]);
+					tmpQuesIndexList.Remove(tmpQuesIndexList[index]);
+				}
 			}
+			for (int i = 0; i < quesIndexList.Count; i++)
+				print(quesIndexList[i]);
 		}
-		for (int i = 0; i < quesIndexList.Count; i++)
-			print(quesIndexList[i]);
 
-		// replace template number
+		// add template number in a list
 		List<string> tmpQuesNumList = new List<string>();
 		List<string> quesElementsList = new List<string>();
 		for (int i = 0; i < temp.question.Count; i++) {
@@ -99,7 +102,7 @@ public class TextQuesMode : MonoBehaviour {
 		// store text question keywords
 		string[] keywordArr = textQuesList[quesIndexList[0]].Split('#');
 		for (int i = 0; i < keywordArr.Length; i++) {
-			// 	print(keywordArr[i]);
+			// print(keywordArr[i]);
 			if (i != 0)
 				quesKeywordList.Add(keywordArr[i]);
 		}
@@ -108,6 +111,7 @@ public class TextQuesMode : MonoBehaviour {
 
 		for (int i = 0; i < tmpQuesNumList.Count; i++)
 			keywordArr[0] = keywordArr[0].Replace(quesNumSymbol[i], tmpQuesNumList[i]);
+		textQuesList[quesIndexList[0]] = keywordArr[0];
 		GameObject.Find("Text_text question").GetComponent<Text>().text = keywordArr[0];
 
 		// random question elements
@@ -153,16 +157,12 @@ public class TextQuesMode : MonoBehaviour {
 	void restartTextQuesMode () {
 		if (userAnswerCount > 3)
 			userAnswerCount = 0;
+		quesKeywordList.Clear();
 	}
 
 	public void checkAnswer () {
 		userAnswerCount++;
-		print(userAnswerCount);
-
-		if (quesIndexList.Count != 0) {
-			quesIndexList.Remove(quesIndexList[0]);
-			print("remove quesIndexList[0]");
-		}
+		print("userAnswerCount: " + userAnswerCount);
 
 		string userAnsFormula = "";
 		userAnsFormula = GameObject.Find("Text_user formula").GetComponent<Text>().text;
@@ -172,9 +172,13 @@ public class TextQuesMode : MonoBehaviour {
 		if (evaluateAns(userAnsFormula) == quesObj.answer[quesObj.answer.Count-1].partAns)
 			stageEvents.showFeedBack(true, "");
 		else {
-			textQuesDynamicAssessment.setContents(quesObj, new List<string>(quesKeywordList));
+			textQuesDynamicAssessment.setContents(textQuesList[quesIndexList[0]], new List<string>(quesKeywordList), quesAnsFormula);
 			stageEvents.showFeedBack(false, textQuesDynamicAssessment.getPropmt(userAnswerCount));
 		}
+
+		if (quesIndexList.Count != 0)
+			quesIndexList.Remove(quesIndexList[0]);
+
 		GameObject.Find("Panel_" + npc + " TextQues").SetActive(false);
 	}
 
