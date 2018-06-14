@@ -112,7 +112,7 @@ public class TextQuesMode : MonoBehaviour {
 		for (int i = 0; i < tmpQuesNumList.Count; i++)
 			keywordArr[0] = keywordArr[0].Replace(quesNumSymbol[i], tmpQuesNumList[i]);
 		textQuesList[quesIndexList[0]] = keywordArr[0];
-		GameObject.Find("Text_text question").GetComponent<Text>().text = keywordArr[0];
+		GameObject.Find("Text_text question").GetComponent<Text>().text = textQuesList[quesIndexList[0]];
 
 		// random question elements
 		List<int> elementIndexList = new List<int>();
@@ -158,6 +158,7 @@ public class TextQuesMode : MonoBehaviour {
 		if (userAnswerCount > 3)
 			userAnswerCount = 0;
 		quesKeywordList.Clear();
+		GameObject.Find("Text_user formula").GetComponent<Text>().text = null;
 	}
 
 	public void clickFinish () {
@@ -168,16 +169,19 @@ public class TextQuesMode : MonoBehaviour {
 		userAnswerCount++;
 		print("userAnswerCount: " + userAnswerCount);
 
-		string userAnsFormula = "";
+		string userAns = "", userAnsFormula = "", misConceptions = "";
 		userAnsFormula = GameObject.Find("Text_user formula").GetComponent<Text>().text;
-		userAnsFormula = userAnsFormula.Replace("x", "*").Replace("÷", "/");
-		print("userAns: " + evaluateAns(userAnsFormula) + " / trueAns: " + quesObj.answer[quesObj.answer.Count-1].partAns);
+		userAns = userAnsFormula.Replace("x", "*").Replace("÷", "/");
+		print("userAns: " + evaluateAns(userAns) + " / trueAns: " + quesObj.answer[quesObj.answer.Count-1].partAns);
 
-		if (evaluateAns(userAnsFormula) == quesObj.answer[quesObj.answer.Count-1].partAns)
+		if (evaluateAns(userAns) == quesObj.answer[quesObj.answer.Count-1].partAns) {
 			stageEvents.showFeedBack(true, "");
-		else {
+			GameObject.Find("Datas").GetComponent<DatasControl>().getTextQuesGameData(textQuesList[quesIndexList[0]], quesAnsFormula, userAnsFormula, true, misConceptions);
+		} else {
+			misConceptions = textQuesDynamicAssessment.getPropmt(userAnswerCount);
 			textQuesDynamicAssessment.setContents(textQuesList[quesIndexList[0]], new List<string>(quesKeywordList), quesAnsFormula);
-			stageEvents.showFeedBack(false, textQuesDynamicAssessment.getPropmt(userAnswerCount));
+			stageEvents.showFeedBack(false, misConceptions);
+			GameObject.Find("Datas").GetComponent<DatasControl>().getTextQuesGameData(textQuesList[quesIndexList[0]], quesAnsFormula, userAnsFormula, false, misConceptions);
 		}
 
 		if (quesIndexList.Count != 0)

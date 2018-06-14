@@ -533,11 +533,11 @@ public class ColorMode : MonoBehaviour {
 		misConceptions = MisIdent.getMisConception(quesObj.answer, userAnsList);
 		if(quesObj.answer[quesObj.answer.Count-1].partAns == userAnsList[userAnsList.Count-1].partAns){
 			stageEvents.showFeedBack(true, "");
-			GameObject.Find("Datas").GetComponent<DatasControl>().upload_HISTORY(quesObj.question, quesObj.answer, userAnsList, true, misConceptions);
+			GameObject.Find("Datas").GetComponent<DatasControl>().getGameHistoryData(quesObj.question, quesObj.answer, userAnsList, true, misConceptions);
 		}else{
 			dynamicAssessment.setContents(quesObj, new List<AnsObj>(userAnsList), misConceptions[0]);
 			stageEvents.showFeedBack(false , dynamicAssessment.getPrompt(misConceptions));
-			GameObject.Find("Datas").GetComponent<DatasControl>().upload_HISTORY(quesObj.question, quesObj.answer, userAnsList, false, misConceptions);
+			GameObject.Find("Datas").GetComponent<DatasControl>().getGameHistoryData(quesObj.question, quesObj.answer, userAnsList, false, misConceptions);
 		}
 		yield return new WaitForSeconds(2f);
 		GameObject.Find("Panel_" + npc + " Color").SetActive(false);
