@@ -160,7 +160,11 @@ public class TextQuesMode : MonoBehaviour {
 		quesKeywordList.Clear();
 	}
 
-	public void checkAnswer () {
+	public void clickFinish () {
+		StartCoroutine(checkAnswer());
+	}
+
+	public IEnumerator checkAnswer () {
 		userAnswerCount++;
 		print("userAnswerCount: " + userAnswerCount);
 
@@ -179,6 +183,7 @@ public class TextQuesMode : MonoBehaviour {
 		if (quesIndexList.Count != 0)
 			quesIndexList.Remove(quesIndexList[0]);
 
+		yield return new WaitForSeconds(2f);
 		GameObject.Find("Panel_" + npc + " TextQues").SetActive(false);
 	}
 
