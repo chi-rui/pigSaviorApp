@@ -26,8 +26,6 @@ public class ChapterEvents : MonoBehaviour {
 		// set game datas.
 		if(gameDatas.loadingPanel == null)
 			gameDatas.setGameObjects();
-		gameDatas.stageGoal = 0;
-		// set the situation of return from the stage scenes.
 	}
 	
 	// Update is called once per frame
@@ -130,6 +128,8 @@ public class ChapterEvents : MonoBehaviour {
 			gameDatas.nowStage++;
 			gameDatas.chapter++;
 			gameDatas.LoadingScene("Chapter" + gameDatas.chapter.ToString());
+		}else if(gameDatas.nowStage == -1){
+			// nothing...
 		}else{
 			gameDatas.stageGoal = stage.stageInfo.stageGoal;
 			gameDatas.LoadingScene("stage" + gameDatas.nowStage.ToString());

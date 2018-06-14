@@ -11,8 +11,10 @@ public class Stage : MonoBehaviour {
 	void Start () {
 		datas = GameObject.Find("Datas").GetComponent<DatasControl>();
 		if(stageInfo.stageNum < datas.progress){
-			stageInfo.stageImg.SetActive(false);
-			stageInfo.stageFin.SetActive(true);
+			if(stageInfo.stageImg != null){
+				stageInfo.stageImg.SetActive(false);
+				stageInfo.stageFin.SetActive(true);
+			}
 		}
 	}
 	
