@@ -30,7 +30,7 @@ public class DatasControl : MonoBehaviour {
 	public Slider loadingBar;
 	private AsyncOperation async;
 
-	// history saved
+	// data saved
 	private int id;
 	private bool saverBlock = false;
 	private List<string> actionsA = new List<string>();
@@ -152,20 +152,18 @@ public class DatasControl : MonoBehaviour {
 		saverBlock = !saverBlock;
 		if(!saverBlock){
 			// upload A block to db.
-			print(actionsA.Count);
 			actionsA.Clear();
 			targetsA.Clear();
 			scenesA.Clear();
 		}else{
 			// upload B block to db.
-			print(actionsB.Count);
 			actionsB.Clear();
 			targetsB.Clear();
 			scenesB.Clear();
 		}
 	}
 
-	private void upload_HISTORY(string question, List<AnsObj> correctAns, List<AnsObj> userAns, bool isCorrect){
+	public void upload_HISTORY( List<string> question, List<AnsObj> correctAns, List<AnsObj> userAns, bool isCorrect, List<string> Mis){
 		/***
 		 	id > id(V)
 			stage > nowStage(V)
@@ -173,13 +171,30 @@ public class DatasControl : MonoBehaviour {
 			correctAns > correctAnswer
 			userAns > userAnswer
 			isCorrect > isCorrect(P)
+			misconception > misconception(P)
 			time > php
 		***/
 
-		string correctAnswer = JsonUtility.ToJson(correctAns);
-		string userAnswer = JsonUtility.ToJson(userAns);
+		string correctAnswer = "", userAnswer = "", misconception = "", q = "";
+		for(int i = 0; i < correctAns.Count; i++){
+			correctAnswer += JsonUtility.ToJson(correctAns[i]);
+			userAnswer += JsonUtility.ToJson(userAns[i]);
+		}
+		for(int j = 0; j < Mis.Count; j++){
+			misconception += Mis[j];
+		}
+		for(int k = 0; k < question.Count; k++){
+			q += question[k];
+		}
+		// print("----- save start -----");
+		// print(id);
+		// print(nowStage);
+		// print(q);
+		// print(correctAnswer);
+		// print(userAnswer);
+		// print(isCorrect);
+		// print(misconception);
+		// print("-----  save end  -----");
 
-		print(correctAnswer);
-		print(userAnswer);
 	}
 }

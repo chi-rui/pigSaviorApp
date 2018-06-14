@@ -252,6 +252,7 @@ public class BossEvents1 : MonoBehaviour {
 			if(ans == question.answer[0].partAns){
 				print("correct");
 				GameObject.Find("Text_userans").GetComponent<Text>().text = "";
+				// GameObject.Find("Datas").GetComponent<DatasControl>().upload_HISTORY(question.question, question.answer, userAnsList, true, misConceptions);
 				StartCoroutine(BreakShield());
 			}else{
 				print("your ans is " + ans.ToString() + ", wrong.");
