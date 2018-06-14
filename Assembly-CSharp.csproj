@@ -70,7 +70,6 @@
      <Compile Include="Assets\Scripts\Other\DatasControl.cs" />
      <Compile Include="Assets\Scripts\Other\GameSetting.cs" />
      <Compile Include="Assets\Scripts\Other\InfinityBackground.cs" />
-     <Compile Include="Assets\Scripts\Other\ScreenSizeMatch.cs" />
      <None Include="Assets\Resources\TextQuestionFile\stage13.txt" />
  <Reference Include="UnityEngine.UIAutomation">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UIAutomation/UnityEngine.UIAutomation.dll</HintPath>

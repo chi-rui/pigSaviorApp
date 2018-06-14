@@ -20,7 +20,7 @@ public class BossEvents1 : MonoBehaviour {
 	private float playerLife;
 
 	// user select for answer
-	private int operIndex;
+	// private int operIndex;
 	private int attackTime;
 	private bool isTimeUp;
 
@@ -196,7 +196,7 @@ public class BossEvents1 : MonoBehaviour {
 	public void userAnswer( int quesIndex ){
 		AnswerPanel.SetActive(true);
 		GameObject.Find("Text_ques").GetComponent<Text>().text = question.question[quesIndex-1] + " " + question.question[quesIndex] + " " + question.question[quesIndex+1] + " =";
-		operIndex = quesIndex;
+		// operIndex = quesIndex;
 	}
 
 	public void numberClick( string num ){
@@ -335,7 +335,7 @@ public class BossEvents1 : MonoBehaviour {
 	private void initial(){
 		// questionShield.transform.GetChild(0).gameObject.GetComponent<Text>().text = "";
 		// isClicked = false;
-		operIndex = -1;
+		// operIndex = -1;
 	}
 
 }
