@@ -31,7 +31,6 @@ public class DatasControl : MonoBehaviour {
 	private AsyncOperation async;
 
 	// data saved
-	private int id;
 	private bool saverBlock = false;
 	private List<string> actionsA = new List<string>();
 	private List<string> targetsA = new List<string>();
@@ -67,7 +66,7 @@ public class DatasControl : MonoBehaviour {
 				}
 
 				if(actionsA.Count >= 5 || actionsB.Count > 5){
-					upload_BEHAVIOR();
+					getBehaviorData();
 				}
 			}
 		}
@@ -140,30 +139,71 @@ public class DatasControl : MonoBehaviour {
 		print("Progress already change to " + progress + ".");	
 	}
 
-	private void upload_BEHAVIOR(){
+	private void getBehaviorData() {
 		/***
 		 	id > id(V)
 			scene > scenesA, scenesB
-			time > solved in php
 			action > actionsA, actionB
 			object > targetA, targetB
+			time > solved in php
 		***/
-
+		string userBehavior = "", scenes = "", actions = "", targets = "";
 		saverBlock = !saverBlock;
 		if(!saverBlock){
 			// upload A block to db.
+			for (int i = 0; i < scenesA.Count; i++) {
+				scenes += scenesA[i];
+				actions += actionsA[i];
+				targets += targetsA[i];
+				if (i != scenesA.Count-1) {
+					scenes += ", ";
+					actions += ", ";
+					targets += ", ";
+				}
+			}
 			actionsA.Clear();
 			targetsA.Clear();
 			scenesA.Clear();
 		}else{
 			// upload B block to db.
+			for (int i = 0; i < scenesB.Count; i++) {
+				scenes += scenesB[i];
+				actions += actionsB[i];
+				targets += targetsB[i];
+				if (i != scenesB.Count-1) {
+					scenes += ", ";
+					actions += ", ";
+					targets += ", ";
+				}
+			}
 			actionsB.Clear();
 			targetsB.Clear();
 			scenesB.Clear();
 		}
+		userBehavior = Login.user_id + "#" + scenes + "#" + actions + "#" + targets;
+		StartCoroutine(upload_BEHAVIOR(userBehavior));
 	}
 
-	public void upload_HISTORY( List<string> question, List<AnsObj> correctAns, List<AnsObj> userAns, bool isCorrect, List<string> Mis){
+	IEnumerator upload_BEHAVIOR (string userBehavior) {
+		string URL = "http://163.21.245.192/PigSaviorAPP/userBehaviorUpload.php";
+		WWWForm form = new WWWForm();
+		Dictionary<string, string> data = new Dictionary<string, string>();
+		data.Add("behavior", userBehavior);
+		foreach (KeyValuePair<string, string> post in data) {
+			form.AddField(post.Key, post.Value);
+		}
+		WWW www = new WWW(URL, form);
+		yield return www;
+		print(www.text);
+	}
+
+	public void getTextQuesGameData (string question, string correctAns, string userAns, bool isCorrect, string misconception) {
+		string gameHistory = Login.user_id + "#" + nowStage + "#" + question + "#" + correctAns + "#" + userAns + "#" + isCorrect + "#" + misconception;
+		// print(gameHistory);
+		StartCoroutine(upload_HISTORY(gameHistory));
+	}
+
+	public void getGameHistoryData (List<string> question, List<AnsObj> correctAns, List<AnsObj> userAns, bool isCorrect, List<string> Mis){
 		/***
 		 	id > id(V)
 			stage > nowStage(V)
@@ -196,5 +236,21 @@ public class DatasControl : MonoBehaviour {
 		// print(misconception);
 		// print("-----  save end  -----");
 
+		string gameHistory = Login.user_id + "#" + nowStage + "#" + q + "#" + correctAnswer + "#" + userAnswer + "#" + isCorrect + "#" + misconception;
+		// print(gameHistory);
+		StartCoroutine(upload_HISTORY(gameHistory));
+	}
+
+	IEnumerator upload_HISTORY (string gameHistory) {
+		string URL = "http://163.21.245.192/PigSaviorAPP/gameHistoryUpload.php";
+		WWWForm form = new WWWForm();
+		Dictionary<string, string> data = new Dictionary<string, string>();
+		data.Add("history", gameHistory);
+		foreach (KeyValuePair<string, string> post in data) {
+			form.AddField(post.Key, post.Value);
+		}
+		WWW www = new WWW(URL, form);
+		yield return www;
+		print(www.text);
 	}
 }
