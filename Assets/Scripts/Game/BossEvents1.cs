@@ -27,8 +27,8 @@ public class BossEvents1 : MonoBehaviour {
 	public StagePrompts BossTeach;
 
 	// save user's answer to detect misConception.
-	// private List<AnsObj> userAns = new List<AnsObj>();
-	// private AnsObj userAnsObj;
+	private List<AnsObj> userAns = new List<AnsObj>();
+	private AnsObj userAnsObj;
 
 	// Use this for initialization
 	void Start () {
@@ -97,7 +97,7 @@ public class BossEvents1 : MonoBehaviour {
 			questionShield.transform.GetChild(0).gameObject.GetComponent<Text>().text += question.question[i];
 		}
 		// initial user's AnsObj
-		// userAnsObj = new AnsObj();
+		userAnsObj = new AnsObj();
 		// next state.
 		StartCoroutine(playerRound());
 	}
@@ -142,7 +142,7 @@ public class BossEvents1 : MonoBehaviour {
 					break;
 			}
 		}
-		// userAnsObj.operators = selected;
+		userAnsObj.operators = selected;
 		if(selected == question.answer[0].operators){
 			StartCoroutine(calculate(selected));
 			// initial.
@@ -196,7 +196,9 @@ public class BossEvents1 : MonoBehaviour {
 	public void userAnswer( int quesIndex ){
 		AnswerPanel.SetActive(true);
 		GameObject.Find("Text_ques").GetComponent<Text>().text = question.question[quesIndex-1] + " " + question.question[quesIndex] + " " + question.question[quesIndex+1] + " =";
-		// operIndex = quesIndex;
+		int.TryParse(question.question[quesIndex-1] ,out userAnsObj.numA);
+		int.TryParse(question.question[quesIndex+1] ,out userAnsObj.numB);
+		userAnsObj.index = quesIndex;
 	}
 
 	public void numberClick( string num ){
@@ -246,17 +248,21 @@ public class BossEvents1 : MonoBehaviour {
 	public void checkAns(){
 		// List<string> misConception = MisIdent.getMisConception(question.answer, );
 
-		int ans = -1;
-		bool b = int.TryParse(GameObject.Find("Text_userans").GetComponent<Text>().text, out ans);
+		// int ans = -1;
+		bool b = int.TryParse(GameObject.Find("Text_userans").GetComponent<Text>().text, out userAnsObj.partAns);
+		
 		if(b){
-			if(ans == question.answer[0].partAns){
-				print("correct");
+			userAns.Add(userAnsObj);
+			List<string> misConceptions = GameObject.Find("EventSystem").GetComponent<MisIdentify>().getMisConception(question.answer, userAns);
+			if(userAnsObj.partAns == question.answer[0].partAns){
+				// print("correct");
 				GameObject.Find("Text_userans").GetComponent<Text>().text = "";
-				// GameObject.Find("Datas").GetComponent<DatasControl>().upload_HISTORY(question.question, question.answer, userAnsList, true, misConceptions);
+				GameObject.Find("Datas").GetComponent<DatasControl>().getGameHistoryData(question.question, question.answer, userAns, true, misConceptions);
 				StartCoroutine(BreakShield());
 			}else{
-				print("your ans is " + ans.ToString() + ", wrong.");
+				// print("your ans is " + userAnsObj.partAns.ToString() + ", wrong.");
 				// ... boss attack and new question
+				GameObject.Find("Datas").GetComponent<DatasControl>().getGameHistoryData(question.question, question.answer, userAns, false, misConceptions);
 				StartCoroutine(bossAttackPlayer());
 			}
 		}else{
