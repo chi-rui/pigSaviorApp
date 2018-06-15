@@ -154,10 +154,10 @@ public class StageEvents : MonoBehaviour {
 		if(userProgress == dataControl.stageGoal){
 			StartCoroutine(showPlots());
 			// wait
-			yield return new WaitForSeconds(2f);
+			yield return new WaitForSeconds(0.5f);
 			stageClear.SetActive(true);
 			yield return new WaitForSeconds(4.5f);
-			if(dataControl.progress == dataControl.nowStage-1)
+			if(dataControl.progress == dataControl.nowStage)
 				dataControl.progress += 1;
 			SceneManager.LoadScene("Chapter"+dataControl.chapter.ToString());
 		}else{
