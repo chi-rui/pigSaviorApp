@@ -57,25 +57,32 @@ public class ChapterEvents : MonoBehaviour {
 		string stageName;
 		lockObject(true);
 		if(gameDatas.nowStage+1 <= gameDatas.progress){
-			stageName = "Image_points" + gameDatas.nowStage.ToString();
-			// print(stageName);
-			stage = GameObject.Find(stageName).GetComponent<Stage>();
-
-			if(stage.stageInfo.isNextNeedTurn){
-				if(stage.stageInfo.isNextHorizontalFirst){
-					// print("先水平要轉彎");
-					StartCoroutine(move(new Vector2(stage.stageInfo.next.x, character.transform.position.y)));
-				}else{
-					// print("先垂直要轉彎");
-					StartCoroutine(move(new Vector2(character.transform.position.x, stage.stageInfo.next.y)));
-				}
-				StartCoroutine(nextMove(0.8f, stage.stageInfo.next));
-				// StartCoroutine(lockObject(false, 1.3f));
+			if(gameDatas.nowStage == 11){
+				// working stage
+				print("still working.");
+				lockObject(false);
 			}else{
-				StartCoroutine(move(stage.stageInfo.next));
-				// StartCoroutine(lockObject(false, 0.8f));
+				// open stage.
+				stageName = "Image_points" + gameDatas.nowStage.ToString();
+				// print(stageName);
+				stage = GameObject.Find(stageName).GetComponent<Stage>();
+
+				if(stage.stageInfo.isNextNeedTurn){
+					if(stage.stageInfo.isNextHorizontalFirst){
+						// print("先水平要轉彎");
+						StartCoroutine(move(new Vector2(stage.stageInfo.next.x, character.transform.position.y)));
+					}else{
+						// print("先垂直要轉彎");
+						StartCoroutine(move(new Vector2(character.transform.position.x, stage.stageInfo.next.y)));
+					}
+					StartCoroutine(nextMove(0.8f, stage.stageInfo.next));
+					// StartCoroutine(lockObject(false, 1.3f));
+				}else{
+					StartCoroutine(move(stage.stageInfo.next));
+					// StartCoroutine(lockObject(false, 0.8f));
+				}
+				gameDatas.nowStage++;
 			}
-			gameDatas.nowStage++;
 		}else{
 			Debug.Log("error : Can't over progress.(" + gameDatas.nowStage + ")");
 			lockObject(false);
@@ -125,13 +132,18 @@ public class ChapterEvents : MonoBehaviour {
 
 	public void enterStage(){
 		if(gameDatas.nowStage == 5 || gameDatas.nowStage == 16){
+			gameDatas.progress++;
 			gameDatas.nowStage++;
 			gameDatas.chapter++;
 			gameDatas.LoadingScene("Chapter" + gameDatas.chapter.ToString());
 		}else if(gameDatas.nowStage == -1){
 			// nothing...
+			print("still working.");
 		}else{
+			string stageName = "Image_points" + gameDatas.nowStage.ToString();
+			stage = GameObject.Find(stageName).GetComponent<Stage>();
 			gameDatas.stageGoal = stage.stageInfo.stageGoal;
+			print(gameDatas.stageGoal);
 			gameDatas.LoadingScene("stage" + gameDatas.nowStage.ToString());
 		}
 	}
