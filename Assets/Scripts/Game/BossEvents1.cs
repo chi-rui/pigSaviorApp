@@ -2,12 +2,14 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 
 public class BossEvents1 : MonoBehaviour {
 	private MathDatasControl MathDatas;
 	private MisIdentify MisIdent;
-	public GameObject questionShield, OperatorPanel, CaculatePanel, AnswerPanel, BossLife, PlayerLife, teachPanel, Boss, Image_operator;
+	private DatasControl dataControl;
+	public GameObject questionShield, OperatorPanel, CaculatePanel, AnswerPanel, BossLife, PlayerLife, teachPanel, Boss, Image_operator, GameReply;
 	private bool isClicked;
 	private QuesObj question;
 
@@ -34,6 +36,7 @@ public class BossEvents1 : MonoBehaviour {
 	void Start () {
 		// set used variables.
 		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
+		dataControl = GameObject.Find("Datas").GetComponent<DatasControl>();
 		// MisIdent = GameObject.Find("EventSystem").GetComponent<MisIdentify>();
 		// questionShield = GameObject.Find("Image_shield");
 		// questionShield.SetActive(false);
@@ -305,6 +308,10 @@ public class BossEvents1 : MonoBehaviour {
 		if(bossLife <= 0){
 			print("finish game");
 			GameObject.Find("Image_Boss").GetComponent<Animator>().Play("Boss05_playerWin");
+			GameReply.SetActive(true);
+			GameReply.transform.GetChild(0).GetComponent<Text>().text = "恭喜戰勝了\n傳說級豬兔兔";
+			if(dataControl.progress == dataControl.nowStage)
+				dataControl.progress += 1;
 		}else{
 			BossLife.SetActive(false);
 			StartCoroutine(createQuestionShield(miniNum, maxNum, templates));
@@ -324,7 +331,10 @@ public class BossEvents1 : MonoBehaviour {
 			GameObject.Find("Image_LifeDGC").GetComponent<Image>().fillAmount -= 0.02f;
 			yield return new WaitForSeconds(0.1f);
 		}
-
+		if(playerLife <= 0f){
+			GameReply.SetActive(true);
+			GameReply.transform.GetChild(0).GetComponent<Text>().text = "挑戰失敗了...\n整頓心情再挑戰看看吧！";
+		}
 		GameObject.Find("Image_main_character").GetComponent<Animator>().Play("Image_character_stand by");
 		// if user life = 0?
 
@@ -343,6 +353,10 @@ public class BossEvents1 : MonoBehaviour {
 		// questionShield.transform.GetChild(0).gameObject.GetComponent<Text>().text = "";
 		// isClicked = false;
 		// operIndex = -1;
+	}
+
+	public void backToChapter(){
+		SceneManager.LoadScene("Chapter"+dataControl.chapter.ToString());
 	}
 
 }
