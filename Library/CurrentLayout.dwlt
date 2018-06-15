@@ -20,7 +20,7 @@ MonoBehaviour:
   m_ShowMode: 4
   m_Title: 
   m_RootView: {fileID: 2}
-  m_MinSize: {x: 950, y: 542}
+  m_MinSize: {x: 950, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &2
 MonoBehaviour:
@@ -43,7 +43,7 @@ MonoBehaviour:
     y: 0
     width: 1440
     height: 856
-  m_MinSize: {x: 950, y: 542}
+  m_MinSize: {x: 950, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &3
 MonoBehaviour:
@@ -106,10 +106,10 @@ MonoBehaviour:
     y: 30
     width: 1440
     height: 806
-  m_MinSize: {x: 879, y: 492}
-  m_MaxSize: {x: 16004, y: 14042}
+  m_MinSize: {x: 881, y: 492}
+  m_MaxSize: {x: 16006, y: 14042}
   vertical: 0
-  controlID: 38969
+  controlID: 97
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -133,7 +133,7 @@ MonoBehaviour:
   m_MinSize: {x: 604, y: 492}
   m_MaxSize: {x: 12004, y: 14042}
   vertical: 1
-  controlID: 38970
+  controlID: 98
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -158,7 +158,7 @@ MonoBehaviour:
   m_MinSize: {x: 604, y: 221}
   m_MaxSize: {x: 12004, y: 4021}
   vertical: 0
-  controlID: 38971
+  controlID: 99
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -177,8 +177,8 @@ MonoBehaviour:
     y: 0
     width: 268
     height: 488
-  m_MinSize: {x: 202, y: 221}
-  m_MaxSize: {x: 4002, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 14}
   m_Panes:
   - {fileID: 14}
@@ -229,8 +229,8 @@ MonoBehaviour:
     y: 0
     width: 548
     height: 488
-  m_MinSize: {x: 204, y: 221}
-  m_MaxSize: {x: 4004, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 13}
   m_Panes:
   - {fileID: 13}
@@ -393,23 +393,23 @@ MonoBehaviour:
   m_PersistentViewDataDictionary: {fileID: 0}
   m_TreeViewState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: c830e3ff
-    m_LastClickedID: -1888056
-    m_ExpandedIDs: 5a2be3ff9a2be3ff3c30e3ff6230e3ff7c30e3fff630e3ff963de3ff1c76e3ff8276e3ffae76e3ffa6a5e8ffcaa5e8ffd0a5e8ffd2a5e8ffe6a5e8fffaa5e8ff02a6e8ff06a6e8ff08a6e8ff0aa6e8ff18a6e8ff20a6e8ff30a6e8ff4aa6e8ffdea8e8ffb00de9ff26bdecff3abdecff4cbdecff56bdecfff4bdecff0cbeecff96beecff10bfecff12bfecff16bfecff26bfecff6cc1ecff14ceecff1ccfecffa2d2ecffa430eeffb630eeffbe31eeffd031eeff1634eeff7245eeff2c92eefffa9beeff4a9eeeff76a0eeffaca0eeff70cdeeff0cddeeffee4befff0053f2ff6653f2ff6853f2ff5e59f4fff4d1f6ff5ad2f6ff5cd2f6ffe8e1f6ff52ebf6ff820bf7ff2044f9ff8644f9ff8844f9ffe238fbff4a39fbff50aafeffb6aafeffb8aafeffccbffeffe2e5feffeae8feffac44ffff2651ffff3652ffffc496ffff28a3fffff2ccffffc6e4fffff2e9ffffe8eeffff4af7ffff98fbffff000000005c4100000442000062640000fe6400000a650000ae7100002e720000ce7e0000387f0000ba9600007c970000f897000062980000a8d7000012d80000fcea000076eb00007ceb000038420100da420100e0420100d44d01006c4e0100d24e0100784f01007e4f01007c8a0100ca8a0100d08a010034990100cc990100229a0100869a010076a70100a8a7010072ab0100e8ad010090ae0100e2ae010046af0100dcb001000eb1010084b10100d6b101003eb2010014d30100bcd3010030f4010090f401009af40100ca61020072620200ce62020044630200
+    m_SelectedIDs: 685cfeff
+    m_LastClickedID: -107416
+    m_ExpandedIDs: ac25feffba25feffce25feffd825feff2c5bfeff565cfeff965cfeff7af1ffff7cfbfffff4ffffff00000000583a00007e3a000012a800007aa8000088a80000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: 
-      m_OriginalName: 
+      m_Name: Image_choose npc type field
+      m_OriginalName: Image_choose npc type field
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 0
+      m_UserData: -121384
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 11
+      m_OriginalEventType: 0
       m_IsRenamingFilename: 0
       m_ClientGUIView: {fileID: 8}
     m_SearchString: 
@@ -451,9 +451,9 @@ MonoBehaviour:
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -340.62338, y: 43.399406, z: -9.008381}
+    m_Target: {x: 381.37003, y: 282.01297, z: -7.7097316}
     speed: 2
-    m_Value: {x: -340.62338, y: 43.399406, z: -9.008381}
+    m_Value: {x: 381.37003, y: 282.01297, z: -7.7097316}
   m_RenderMode: 0
   m_ValidateTrueMetals: 0
   m_SceneViewState:
@@ -481,9 +481,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 1133.237
+    m_Target: 880.8596
     speed: 2
-    m_Value: 1133.237
+    m_Value: 880.8596
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -774,19 +774,19 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SearchArea: 0
     m_Folders:
-    - Assets/Models/AnimationPath/Stage9/Key1
+    - Assets/Models/Textures/B_Object
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Models/AnimationPath/Stage9/Key1
+  - Assets/Models/Textures/B_Object
   m_LastFoldersGridSize: -1
   m_LastProjectPath: /Users/syuanshih/Desktop/pigSaviorApp
   m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 319}
-    m_SelectedIDs: 5aaf0100
-    m_LastClickedID: 110426
-    m_ExpandedIDs: 0000000090270000de2800005c2a0000e22a00009c2e0000a42e0000e22e00002430000000ca9a3bffffff7f
+    scrollPos: {x: 0, y: 367.9994}
+    m_SelectedIDs: 942b0000
+    m_LastClickedID: 11156
+    m_ExpandedIDs: 00000000a8270000fa280000922a00001a2b0000fa2e0000022f0000482f00009e30000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -814,7 +814,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 0000000090270000de2800005c2a0000e22a00009c2e0000a42e0000e22e00002430000000ca9a3bffffff7f
+    m_ExpandedIDs: 00000000a8270000fa280000922a00001a2b0000fa2e0000022f0000482f00009e300000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -841,7 +841,7 @@ MonoBehaviour:
   m_ListAreaState:
     m_SelectedInstanceIDs: 
     m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 0
+    m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c6230000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -866,7 +866,7 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
     m_NewAssetIndexInList: -1
-    m_ScrollPosition: {x: 0, y: 0}
+    m_ScrollPosition: {x: 0, y: 1160}
     m_GridSize: 64
   m_DirectoriesAreaWidth: 228
 --- !u!114 &19

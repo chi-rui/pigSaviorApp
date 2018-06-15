@@ -6,10 +6,11 @@ using UnityEngine.UI;
 public class Login : MonoBehaviour {
 	public GameObject warningPanel, mainPagePanel;
 	public Text Text_account, Text_password;
-	public static int user_id;
+	public static int user_id, user_progress;
+	public static string account;
 
 	public DatasControl datas;
-	private string account, password;
+	private string password;
 
 	// Use this for initialization
 	void Start () {
@@ -47,14 +48,19 @@ public class Login : MonoBehaviour {
 		else if (www.text == "no register")
 			warningPanel.transform.GetChild(1).GetComponent<Text>().text = "此帳號尚未註冊";
 		else {
-			user_id = int.Parse(www.text);
+			string[] userData = www.text.Split('@');
+			user_id = int.Parse(userData[0]);
+			user_progress = int.Parse(userData[1]);
+			print("user_id: " + user_id + " / " + "user_progress: " + user_progress);
 			warningPanel.transform.GetChild(1).GetComponent<Text>().text = "登入成功";
 			GameObject.Find("Panel_Login").SetActive(false);
 			mainPagePanel.SetActive(true);
-			
-			datas.chapter = 1;
-			datas.progress = 1;
-			datas.nowStage = 1;
+			if(user_progress > 5)
+				datas.chapter = 2;
+			else
+				datas.chapter = 1;
+			datas.progress = user_progress;
+			datas.nowStage = user_progress;
 		}
 	}
 }

@@ -163,6 +163,21 @@ public class StageEvents : MonoBehaviour {
 		}else{
 			StartCoroutine(showPlots());
 		}
+		StartCoroutine(upload_USER(dataControl.progress, Login.account));
+	}
+
+	IEnumerator upload_USER (int userProgress, string account) {
+		string URL = "http://163.21.245.192/PigSaviorAPP/userDataUpdate.php";
+		WWWForm form = new WWWForm();
+		Dictionary<string, string> data = new Dictionary<string, string>();
+		data.Add("userProcess", userProgress.ToString());
+		data.Add("account", account);
+		foreach (KeyValuePair<string, string> post in data) {
+			form.AddField(post.Key, post.Value);
+		}
+		WWW www = new WWW(URL, form);
+		yield return www;
+		print(www.text);
 	}
 
 	private IEnumerator showPlots(){
