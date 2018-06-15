@@ -8,6 +8,7 @@ public class Login : MonoBehaviour {
 	public Text Text_account, Text_password;
 	public static int user_id;
 
+	public DatasControl datas;
 	private string account, password;
 
 	// Use this for initialization
@@ -50,6 +51,10 @@ public class Login : MonoBehaviour {
 			warningPanel.transform.GetChild(1).GetComponent<Text>().text = "登入成功";
 			GameObject.Find("Panel_Login").SetActive(false);
 			mainPagePanel.SetActive(true);
+			
+			datas.chapter = 1;
+			datas.progress = 1;
+			datas.nowStage = 1;
 		}
 	}
 }
