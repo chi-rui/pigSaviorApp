@@ -43,8 +43,12 @@ public class PickMode : MonoBehaviour {
 	void setItems(){
 		item.SetActive(true);
 		float x = UnityEngine.Random.Range(this.transform.GetChild(2).GetChild(0).position.x-400,this.transform.GetChild(2).GetChild(0).position.x+400);
-		float y = UnityEngine.Random.Range(this.transform.GetChild(2).position.y-200, this.transform.GetChild(2).position.y+200);
+		// float x = UnityEngine.Random.Range(-600f,500f);
+		float y = UnityEngine.Random.Range(this.transform.GetChild(2).GetChild(0).position.y-200, this.transform.GetChild(2).GetChild(0).position.y+200);
+		// float y = UnityEngine.Random.Range(400f, -400f);
 		var b = Instantiate(this.transform.GetChild(2).GetChild(1),new Vector3(x, y, 0), Quaternion.identity, this.transform.GetChild(2));
+		b.gameObject.transform.position = new Vector3(x, y, 0);
+		// print(b.gameObject.transform.position);
 		b.gameObject.tag = "clone";
 		// b.gameObject.GetComponent<Image>().alphaHitTestMinimumThreshold = 1f;
 		this.sumofitems++;

@@ -117,6 +117,8 @@ public class StageEvents : MonoBehaviour {
 			if(userLife == 0){
 				GameObject.Find("player life").transform.GetChild(1).gameObject.SetActive(false); //GetComponent<Image>().sprite = null;
 				GameObject.Find("player life").transform.GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("gg") as Sprite;
+				if(DatasControl.GameMode == "PICK")
+					SceneManager.LoadScene("Chapter"+dataControl.chapter.ToString());
 			}else{
 				string life = "Life" + userLife.ToString();
 				GameObject.Find("player life").transform.GetChild(1).GetComponent<Image>().sprite = Resources.Load<Sprite>(life) as Sprite;
@@ -154,11 +156,16 @@ public class StageEvents : MonoBehaviour {
 		if(userProgress == dataControl.stageGoal){
 			StartCoroutine(showPlots());
 			// wait
-			yield return new WaitForSeconds(0.5f);
+			yield return new WaitForSeconds(4.5f);
 			stageClear.SetActive(true);
 			yield return new WaitForSeconds(4.5f);
-			if(dataControl.progress == dataControl.nowStage)
+			if(dataControl.progress == dataControl.nowStage){
 				dataControl.progress += 1;
+				/*******/
+				if(dataControl.progress == 12)
+					dataControl.progress--;		
+				/******/
+			}
 			SceneManager.LoadScene("Chapter"+dataControl.chapter.ToString());
 		}else{
 			StartCoroutine(showPlots());

@@ -253,7 +253,7 @@ public class BossEvents1 : MonoBehaviour {
 
 		// int ans = -1;
 		bool b = int.TryParse(GameObject.Find("Text_userans").GetComponent<Text>().text, out userAnsObj.partAns);
-		
+		userAns.Clear();
 		if(b){
 			userAns.Add(userAnsObj);
 			List<string> misConceptions = GameObject.Find("EventSystem").GetComponent<MisIdentify>().getMisConception(question.answer, userAns);
