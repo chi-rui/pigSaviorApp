@@ -86,3 +86,10 @@ public class StagePrompts
 	public List<Sprite> pictures;
 	public List<string> words;
 }
+
+[System.Serializable]
+public class page
+{
+	public Sprite image;
+	public string test;
+}
