@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class TypeMode : MonoBehaviour {
-	public GameObject warningPanel, showTeamBeforeFighting, fightingPanel, fightingResult, calculatePanel, clickAnyPositionImage;
+	public GameObject warningPanel, showTeamBeforeFighting, fightingPage, fightingResult, calculatePage, clickAnyPositionImage;
 	public GameObject[] operTeamFieldImageArr, chooseOperMemberBtnArr, operTeamFailedImageArr, quesNumTextArr, quesOperImageArr;
 	public Animator Anim_characterAction, Anim_npcFightingType, Anim_npcFightingResult, Anim_operFightingResult;
 	public Image Image_nextFightOper, Image_fightResultHint;
@@ -225,7 +225,7 @@ public class TypeMode : MonoBehaviour {
 				for (int i = 0; i < operCount; i++)
 					operTeamFieldImageArr[i].SetActive(false);
 				StartCoroutine(setOperTeamPosition("beforeFight"));
-				StartCoroutine(showFightingPanel(3.3f));
+				StartCoroutine(showfightingPage(3.3f));
 			}
 		}
 	}
@@ -255,11 +255,11 @@ public class TypeMode : MonoBehaviour {
 		}
 	}
 
-	IEnumerator showFightingPanel (float time) {
+	IEnumerator showfightingPage (float time) {
 		yield return new WaitForSeconds(time);
 		StartCoroutine(setOperTeamPosition("fightPanel"));
 		showTeamBeforeFighting.SetActive(false);
-		fightingPanel.SetActive(true);
+		fightingPage.SetActive(true);
 		Image_nextFightOper.sprite = Image_operTeamMemberArr[0].sprite;
 	}
 
@@ -367,7 +367,7 @@ public class TypeMode : MonoBehaviour {
 				}
 				fightingResult.SetActive(false);
 				showPartQuestion();
-				calculatePanel.SetActive(true);
+				calculatePage.SetActive(true);
 				break;
 			case "lose":
 				yield return new WaitForSeconds(0.3f);
@@ -460,8 +460,8 @@ public class TypeMode : MonoBehaviour {
 	}
 
 	public void clickRechallengeGame () {
-		calculatePanel.SetActive(false);
-		fightingPanel.SetActive(false);
+		calculatePage.SetActive(false);
+		fightingPage.SetActive(false);
 		if (operFailedCount != 0) {
 			for (int i = 0; i < operFailedCount; i++)
 				operTeamFailedImageArr[i].SetActive(false);
@@ -507,7 +507,7 @@ public class TypeMode : MonoBehaviour {
 			operTeamFieldImageArr[i].SetActive(true);
 		clickClearAnsNum();
 		Text_userans.text = "ANS";
-		calculatePanel.SetActive(false);
+		calculatePage.SetActive(false);
 
 		if (operFailedCount < operChooseMemberCount) {
 			restartTypeModeFighting();

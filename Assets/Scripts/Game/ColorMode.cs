@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ColorMode : MonoBehaviour {
-	public GameObject warningPanel, waterGunImage, colorPainterImage, mixingColorResult, calculatePanel, clickAnyPositionImage;
+	public GameObject warningPanel, waterGunImage, colorPainterImage, mixingColorResult, calculatePage, clickAnyPositionImage;
 	public GameObject[] quesNumTextArr, quesOperImageArr;
 	public Animator Anim_npcColored, Anim_npcMixingColor, Anim_operatorPairResult;
 	public Image[] colorChooseMemberArr;
@@ -362,7 +362,7 @@ public class ColorMode : MonoBehaviour {
 		if (isPair) {
 			mixingColorResult.SetActive(false);
 			showPartQuestion();
-			calculatePanel.SetActive(true);
+			calculatePage.SetActive(true);
 		} else
 			clickAnyPositionImage.SetActive(true);
 	}
@@ -454,7 +454,7 @@ public class ColorMode : MonoBehaviour {
 	}
 
 	public void clickRechallengeGame () {
-		calculatePanel.SetActive(false);
+		calculatePage.SetActive(false);
 		// print("userCalculateCount: " + userCalculateCount);
 		if (userCalculateCount != 0) {
 			for (int i = 0; i < operColorRanList.Count; i++)
@@ -494,7 +494,7 @@ public class ColorMode : MonoBehaviour {
 		clickClearAnsNum();
 		Text_userans.text = "ANS";
 		restartColorMode();
-		calculatePanel.SetActive(false);
+		calculatePage.SetActive(false);
 		tmpColorOperList.Remove(colorResult);
 
 		if (userCalculateCount < operCount) {
