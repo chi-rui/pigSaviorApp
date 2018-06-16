@@ -6,12 +6,11 @@ using UnityEngine.UI;
 public class PickMode : MonoBehaviour {
 
 	public GameObject item, GamePanel;
-	private int sumofitems = 0;
-	private int itemsPicked = 0;
-	private int answer;
 	public string itemName;
+	public bool isFirst;
+	private int sumofitems = 0, itemsPicked = 0, answer;
 	private StageEvents stageEvents;
-	bool wait = false;
+	private bool wait = false;
 
 	// Use this for initialization
 	void Start () {

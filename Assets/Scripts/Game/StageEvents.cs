@@ -29,7 +29,6 @@ public class StageEvents : MonoBehaviour {
 		dataControl = GameObject.Find("Datas").GetComponent<DatasControl>();
 		userProgress = 0;
 		userLife = 3;
-
 	}
 
 	// Update is called once per frame
