@@ -54,6 +54,7 @@
      <Compile Include="Assets\Scripts\Game\BossEvents1.cs" />
      <Compile Include="Assets\Scripts\Game\ChapterEvents.cs" />
      <Compile Include="Assets\Scripts\Game\ColorMode.cs" />
+     <Compile Include="Assets\Scripts\Game\GameWorkTeach.cs" />
      <Compile Include="Assets\Scripts\Game\Npc.cs" />
      <Compile Include="Assets\Scripts\Game\PickMode.cs" />
      <Compile Include="Assets\Scripts\Game\RhythmMode.cs" />
