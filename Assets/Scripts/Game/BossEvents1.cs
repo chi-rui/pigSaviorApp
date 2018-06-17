@@ -26,8 +26,6 @@ public class BossEvents1 : MonoBehaviour {
 	private int attackTime;
 	private bool isTimeUp;
 
-	public StagePrompts BossTeach;
-
 	// save user's answer to detect misConception.
 	private List<AnsObj> userAns = new List<AnsObj>();
 	private AnsObj userAnsObj;
@@ -68,10 +66,8 @@ public class BossEvents1 : MonoBehaviour {
 	private IEnumerator teachBoss(){
 		if(GameObject.Find("Datas").GetComponent<DatasControl>().progress < 5){
 			teachPanel.SetActive(true);
-			for(int i = 0; i < BossTeach.pictures.Count; i++){
-				teachPanel.transform.GetChild(0).GetComponent<Image>().sprite = BossTeach.pictures[i];
-				teachPanel.transform.GetChild(1).GetComponent<Text>().text = BossTeach.words[i];
-				yield return new WaitForSeconds(5f);
+			while(teachPanel.activeInHierarchy){
+				yield return new WaitForSeconds(0.1f);
 			}
 			teachPanel.SetActive(false);
 		}
