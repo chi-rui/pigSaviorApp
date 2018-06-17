@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 // only onion npc problem
 public class RhythmMode : MonoBehaviour {
-	public GameObject scenario, pointer, characterAction, challengeFailedPanel, chooseOperatorPanel, calculatePanel, hitResult, remainingText, hitResultText, clickAnyPositionImage;
+	public GameObject scenario, pointer, characterAction, challengeFailedPanel, chooseOperatorPage, calculatePage, hitResult, remainingText, hitResultText, clickAnyPositionImage;
 	public GameObject[] quesNumTextArr, quesOperTextArr, quesNumTextChooseArr, quesOperBtnChooseArr;
 	public Animator Anim_characterPerfect, Anim_npcPerfect;
 	public Sprite Sprite_characterAction;
@@ -268,7 +268,7 @@ public class RhythmMode : MonoBehaviour {
 		hitResult.SetActive(false);
 
 		// show choose operator panel
-		chooseOperatorPanel.SetActive(true);
+		chooseOperatorPage.SetActive(true);
 	}
 
 	// Collision
@@ -309,7 +309,7 @@ public class RhythmMode : MonoBehaviour {
 		operChooseBtnIndex = num;
 		// print("operChooseBtnIndex: " + operChooseBtnIndex);
 		// print(quesOperIndexList[operChooseBtnIndex]);
-		calculatePanel.SetActive(true);
+		calculatePage.SetActive(true);
 		isInBracketA = false; isInBracketB = false;
 		string tmp1 = "", tmp2 = "";
 		if (quesNumTextChooseArr[operChooseBtnIndex].GetComponent<Text>().text == "") {
@@ -371,7 +371,7 @@ public class RhythmMode : MonoBehaviour {
 	}
 
 	public void clickPreviousStep () {
-		calculatePanel.SetActive(false);
+		calculatePage.SetActive(false);
 		Text_userans.text = "ANS";
 	}
 
@@ -402,8 +402,8 @@ public class RhythmMode : MonoBehaviour {
 
 		// print(tmpAns);
 
-		calculatePanel.SetActive(false);
-		chooseOperatorPanel.SetActive(false);
+		calculatePage.SetActive(false);
+		chooseOperatorPage.SetActive(false);
 		clickClearAnsNum();
 		Text_userans.text = "ANS";
 		// show remain counts text
