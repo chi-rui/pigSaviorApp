@@ -26,7 +26,9 @@ public class DatasControl : MonoBehaviour {
 	// music...etc
 
 	// Loading Image
-	public GameObject loadingPanel;
+	public List<Sprite> loadingImage;
+	public List<string> loadingWords;
+	public GameObject loadingPage, loadingPanel, loadingText;
 	public Slider loadingBar;
 	private AsyncOperation async;
 
@@ -87,9 +89,11 @@ public class DatasControl : MonoBehaviour {
 		// set loading images. 
 		// print("set loading panel.");
 		if(GameObject.Find("Panel_loading")){
+			loadingPage = GameObject.Find("Loading page");
 			loadingPanel = GameObject.Find("Panel_loading");
 			loadingBar = loadingPanel.transform.GetChild(0).GetComponentInChildren<Slider>();
-			loadingPanel.SetActive(false);
+			loadingText = loadingPanel.transform.GetChild(0).GetChild(3).gameObject;
+			loadingPage.SetActive(false);
 		}else{
 			// print("not found");
 		}
@@ -111,7 +115,10 @@ public class DatasControl : MonoBehaviour {
 	// }
 
 	public void LoadingScene( string scene ){
-		loadingPanel.SetActive(true);
+		loadingPage.SetActive(true);
+		// set loading views
+		loadingPanel.GetComponent<Image>().sprite = loadingImage[Random.Range(0, loadingImage.Count-1)];
+		loadingText.GetComponent<Text>().text = loadingWords[Random.Range(0, loadingWords.Count-1)];
 		StartCoroutine(LoadSceneWithLoadingPage(scene));
 	}
 

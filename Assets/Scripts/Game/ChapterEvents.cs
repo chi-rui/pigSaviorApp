@@ -143,7 +143,6 @@ public class ChapterEvents : MonoBehaviour {
 			string stageName = "Image_points" + gameDatas.nowStage.ToString();
 			stage = GameObject.Find(stageName).GetComponent<Stage>();
 			gameDatas.stageGoal = stage.stageInfo.stageGoal;
-			print(gameDatas.stageGoal);
 			gameDatas.LoadingScene("stage" + gameDatas.nowStage.ToString());
 		}
 	}
