@@ -26,6 +26,12 @@ public class ChapterEvents : MonoBehaviour {
 		// set game datas.
 		if(gameDatas.loadingPanel == null)
 			gameDatas.setGameObjects();
+
+		if(gameDatas.progress != 1){
+			if(GameObject.Find("Panel_TeachWork"))
+				GameObject.Find("Panel_TeachWork").SetActive(false);
+		}
+
 	}
 	
 	// Update is called once per frame
