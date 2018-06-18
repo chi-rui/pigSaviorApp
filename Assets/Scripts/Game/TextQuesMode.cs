@@ -57,16 +57,38 @@ public class TextQuesMode : MonoBehaviour {
 		print(quesAnsFormula);
 
 		// read text question file and set question in a list
-		StreamReader textQuesFile = new StreamReader(textQuesFilePath);
-		string[] textQuesArr = textQuesFile.ReadToEnd().Split('@');
-		string[] templateTextQuesArr = textQuesArr[templateIndex].Split('\n');
-		for (int i = 0; i < templateTextQuesArr.Length; i++)
-			textQuesList.Add(templateTextQuesArr[i]);
+		StartCoroutine(getTextQuesContent());
+
+		// StreamReader textQuesFile = new StreamReader(textQuesFilePath);
+		// string[] textQuesArr = textQuesFile.ReadToEnd().Split('@');
+		// string[] templateTextQuesArr = textQuesArr[templateIndex].Split('\n');
+		// for (int i = 0; i < templateTextQuesArr.Length; i++)
+		// 	textQuesList.Add(templateTextQuesArr[i]);
 		// for (int i = 0; i < textQuesArr.Length; i++)
 		// 	print(textQuesArr[i]);
 		// for (int i = 0; i < textQuesList.Count; i++)
 		// 	print(textQuesList[i]);
-		textQuesFile.Close();
+		// textQuesFile.Close();
+	}
+
+	IEnumerator getTextQuesContent () {
+		WWWForm form = new WWWForm();
+		Dictionary<string, string> data = new Dictionary<string, string>();
+		data.Add("download", "1");
+		foreach (KeyValuePair<string, string> post in data) {
+			form.AddField(post.Key, post.Value);
+		}
+		WWW www = new WWW(textQuesFilePath, form);
+		yield return www;
+		// print(www.text);
+
+		string questionFile = www.text;
+		string[] textQuesArr = questionFile.Split('@');
+		string[] templateTextQuesArr = textQuesArr[templateIndex].Split('\n');
+		for (int i = 0; i < templateTextQuesArr.Length; i++)
+			textQuesList.Add(templateTextQuesArr[i]);
+		// for (int i = 0; i < textQuesList.Count; i++)
+		// 	print(textQuesList[i]);
 
 		showQuestion();
 	}

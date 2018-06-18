@@ -29,12 +29,12 @@ public class SpecialLogic1 : MonoBehaviour {
 		// question = mathDatas.getQuestion(1,500,"A-B-C-D");
 		
 		// set talk contents.
-		StreamReader logicQuestion = new StreamReader("Assets/Resources/LogicQuestionFile/stage12.txt");
-		string[] talkTemplate = logicQuestion.ReadToEnd().Split('\n');
-		string[] contents = talkTemplate[Random.Range(0, talkTemplate.Length-1)].Split('@');
-		logicQuestion.Close();
-		ansIndex = contents[contents.Length-1];
-		print(ansIndex);
+		// StreamReader logicQuestion = new StreamReader("Assets/Resources/LogicQuestionFile/stage12.txt");
+		// string[] talkTemplate = logicQuestion.ReadToEnd().Split('\n');
+		// string[] contents = talkTemplate[Random.Range(0, talkTemplate.Length-1)].Split('@');
+		// logicQuestion.Close();
+		StartCoroutine(getQuesContent());
+		
 
 		// set colors
 		colors = new Color[]{
@@ -47,22 +47,11 @@ public class SpecialLogic1 : MonoBehaviour {
 			new Color32(108, 108, 108, 255),
 		};
 
-		for(int i = 0; i < 7; i++){
-			// int j = Random.Range(0,7);
-			int k = Random.Range(0,7);
-			// Color c = colors[i];
-			string temp = contents[i];
-			// colors[i] = colors[j];
-			contents[i] = contents[k];
-			// colors[j] = c;
-			contents[k] = temp;
-		}
-
 		// set board npc
 		for(int i = 1; i < 8; i++){
 			string board = "Button_Board" + i.ToString();
 			GameObject.Find(board).GetComponent<Image>().color = colors[i-1];
-			GameObject.Find(board).GetComponent<Npc>().npcInfo.falseContents[0] = contents[i-1];
+			// GameObject.Find(board).GetComponent<Npc>().npcInfo.falseContents[0] = contents[i-1];
 		}
 
 
@@ -74,6 +63,41 @@ public class SpecialLogic1 : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		
+	}
+
+	IEnumerator getQuesContent () {
+		string URL = "http://163.21.245.192/PigSaviorAPP/files/stage12.txt";
+		WWWForm form = new WWWForm();
+		Dictionary<string, string> data = new Dictionary<string, string>();
+		data.Add("download", "1");
+		foreach (KeyValuePair<string, string> post in data) {
+			form.AddField(post.Key, post.Value);
+		}
+		WWW www = new WWW(URL, form);
+		yield return www;
+		print(www.text);
+
+		string[] talkTemplate = www.text.Split('\n');
+		string[] contents = talkTemplate[Random.Range(0, talkTemplate.Length-1)].Split('@');
+		ansIndex = contents[contents.Length-1];
+		print(ansIndex);
+
+		for(int i = 0; i < 7; i++){
+			// int j = Random.Range(0,7);
+			int k = Random.Range(0,6);
+			// Color c = colors[i];
+			string temp = contents[i];
+			// colors[i] = colors[j];
+			contents[i] = contents[k];
+			// colors[j] = c;
+			contents[k] = temp;
+		}
+
+		for(int i = 1; i < 8; i++){
+			string board = "Button_Board" + i.ToString();
+			GameObject.Find(board).GetComponent<Image>().color = colors[i-1];
+			GameObject.Find(board).GetComponent<Npc>().npcInfo.falseContents[0] = contents[i-1];
+		}
 	}
 
 	public void showSelectionPanel(){
