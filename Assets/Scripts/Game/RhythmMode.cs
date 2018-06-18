@@ -208,7 +208,7 @@ public class RhythmMode : MonoBehaviour {
 		List<int> tmpSortingList = new List<int>();
 		List<int> hitBarsIndexList = new List<int>();
 
-		// isRhythmStart = true;
+		isRhythmStart = true;
 		// clear random hitbar number list and change to original hitbar
 		tmpSortingList.Clear();
 		hitBarsIndexList.Clear();
