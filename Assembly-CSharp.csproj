@@ -73,6 +73,7 @@
      <Compile Include="Assets\Scripts\Other\InfinityBackground.cs" />
      <Compile Include="Assets\Scripts\Other\Login.cs" />
      <None Include="Assets\Resources\TextQuestionFile\stage13.txt" />
+     <None Include="Assets\Resources\TextQuestionFile\stage14.txt" />
  <Reference Include="UnityEngine.UIAutomation">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UIAutomation/UnityEngine.UIAutomation.dll</HintPath>
  </Reference>

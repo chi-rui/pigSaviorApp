@@ -14,6 +14,7 @@ public class RhythmMode : MonoBehaviour {
 	public Text Text_remainCounts, Text_userans, Text_partQues;
 	public float speed;
 	public string characterPerfectAnimStr, npcPerfectAnimStr, npc;
+	public bool isTeachWork;
 	
 	private Vector3 pos_L, pos_R;
 	private int remainCounts, hitbarCounts, operCount, operChooseBtnIndex, userCalculateCount, numA, numB;
@@ -75,15 +76,21 @@ public class RhythmMode : MonoBehaviour {
 	// -530 -1860
 	// Mathf.PingPong(speed * Time.time, 1.0f)
 	void Update () {
-		if (isRhythmStart) {
-			pointer.transform.position = Vector3.Lerp(pos_L, pos_R, Mathf.PingPong(speed * Time.time, 1.0f));
+		if (isTeachWork && Input.GetMouseButtonDown(0)) {
+			if (EventSystem.current.currentSelectedGameObject.name == "again")
+				isTeachWork = true;
+			else if (EventSystem.current.currentSelectedGameObject.name == "continue")
+				isTeachWork = false;
+			StartCoroutine(showTeachWork());
+		}
 
+		if (isRhythmStart) {
 			// set roles' action
 			characterAction.transform.position = new Vector3(characterAction.transform.position.x, 60, characterAction.transform.position.z);
 			characterAction.GetComponent<Animator>().enabled = true;
 
 			scenario.SetActive(true);
-
+			pointer.transform.position = Vector3.Lerp(pos_L, pos_R, Mathf.PingPong(speed * Time.time, 1.0f));
 			if (Input.GetMouseButtonDown(0)) {
 				if (isPerfectHit) {
 					StartCoroutine(clickInRhythm(1.3f));
@@ -101,6 +108,14 @@ public class RhythmMode : MonoBehaviour {
 				isChallengeFailed = false;
 			}
 		}
+	}
+
+	IEnumerator showTeachWork () {
+		if (!isTeachWork) {
+			yield return new WaitForSeconds(1f);
+			isRhythmStart = true;
+		} else
+			yield return new WaitForSeconds(50f);
 	}
 
 	void generateNewQuestion (int min, int max, List<string> template) {
@@ -264,9 +279,7 @@ public class RhythmMode : MonoBehaviour {
 
 	void clickPerfectHit () {
 		print("isPerfectHit: " + isPerfectHit);
-
 		hitResult.SetActive(false);
-
 		// show choose operator panel
 		chooseOperatorPage.SetActive(true);
 	}
@@ -285,7 +298,6 @@ public class RhythmMode : MonoBehaviour {
 
 	IEnumerator showClickAnyPosition (float time) {
 		yield return new WaitForSeconds(time);
-
 		clickAnyPositionImage.SetActive(true);
 	}
 
@@ -300,8 +312,12 @@ public class RhythmMode : MonoBehaviour {
 		remainCounts = 10;
 		Text_remainCounts.text = remainCounts.ToString();
 		isPerfectHit = false;
-		isRhythmStart = true;
 		isSpecialCalculate = false;
+		if (isTeachWork) {
+			StartCoroutine(showTeachWork());
+			isRhythmStart = false;
+		} else 
+			isRhythmStart = true;
 	}
 
 	// choose operator panel

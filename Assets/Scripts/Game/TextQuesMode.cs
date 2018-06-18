@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using System.IO;
 
 public class TextQuesMode : MonoBehaviour {
+	public GameObject[] elementBtnArr;
 	public string npc;
 
 	private int userAnswerCount;
@@ -148,10 +149,13 @@ public class TextQuesMode : MonoBehaviour {
 
 	public void clickElementBtn (int index) {
 		GameObject.Find("Text_user formula").GetComponent<Text>().text += GameObject.Find("Text_element "+index).GetComponent<Text>().text;
+		elementBtnArr[index].SetActive(false);
 	}
 
 	public void clickClearFormula () {
 		GameObject.Find("Text_user formula").GetComponent<Text>().text = null;
+		for (int i = 0; i < 12; i++)
+			elementBtnArr[i].SetActive(true);
 	}
 
 	void restartTextQuesMode () {
@@ -159,6 +163,8 @@ public class TextQuesMode : MonoBehaviour {
 			userAnswerCount = 0;
 		quesKeywordList.Clear();
 		GameObject.Find("Text_user formula").GetComponent<Text>().text = null;
+		for (int i = 0; i < 12; i++)
+			elementBtnArr[i].SetActive(true);
 	}
 
 	public void clickFinish () {
