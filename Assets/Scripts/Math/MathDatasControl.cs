@@ -9,15 +9,15 @@ public class MathDatasControl : MonoBehaviour {
 	void Start () {
 		// string t = "";
 		// for(int k = 0; k < 50; k++){
-		// 	QuesObj quesObj = getQuestion( 1, 200, "A/(B-C)*D");
-		// 	t = "";
-		// 	for(int i = 0; i < quesObj.question.Count; i++ ){
-		// 		t += quesObj.question[i];
-		// 	}
-		// 	print(t + " = " + quesObj.answer[quesObj.answer.Count-1].partAns);
-		// for(int i = 0; i < quesObj.answer.Count; i++ ){
-		// 	print(quesObj.answer[i].numA + quesObj.answer[i].operators.ToString() + quesObj.answer[i].numB + " = " + quesObj.answer[i].partAns);
-		// }
+			// QuesObj quesObj = getQuestion( 1, 500, "A-B-C-D");
+			// t = "";
+			// for(int i = 0; i < quesObj.question.Count; i++ ){
+			// 	t += quesObj.question[i];
+			// }
+			// print(t + " = " + quesObj.answer[quesObj.answer.Count-1].partAns);
+			// for(int i = 0; i < quesObj.answer.Count; i++ ){
+			// 	print(quesObj.answer[i].numA + quesObj.answer[i].operators.ToString() + quesObj.answer[i].numB + " = " + quesObj.answer[i].partAns);
+			// }
 		// }
 	}
 	

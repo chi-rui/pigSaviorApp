@@ -25,14 +25,14 @@ public class PickMode : MonoBehaviour {
 		GameObject[] clones = GameObject.FindGameObjectsWithTag("clone");
 		for(int i = 0; i < clones.Length; i++)
 			Destroy(clones[i]);
-		for(int i = 0; i < 5; i++)
+		for(int i = 0; i < 10; i++)
 			setItems();
 		initial();
 	}
 
 	// Update is called once per frame
 	void Update () {
-		if(sumofitems < 15 && !wait){
+		if(sumofitems < 10 && !wait){
 			float t = Random.Range(0.5f, 2.5f);
 			StartCoroutine(itemGrow(t));
 			wait = true;

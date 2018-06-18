@@ -63,7 +63,7 @@ public class ChapterEvents : MonoBehaviour {
 		string stageName;
 		lockObject(true);
 		if(gameDatas.nowStage+1 <= gameDatas.progress){
-			if(gameDatas.nowStage == 11){
+			if(gameDatas.nowStage == 14){
 				// working stage
 				print("still working.");
 				lockObject(false);

@@ -135,10 +135,12 @@ public class StageEvents : MonoBehaviour {
 		if(userLife > 0){
 			isGameStart = false;
 		}else{
-			if (DatasControl.GameMode == "PICK")
+			if(DatasControl.GameMode == "PICK")
 				print("PICK");
-			else if (DatasControl.GameMode == "TEXTQUES")
+			else if(DatasControl.GameMode == "TEXTQUES")
 				GameObject.Find("EventSystem").GetComponent<TextQuesDynamicAssessment>().teachNum(-1);
+			else if(DatasControl.GameMode == "SPECIAL")
+				print("SPECIAL");
 			else
 				GameObject.Find("EventSystem").GetComponent<DynamicAssessment>().teachNum(-1);
 		}
@@ -161,7 +163,7 @@ public class StageEvents : MonoBehaviour {
 			if(dataControl.progress == dataControl.nowStage){
 				dataControl.progress += 1;
 				/*******/
-				if(dataControl.progress == 12)
+				if(dataControl.progress == 15)
 					dataControl.progress--;		
 				/******/
 			}
