@@ -9,10 +9,11 @@ public class GameWorkTeach : MonoBehaviour {
 	public List<page> TeachPages = new List<page>();
 
 	public GameObject Image_TeachWork, Text_TeackWork, Image_selections;
+	// public int effectiveProgress;
+
 
 	// Use this for initialization
 	void Start () {
-		
 	}
 
 	// Update is called once per frame
@@ -21,11 +22,14 @@ public class GameWorkTeach : MonoBehaviour {
 	}
 
 	void OnEnable(){
-
-		if(TeachPages.Count != 0){
-			StartCoroutine(Teach());
+		if(GameObject.Find("Datas").GetComponent<DatasControl>().progress <= GameObject.Find("Datas").GetComponent<DatasControl>().nowStage){
+			if(TeachPages.Count != 0){
+				StartCoroutine(Teach());
+			}else{
+				print("error! no teach infomations here.");
+			}
 		}else{
-			print("error! no teach infomations here.");
+			this.gameObject.SetActive(false);
 		}
 	}
 
