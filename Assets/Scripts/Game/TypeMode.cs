@@ -468,6 +468,9 @@ public class TypeMode : MonoBehaviour {
 			showQuestion();
 		}
 		operFailedCount = 0;
+		chooseNpcType = null;
+		isWin = false;
+		isDraw = false;
 		Text_userans.text = "ANS";
 		isSpecialCalculate = false;
 		userAnsList.Clear();

@@ -66,7 +66,7 @@ public class SpecialLogic1 : MonoBehaviour {
 	}
 
 	IEnumerator getQuesContent () {
-		string URL = "http://163.21.245.192/PigSaviorAPP/files/stage12.txt";
+		string URL = "http://163.21.245.192/PigSaviorAPP/files/stage13.txt";
 		WWWForm form = new WWWForm();
 		Dictionary<string, string> data = new Dictionary<string, string>();
 		data.Add("download", "1");

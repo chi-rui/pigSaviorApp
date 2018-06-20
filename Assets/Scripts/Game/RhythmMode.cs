@@ -49,7 +49,6 @@ public class RhythmMode : MonoBehaviour {
 	void Start () {
 		pos_L = new Vector3(GameObject.Find("hit bar 0").transform.position.x-100f, pointer.transform.position.y, 0);
 		pos_R = new Vector3(GameObject.Find("hit bar 6").transform.position.x+100f, pointer.transform.position.y, 0);
-		speed = 0.5f;
 
 		// set question numbers and operators position
 		switch (operCount) {

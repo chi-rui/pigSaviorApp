@@ -43,24 +43,28 @@ public class Login : MonoBehaviour {
 		print(www.text);
 
 		warningPanel.SetActive(true);
-		if (www.text == "wrong password")		
-			warningPanel.transform.GetChild(1).GetComponent<Text>().text = "密碼輸入錯誤";
-		else if (www.text == "no register")
-			warningPanel.transform.GetChild(1).GetComponent<Text>().text = "此帳號尚未註冊";
+		if (www.text == "")
+			warningPanel.transform.GetChild(1).GetComponent<Text>().text = "登入失敗：請檢查網路連線";
 		else {
-			string[] userData = www.text.Split('@');
-			user_id = int.Parse(userData[0]);
-			user_progress = int.Parse(userData[1]);
-			print("user_id: " + user_id + " / " + "user_progress: " + user_progress);
-			warningPanel.transform.GetChild(1).GetComponent<Text>().text = "登入成功";
-			GameObject.Find("Panel_Login").SetActive(false);
-			mainPagePanel.SetActive(true);
-			if(user_progress > 5)
-				datas.chapter = 2;
-			else
-				datas.chapter = 1;
-			datas.progress = user_progress;
-			datas.nowStage = user_progress;
+			if (www.text == "wrong password")		
+				warningPanel.transform.GetChild(1).GetComponent<Text>().text = "登入失敗：密碼輸入錯誤";
+			else if (www.text == "no register")
+				warningPanel.transform.GetChild(1).GetComponent<Text>().text = "登入失敗：此帳號尚未註冊";
+			else {
+				string[] userData = www.text.Split('@');
+				user_id = int.Parse(userData[0]);
+				user_progress = int.Parse(userData[1]);
+				print("user_id: " + user_id + " / " + "user_progress: " + user_progress);
+				warningPanel.transform.GetChild(1).GetComponent<Text>().text = "登入成功";
+				GameObject.Find("Panel_Login").SetActive(false);
+				mainPagePanel.SetActive(true);
+				if(user_progress > 5)
+					datas.chapter = 2;
+				else
+					datas.chapter = 1;
+				datas.progress = user_progress;
+				datas.nowStage = user_progress;
+			}
 		}
 	}
 }

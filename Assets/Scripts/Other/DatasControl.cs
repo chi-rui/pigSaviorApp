@@ -163,9 +163,9 @@ public class DatasControl : MonoBehaviour {
 				actions += actionsA[i];
 				targets += targetsA[i];
 				if (i != scenesA.Count-1) {
-					scenes += ", ";
-					actions += ", ";
-					targets += ", ";
+					scenes += ",";
+					actions += ",";
+					targets += ",";
 				}
 			}
 			actionsA.Clear();
@@ -178,9 +178,9 @@ public class DatasControl : MonoBehaviour {
 				actions += actionsB[i];
 				targets += targetsB[i];
 				if (i != scenesB.Count-1) {
-					scenes += ", ";
-					actions += ", ";
-					targets += ", ";
+					scenes += ",";
+					actions += ",";
+					targets += ",";
 				}
 			}
 			actionsB.Clear();
