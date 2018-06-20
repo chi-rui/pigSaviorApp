@@ -159,7 +159,10 @@ public class StageEvents : MonoBehaviour {
 		if(userProgress == dataControl.stageGoal){
 			StartCoroutine(showPlots());
 			// wait
-			yield return new WaitForSeconds(4.5f);
+			if(prompts[userProgress-1].pictures.Count == 0)
+				yield return new WaitForSeconds(0f);
+			else
+				yield return new WaitForSeconds(4.2f);
 			stageClear.SetActive(true);
 			yield return new WaitForSeconds(4.5f);
 			if(dataControl.progress == dataControl.nowStage){
