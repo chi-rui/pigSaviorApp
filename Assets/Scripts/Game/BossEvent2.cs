@@ -352,7 +352,7 @@ public class BossEvent2 : MonoBehaviour {
 	private IEnumerator BreakShield(){
 		yield return new WaitForSeconds(0.2f);
 		GameObject.Find("Boss Wolf").GetComponent<Animator>().Play("Boss06_BreakShield");
-		yield return new WaitForSeconds(1.2f);
+		yield return new WaitForSeconds(2.5f);
 
 		StartCoroutine(bossAttackable());
 	}
@@ -395,9 +395,9 @@ public class BossEvent2 : MonoBehaviour {
 	private IEnumerator bossAttackPlayer(){
 		Boss.GetComponent<Animator>().Play("Boss05_BossAttack");
 		GameObject.Find("Image_main character").GetComponent<Animator>().Play("Image_character_be attacked");
-		playerLife -= 0.3f;
+		playerLife -= 0.35f;
 		yield return new WaitForSeconds(1.2f);
-		while(GameObject.Find("Image_LifeDGC").GetComponent<Image>().fillAmount > playerLife){
+		while(GameObject.Find("Image_LifeDGC").GetComponent<Image>().fillAmount != 0 && GameObject.Find("Image_LifeDGC").GetComponent<Image>().fillAmount > playerLife){
 			GameObject.Find("Image_LifeDGC").GetComponent<Image>().fillAmount -= 0.02f;
 			yield return new WaitForSeconds(0.1f);
 		}

@@ -326,7 +326,7 @@ public class BossEvents1 : MonoBehaviour {
 		GameObject.Find("Image_main_character").GetComponent<Animator>().Play("Image_character_be attacked");
 		playerLife -= 0.3f;
 		yield return new WaitForSeconds(1.5f);
-		while(GameObject.Find("Image_LifeDGC").GetComponent<Image>().fillAmount > playerLife){
+		while(GameObject.Find("Image_LifeDGC").GetComponent<Image>().fillAmount!=0 && GameObject.Find("Image_LifeDGC").GetComponent<Image>().fillAmount > playerLife){
 			GameObject.Find("Image_LifeDGC").GetComponent<Image>().fillAmount -= 0.02f;
 			yield return new WaitForSeconds(0.1f);
 		}
