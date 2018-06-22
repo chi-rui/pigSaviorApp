@@ -13,7 +13,7 @@ public class SpecialLogic1 : MonoBehaviour {
 
 	public GameObject SelectionPanel, CorrectPanel, WrongPanel, stageClear;
 	private QuesObj question;
-	private List<int> numbers = new List<int>();
+	// private List<int> numbers = new List<int>();
 	private string ansIndex;
 	private Color[] colors;
 	private string[] contents;

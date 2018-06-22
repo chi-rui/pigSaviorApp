@@ -52,6 +52,9 @@ public class BossEvents1 : MonoBehaviour {
 		bossLife = 1f;
 		playerLife = 1f;
 
+		if(dataControl.progress <= dataControl.nowStage)
+			GameObject.Find("Image_BackToChapter").SetActive(false);
+
 		initial();
 
 		// set Boss and get a question.

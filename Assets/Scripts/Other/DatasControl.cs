@@ -23,6 +23,8 @@ public class DatasControl : MonoBehaviour {
 
 	// Game setting
 	public static string GameMode;
+	// public bool isNewModeOpen;
+
 	// music...etc
 
 	// Loading Image

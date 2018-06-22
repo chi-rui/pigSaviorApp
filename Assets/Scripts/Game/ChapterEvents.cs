@@ -7,7 +7,7 @@ public class ChapterEvents : MonoBehaviour {
 
 	private DatasControl gameDatas;
 	public Stage stage;
-	public GameObject character, GoBackPrompt;
+	public GameObject character, GoBackPrompt, NewModePrompt;
 	public Button nextArrow, lastArrow;
 	public float speed, fspeed;
 	public bool goNext;
@@ -30,6 +30,10 @@ public class ChapterEvents : MonoBehaviour {
 		if(gameDatas.progress != 1){
 			if(GameObject.Find("Panel_TeachWork"))
 				GameObject.Find("Panel_TeachWork").SetActive(false);
+		}
+
+		if(!GameObject.Find(Image_BossIcon_F).activeInHierarchy){
+			NewModePrompt.SetActive(false);
 		}
 
 	}
@@ -63,7 +67,7 @@ public class ChapterEvents : MonoBehaviour {
 		string stageName;
 		lockObject(true);
 		if(gameDatas.nowStage+1 <= gameDatas.progress){
-			if(gameDatas.nowStage == 14){
+			if(gameDatas.nowStage == 15){
 				// working stage
 				print("still working.");
 				lockObject(false);
