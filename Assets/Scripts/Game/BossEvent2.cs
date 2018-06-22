@@ -221,8 +221,26 @@ public class BossEvent2 : MonoBehaviour {
 		
 		if(userAns.Count == 0)
 			GameObject.Find("Text_ques").GetComponent<Text>().text = questionShowList[quesIndex-1] + " " + questionShowList[quesIndex] + " " + questionShowList[quesIndex+1] + " =";
-		else
-			GameObject.Find("Text_ques").GetComponent<Text>().text = questionShowList[quesIndex-1] + " " + questionShowList[quesIndex] + " " + questionShowList[quesIndex+1] + " =";
+		else{
+			string partQuestion = "";
+			// for(int i = 0; i < questionShowList.Count; i++)
+			// 	print(questionShowList[i]);
+			for(int i = quesIndex-1; i >= 0; i--){
+				if(questionShowList[i] != "@"){
+					partQuestion += questionShowList[i];
+					break;
+				}
+			}
+			partQuestion += questionShowList[quesIndex];
+			for(int i = quesIndex+1; i < questionShowList.Count; i++){
+				if(questionShowList[i] != "@"){
+					partQuestion += questionShowList[i];
+					break;
+				}
+			}
+			partQuestion += "= ";
+			GameObject.Find("Text_ques").GetComponent<Text>().text = partQuestion;
+		}
 
 		int.TryParse(question.question[operatorsAndNumbers[quesIndex-1]] ,out userAnsObj.numA);
 		int.TryParse(question.question[operatorsAndNumbers[quesIndex+1]] ,out userAnsObj.numB);
