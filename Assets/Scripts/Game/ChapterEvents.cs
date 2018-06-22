@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ChapterEvents : MonoBehaviour {
 
@@ -166,5 +167,9 @@ public class ChapterEvents : MonoBehaviour {
 
 	public void setProgress(){
 		gameDatas.cheat(16);
+	}
+
+	public void backToMain(){
+		SceneManager.LoadScene("MainPage");
 	}
 }

@@ -29,8 +29,8 @@ public class StageEvents : MonoBehaviour {
 		dataControl = GameObject.Find("Datas").GetComponent<DatasControl>();
 		userProgress = 0;
 		userLife = 3;
-		if(dataControl.progress > dataControl.nowStage)
-			GameObject.Find("Image_BackToWorld").SetActive(false);
+		if(dataControl.progress <= dataControl.nowStage)
+			GameObject.Find("Image_BackToChapter").SetActive(false);
 	}
 
 	// Update is called once per frame

@@ -91,10 +91,11 @@ public class ColorMode : MonoBehaviour {
 
 		operCount = temp.answer.Count;
 
-		string testQues = "";
+		string testQues = "", testAns = "";
 		for (int i = 0; i < temp.question.Count; i++)
 			testQues += temp.question[i];
-		print(testQues);
+		testAns = quesObj.answer[quesObj.answer.Count-1].partAns.ToString();
+		print(testQues+" "+testAns);
 		// print(operCount);
 
 		// store operators index and operators in each list

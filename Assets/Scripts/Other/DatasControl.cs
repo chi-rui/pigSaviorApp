@@ -266,4 +266,8 @@ public class DatasControl : MonoBehaviour {
 		string chapterScene = "Chapter"+chapter.ToString();
 		LoadingScene(chapterScene);
 	}
+
+	public void enterChallengeMode () {
+		LoadingScene("ChallengeMode");
+	}
 }

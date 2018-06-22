@@ -4,13 +4,20 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Login : MonoBehaviour {
-	public GameObject warningPanel, mainPagePanel;
+	public GameObject warningPanel, mainPagePanel, loginPanel;
 	public Text Text_account, Text_password;
 	public static int user_id, user_progress;
 	public static string account;
 
 	public DatasControl datas;
 	private string password;
+
+	void OnEnable () {
+		if (user_id != 0) {
+			loginPanel.SetActive(false);
+			mainPagePanel.SetActive(true);
+		}
+	}
 
 	// Use this for initialization
 	void Start () {
