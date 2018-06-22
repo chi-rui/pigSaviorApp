@@ -168,7 +168,7 @@ public class StageEvents : MonoBehaviour {
 			if(dataControl.progress == dataControl.nowStage){
 				dataControl.progress += 1;
 				/*******/
-				if(dataControl.progress == 15)
+				if(dataControl.progress == 16)
 					dataControl.progress--;		
 				/******/
 			}

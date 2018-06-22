@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,8 +13,8 @@ public class SpecialLogic1 : MonoBehaviour {
 
 	public GameObject SelectionPanel, CorrectPanel, WrongPanel, stageClear;
 	private QuesObj question;
-	private List<int> numbers = new List<int>();
-	private int ansIndex;
+	// private List<int> numbers = new List<int>();
+	private string ansIndex;
 	private Color[] colors;
 	private string[] contents;
 
@@ -79,7 +79,7 @@ public class SpecialLogic1 : MonoBehaviour {
 
 		string[] talkTemplate = www.text.Split('\n');
 		string[] contents = talkTemplate[Random.Range(0, talkTemplate.Length-1)].Split('@');
-		ansIndex = int.Parse(contents[contents.Length-1]);
+		ansIndex = contents[contents.Length-1];
 		print(ansIndex);
 
 		for(int i = 0; i < 7; i++){
@@ -113,10 +113,8 @@ public class SpecialLogic1 : MonoBehaviour {
 		SelectionPanel.SetActive(true);
 	}
 
-	public void clickAns(int selections ){
+	public void clickAns( string selections ){
 		if(ansIndex == selections){
-			print("correct");
-			dataControl.progress+=1;
 			stageClear.SetActive(true);
 		}else{
 			WrongPanel.SetActive(true);

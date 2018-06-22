@@ -9,7 +9,7 @@ public class MathDatasControl : MonoBehaviour {
 	void Start () {
 		// string t = "";
 		// for(int k = 0; k < 50; k++){
-			// QuesObj quesObj = getQuestion( 1, 500, "A-B-C-D");
+			// QuesObj quesObj = getQuestion( 1, 500, "A+B*C");
 			// t = "";
 			// for(int i = 0; i < quesObj.question.Count; i++ ){
 			// 	t += quesObj.question[i];

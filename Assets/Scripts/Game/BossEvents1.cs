@@ -52,6 +52,9 @@ public class BossEvents1 : MonoBehaviour {
 		bossLife = 1f;
 		playerLife = 1f;
 
+		if(dataControl.progress <= dataControl.nowStage)
+			GameObject.Find("Image_BackToChapter").SetActive(false);
+
 		initial();
 
 		// set Boss and get a question.
@@ -325,7 +328,7 @@ public class BossEvents1 : MonoBehaviour {
 		playerLife -= 0.3f;
 		print(playerLife);
 		yield return new WaitForSeconds(1.5f);
-		while(GameObject.Find("Image_LifeDGC").GetComponent<Image>().fillAmount > playerLife && GameObject.Find("Image_LifeDGC").GetComponent<Image>().fillAmount!= 0){
+		while(GameObject.Find("Image_LifeDGC").GetComponent<Image>().fillAmount!=0 && GameObject.Find("Image_LifeDGC").GetComponent<Image>().fillAmount > playerLife){
 			GameObject.Find("Image_LifeDGC").GetComponent<Image>().fillAmount -= 0.02f;
 			yield return new WaitForSeconds(0.1f);
 		}
