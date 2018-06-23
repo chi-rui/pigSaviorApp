@@ -169,7 +169,7 @@ public class StageEvents : MonoBehaviour {
 				dataControl.progress += 1;
 				/*******/
 				if(dataControl.progress == 16)
-					dataControl.progress--;		
+					dataControl.progress--;
 				/******/
 			}
 			SceneManager.LoadScene("Chapter"+dataControl.chapter.ToString());

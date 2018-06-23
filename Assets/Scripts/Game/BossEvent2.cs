@@ -360,7 +360,7 @@ public class BossEvent2 : MonoBehaviour {
 	private IEnumerator bossAttackable(){
 		// Boss.GetComponent<Animator>().Play("Boss06_BeAttackable");
 
-		attackTime = 10;
+		attackTime = 6;
 		isTimeUp = false;
 		InvokeRepeating("timer", 0f, 1f);
 		BossLife.SetActive(true);

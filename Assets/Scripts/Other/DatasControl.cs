@@ -262,14 +262,4 @@ public class DatasControl : MonoBehaviour {
 		yield return www;
 		print(www.text);
 	}
-
-	public void enterChapter(){
-		// SceneManager.LoadScene("Chapter"+chapter.ToString());
-		string chapterScene = "Chapter"+chapter.ToString();
-		LoadingScene(chapterScene);
-	}
-
-	public void enterChallengeMode () {
-		LoadingScene("ChallengeMode");
-	}
 }

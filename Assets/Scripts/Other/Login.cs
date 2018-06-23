@@ -7,21 +7,24 @@ public class Login : MonoBehaviour {
 	public GameObject warningPanel, mainPagePanel, loginPanel;
 	public Text Text_account, Text_password;
 	public static int user_id, user_progress;
+	public static string user_challProgress;
 	public static string account;
 
 	public DatasControl datas;
 	private string password;
 
-	void OnEnable () {
-		if (user_id != 0) {
-			loginPanel.SetActive(false);
-			mainPagePanel.SetActive(true);
-		}
-	}
-
 	// Use this for initialization
 	void Start () {
 		warningPanel.SetActive(false);
+		datas = GameObject.Find("Datas").GetComponent<DatasControl>();
+		datas.setGameObjects();
+
+		if (user_id != 0) {
+			loginPanel.SetActive(false);
+			mainPagePanel.SetActive(true);
+			if (user_progress >= 15)
+				mainPagePanel.transform.GetChild(4).GetComponent<Button>().interactable = true;
+		}
 	}
 	
 	// Update is called once per frame
@@ -61,7 +64,8 @@ public class Login : MonoBehaviour {
 				string[] userData = www.text.Split('@');
 				user_id = int.Parse(userData[0]);
 				user_progress = int.Parse(userData[1]);
-				print("user_id: " + user_id + " / " + "user_progress: " + user_progress);
+				user_challProgress = userData[2];
+				print("user_id: " + user_id + " / " + "user_progress: " + user_progress + " / " + "user_challProgress: " + user_challProgress);
 				warningPanel.transform.GetChild(1).GetComponent<Text>().text = "登入成功";
 				GameObject.Find("Panel_Login").SetActive(false);
 				mainPagePanel.SetActive(true);
@@ -73,5 +77,18 @@ public class Login : MonoBehaviour {
 				datas.nowStage = user_progress;
 			}
 		}
+
+		if (user_progress >= 15)
+			mainPagePanel.transform.GetChild(4).GetComponent<Button>().interactable = true;
+	}
+
+	public void enterChapter(){
+		// SceneManager.LoadScene("Chapter"+chapter.ToString());
+		string chapterScene = "Chapter"+datas.chapter.ToString();
+		datas.LoadingScene(chapterScene);
+	}
+
+	public void enterChallengeMode () {
+		datas.LoadingScene("ChallengeMode");
 	}
 }
