@@ -223,7 +223,7 @@ public class DatasControl : MonoBehaviour {
 			misconception > misconception(P)
 			time > php
 		***/
-
+		string gameHistory = "";
 		string correctAnswer = "", userAnswer = "", misconception = "", q = "";
 		for(int i = 0; i < correctAns.Count; i++){
 			correctAnswer += JsonUtility.ToJson(correctAns[i]);
@@ -244,8 +244,10 @@ public class DatasControl : MonoBehaviour {
 		// print(isCorrect);
 		// print(misconception);
 		// print("-----  save end  -----");
-
-		string gameHistory = Login.user_id + "#" + nowStage + "#" + q + "#" + correctAnswer + "#" + userAnswer + "#" + isCorrect + "#" + misconception;
+		if(GameMode == "CHALLENGE")
+			gameHistory = Login.user_id + "#999#" + q + "#" + correctAnswer + "#" + userAnswer + "#" + isCorrect + "#" + misconception;
+		else
+			gameHistory = Login.user_id + "#" + nowStage + "#" + q + "#" + correctAnswer + "#" + userAnswer + "#" + isCorrect + "#" + misconception;
 		// print(gameHistory);
 		StartCoroutine(upload_HISTORY(gameHistory));
 	}

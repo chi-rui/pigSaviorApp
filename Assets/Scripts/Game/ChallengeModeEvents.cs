@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ChallengeModeEvents : MonoBehaviour {
 	public GameObject warningPanel, correctPanel, wrongPanel;
-	public GameObject[] gamePanel;
+	public GameObject[] gamePanel, topText;
 
 	private GameObject character;
 	private Vector2[] pointsPos, changeLayerPos;
@@ -19,7 +20,7 @@ public class ChallengeModeEvents : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		DatasControl.GameMode = "CHALLENGE";
-		GameObject.Find("Datas").GetComponent<DatasControl>().nowStage = 999;
+		// GameObject.Find("Datas").GetComponent<DatasControl>().nowStage = 999;
 
 		userLife = 3;
 		layerNum = 1;
@@ -49,17 +50,45 @@ public class ChallengeModeEvents : MonoBehaviour {
 			new Vector2(-400f, -300f)
 		};
 
-		ranGameMode();
-
 		// set best score
-		string[] bestScore = Login.user_challProgress.Split('-');
-		GameObject.Find("Text_best score").GetComponent<Text>().text = "Best：第" + bestScore[0] + "層第" + bestScore[1] + "階";
+		if (Login.user_challProgress != "" && Login.user_challProgress != null) {
+			string[] bestScore = Login.user_challProgress.Split('-');
+			GameObject.Find("Text_best score").GetComponent<Text>().text = "Best：第" + bestScore[0] + "層第" + bestScore[1] + "階";
+		}
+
+		StartCoroutine(getRank());
+		StartCoroutine(showCover());
+		ranGameMode();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		// print((layerNum-1) % 5);
 		GameObject.Find("Panel_background").GetComponent<Image>().color = bgColors[(layerNum-1) % 5];
+	}
+
+	IEnumerator getRank () {
+		string URL = "http://163.21.245.192/PigSaviorAPP/challengeRank.php";
+		WWWForm form = new WWWForm();
+		Dictionary<string, string> data = new Dictionary<string, string>();
+		data.Add("download", "1");
+		foreach (KeyValuePair<string, string> post in data) {
+			form.AddField(post.Key, post.Value);
+		}
+		WWW www = new WWW(URL, form);
+		yield return www;
+		// print(www.text);
+		string[] bestData = www.text.Split('#');
+		for (int i = 0; i < bestData.Length; i++) {
+			// print(bestData[i]);
+			string[] rank = bestData[i].Split('-');
+			topText[i].GetComponent<Text>().text = "第"+ rank[0] +"層第"+ rank[1] +"階";
+		}
+	}
+
+	IEnumerator showCover () {
+		yield return new WaitForSeconds(3f);
+		GameObject.Find("Panel_cover").SetActive(false);
 	}
 
 	// 0: rhythm 1: color 2: type
@@ -99,6 +128,7 @@ public class ChallengeModeEvents : MonoBehaviour {
 	}
 
 	public void nextClicked () {
+
 		setBtnsState(false);
 		pointsNum++;
 		// print("pointsNum: " + pointsNum + " / finishPointCount: " + finishPointCount);
@@ -160,6 +190,7 @@ public class ChallengeModeEvents : MonoBehaviour {
 		}
 		layerNum++;
 		GameObject.Find("Text_layer name").GetComponent<Text>().text = "第"+layerNum.ToString()+"層";
+		GameObject.Find("Image_road start").GetComponent<Image>().color = new Color32(255, 255, 255, 255);
 		GameObject.Find("Image_road end").GetComponent<Image>().color = new Color32(255, 255, 255, 0);
 		ranGameMode();
 		StartCoroutine(changeCharacterAni());
@@ -179,7 +210,7 @@ public class ChallengeModeEvents : MonoBehaviour {
 			return (fspeed / tmp);
 	}
 
-	public void showFeedBack (bool ans, string prompts){
+	public void showFeedBack (bool ans, string prompts) {
 		if (ans) {
 			StartCoroutine(Feedback(correctPanel));
 			pointFinished();
@@ -214,7 +245,13 @@ public class ChallengeModeEvents : MonoBehaviour {
 		// print("finishPointCount: " + finishPointCount);
 		isFinished[pointsNum] = true;
 		GameObject.Find("Image_points"+pointsNum).GetComponent<Image>().sprite = Resources.Load<Sprite>("blingPoint") as Sprite;
-		string[] bestScore = Login.user_challProgress.Split('-');
+		string[] bestScore = new string[2];
+		if (Login.user_challProgress != "" && Login.user_challProgress != null)
+			bestScore = Login.user_challProgress.Split('-');
+		else {
+			bestScore[0] = "1";
+			bestScore[1] = "0";
+		}
 		if (layerNum > int.Parse(bestScore[0]) || (layerNum == int.Parse(bestScore[0]) && finishPointCount > int.Parse(bestScore[1]))) {
 			GameObject.Find("Text_best score").GetComponent<Text>().text = "Best：第" + layerNum + "層第" + finishPointCount + "階";
 			challengeProgress = layerNum.ToString() + "-" + finishPointCount.ToString();
@@ -234,5 +271,10 @@ public class ChallengeModeEvents : MonoBehaviour {
 		WWW www = new WWW(URL, form);
 		yield return www;
 		print(www.text);
+	}
+
+	public void backToMain(){
+		DatasControl.GameMode = "";
+		SceneManager.LoadScene("MainPage");
 	}
 }
