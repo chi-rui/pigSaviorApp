@@ -137,6 +137,7 @@ public class StageEvents : MonoBehaviour {
 		if(userLife > 0){
 			isGameStart = false;
 		}else{
+			print("enter");
 			if(DatasControl.GameMode == "PICK")
 				print("PICK");
 			else if(DatasControl.GameMode == "TEXTQUES")

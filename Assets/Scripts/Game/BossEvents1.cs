@@ -67,8 +67,7 @@ public class BossEvents1 : MonoBehaviour {
 	}
 
 	private IEnumerator teachBoss(){
-		if(GameObject.Find("Datas").GetComponent<DatasControl>().progress < 5){
-			GameObject.Find("Image_BackToChapter").SetActive(false);
+		if(dataControl.progress < 5){
 			teachPanel.SetActive(true);
 			while(teachPanel.activeInHierarchy){
 				yield return new WaitForSeconds(0.1f);

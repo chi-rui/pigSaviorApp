@@ -17,6 +17,7 @@ public class DatasControl : MonoBehaviour {
 	public int chapter;		// keep the data of the moment user's chapter.
 	public int progress;	// keep the game progress of the user. 
 	public int nowStage;	// keep the data of the moment user's stage in the chapter.
+	public bool isChallengeModeOpen;
 	public Vector3 characterPosition;	// character's position when come back to the Chapter scene.
 	// Stage information saves.
 	public int stageGoal = 0;	// keep the data of the max stage plots number. 

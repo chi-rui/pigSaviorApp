@@ -33,7 +33,7 @@ public class ChapterEvents : MonoBehaviour {
 				GameObject.Find("Panel_TeachWork").SetActive(false);
 		}
 
-		if(!GameObject.Find("Image_BossIcon_F").activeInHierarchy){
+		if(!gameDatas.isChallengeModeOpen){
 			NewModePrompt.SetActive(false);
 		}
 

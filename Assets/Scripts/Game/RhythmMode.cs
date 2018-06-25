@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 // only onion npc problem
 public class RhythmMode : MonoBehaviour {
-	public GameObject scenario, pointer, characterAction, challengeFailedPanel, chooseOperatorPage, calculatePage, hitResult, remainingText, hitResultText, clickAnyPositionImage;
+	public GameObject teachPanel, scenario, pointer, characterAction, challengeFailedPanel, chooseOperatorPage, calculatePage, hitResult, remainingText, hitResultText, clickAnyPositionImage;
 	public GameObject[] quesNumTextArr, quesOperTextArr, quesNumTextChooseArr, quesOperBtnChooseArr;
 	public Animator Anim_characterPerfect, Anim_npcPerfect;
 	public Sprite Sprite_characterAction;
@@ -14,7 +14,7 @@ public class RhythmMode : MonoBehaviour {
 	public Text Text_remainCounts, Text_userans, Text_partQues;
 	public float speed;
 	public string characterPerfectAnimStr, npcPerfectAnimStr, npc;
-	public bool isTeachWork;
+	// public bool isTeachWork;
 	
 	private Vector3 pos_L, pos_R;
 	private int remainCounts, hitbarCounts, operCount, operChooseBtnIndex, userCalculateCount, numA, numB;
@@ -35,6 +35,7 @@ public class RhythmMode : MonoBehaviour {
 	private StageEvents stageEvents;
 	private DynamicAssessment dynamicAssessment;
 	private ChallengeModeEvents challengeModeEvents;
+	private DatasControl dataControl;
 
 	void OnEnable () {
 		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
@@ -42,6 +43,7 @@ public class RhythmMode : MonoBehaviour {
 		stageEvents = GameObject.Find("EventSystem").GetComponent<StageEvents>();
 		dynamicAssessment = GameObject.Find("EventSystem").GetComponent<DynamicAssessment>();
 		challengeModeEvents = GameObject.Find("EventSystem").GetComponent<ChallengeModeEvents>();
+		dataControl = GameObject.Find("Datas").GetComponent<DatasControl>();
 		
 		generateNewQuestion(minNum, maxNum, quesTemplate);
 		restartRhythmMode ();
@@ -77,14 +79,6 @@ public class RhythmMode : MonoBehaviour {
 	// -530 -1860
 	// Mathf.PingPong(speed * Time.time, 1.0f)
 	void Update () {
-		if (isTeachWork && Input.GetMouseButtonDown(0)) {
-			if (EventSystem.current.currentSelectedGameObject.name == "again")
-				isTeachWork = true;
-			else if (EventSystem.current.currentSelectedGameObject.name == "continue")
-				isTeachWork = false;
-			StartCoroutine(showTeachWork());
-		}
-
 		if (isRhythmStart) {
 			// set roles' action
 			characterAction.transform.position = new Vector3(characterAction.transform.position.x, 60, characterAction.transform.position.z);
@@ -112,11 +106,12 @@ public class RhythmMode : MonoBehaviour {
 	}
 
 	IEnumerator showTeachWork () {
-		if (!isTeachWork) {
-			yield return new WaitForSeconds(1f);
-			isRhythmStart = true;
-		} else
-			yield return new WaitForSeconds(50f);
+		while(teachPanel.activeInHierarchy){
+			isRhythmStart = false;
+			scenario.SetActive(false);
+			yield return new WaitForSeconds(0.1f);
+		}
+		isRhythmStart = true;
 	}
 
 	void generateNewQuestion (int min, int max, List<string> template) {
@@ -314,11 +309,9 @@ public class RhythmMode : MonoBehaviour {
 		Text_remainCounts.text = remainCounts.ToString();
 		isPerfectHit = false;
 		isSpecialCalculate = false;
-		if (isTeachWork) {
+		isRhythmStart = true;
+		if (dataControl.progress < 3)
 			StartCoroutine(showTeachWork());
-			isRhythmStart = false;
-		} else 
-			isRhythmStart = true;
 	}
 
 	// choose operator panel

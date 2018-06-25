@@ -382,6 +382,8 @@ public class BossEvent2 : MonoBehaviour {
 		if(bossLife <= 0){
 			print("finish game");
 			// GameObject.Find("IBoss Wolf").GetComponent<Animator>().Play("Boss05_playerWin");
+			dataControl.isChallengeModeOpen = true;
+			StartCoroutine(upload_USER("true", Login.account));
 			GameReply.SetActive(true);
 			GameReply.transform.GetChild(0).GetComponent<Text>().text = "恭喜擊敗了\n大裝甲胖野狼";
 			if(dataControl.progress == dataControl.nowStage)
@@ -390,6 +392,20 @@ public class BossEvent2 : MonoBehaviour {
 			BossLife.SetActive(false);
 			StartCoroutine(createQuestionShield(miniNum, maxNum, templates));
 		}
+	}
+
+	IEnumerator upload_USER (string isOpenChallenge, string account) {
+		string URL = "http://163.21.245.192/PigSaviorAPP/userDataUpdate.php";
+		WWWForm form = new WWWForm();
+		Dictionary<string, string> data = new Dictionary<string, string>();
+		data.Add("isOpenChallenge", isOpenChallenge);
+		data.Add("account", account);
+		foreach (KeyValuePair<string, string> post in data) {
+			form.AddField(post.Key, post.Value);
+		}
+		WWW www = new WWW(URL, form);
+		yield return www;
+		print(www.text);
 	}
 
 	private IEnumerator bossAttackPlayer(){
