@@ -29,8 +29,8 @@ public class StageEvents : MonoBehaviour {
 		dataControl = GameObject.Find("Datas").GetComponent<DatasControl>();
 		userProgress = 0;
 		userLife = 3;
-		if(dataControl.progress > dataControl.nowStage)
-			GameObject.Find("Image_BackToWorld").SetActive(false);
+		if(dataControl.progress <= dataControl.nowStage)
+			GameObject.Find("Image_BackToChapter").SetActive(false);
 	}
 
 	// Update is called once per frame
@@ -137,6 +137,7 @@ public class StageEvents : MonoBehaviour {
 		if(userLife > 0){
 			isGameStart = false;
 		}else{
+			print("enter");
 			if(DatasControl.GameMode == "PICK")
 				print("PICK");
 			else if(DatasControl.GameMode == "TEXTQUES")
@@ -169,7 +170,7 @@ public class StageEvents : MonoBehaviour {
 				dataControl.progress += 1;
 				/*******/
 				if(dataControl.progress == 16)
-					dataControl.progress--;		
+					dataControl.progress--;
 				/******/
 			}
 			SceneManager.LoadScene("Chapter"+dataControl.chapter.ToString());

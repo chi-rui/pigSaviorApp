@@ -35,12 +35,14 @@ public class ColorMode : MonoBehaviour {
 
 	private StageEvents stageEvents;
 	private DynamicAssessment dynamicAssessment;
+	private ChallengeModeEvents challengeModeEvents;
 
 	void OnEnable () {
 		MathDatas = GameObject.Find("EventSystem").GetComponent<MathDatasControl>();
 		MisIdent = GameObject.Find("EventSystem").GetComponent<MisIdentify>();
 		stageEvents = GameObject.Find("EventSystem").GetComponent<StageEvents>();
 		dynamicAssessment = GameObject.Find("EventSystem").GetComponent<DynamicAssessment>();
+		challengeModeEvents = GameObject.Find("EventSystem").GetComponent<ChallengeModeEvents>();
 
 		generateNewQuestion(minNum, maxNum, quesTemplate);
 		clickRechallengeGame();
@@ -91,10 +93,11 @@ public class ColorMode : MonoBehaviour {
 
 		operCount = temp.answer.Count;
 
-		string testQues = "";
+		string testQues = "", testAns = "";
 		for (int i = 0; i < temp.question.Count; i++)
 			testQues += temp.question[i];
-		print(testQues);
+		testAns = quesObj.answer[quesObj.answer.Count-1].partAns.ToString();
+		print(testQues+" "+testAns);
 		// print(operCount);
 
 		// store operators index and operators in each list
@@ -531,12 +534,18 @@ public class ColorMode : MonoBehaviour {
 
 	public IEnumerator checkUserAnswer () {
 		misConceptions = MisIdent.getMisConception(quesObj.answer, userAnsList);
-		if(quesObj.answer[quesObj.answer.Count-1].partAns == userAnsList[userAnsList.Count-1].partAns){
-			stageEvents.showFeedBack(true, "");
+		if (quesObj.answer[quesObj.answer.Count-1].partAns == userAnsList[userAnsList.Count-1].partAns){
+			if (DatasControl.GameMode == "CHALLENGE")
+				challengeModeEvents.showFeedBack(true, "");
+			else
+				stageEvents.showFeedBack(true, "");
 			GameObject.Find("Datas").GetComponent<DatasControl>().getGameHistoryData(quesObj.question, quesObj.answer, userAnsList, true, misConceptions);
-		}else{
+		} else {
 			dynamicAssessment.setContents(quesObj, new List<AnsObj>(userAnsList), misConceptions[0]);
-			stageEvents.showFeedBack(false , dynamicAssessment.getPrompt(misConceptions));
+			if (DatasControl.GameMode == "CHALLENGE")
+				challengeModeEvents.showFeedBack(false, dynamicAssessment.getPrompt(misConceptions));
+			else
+				stageEvents.showFeedBack(false, dynamicAssessment.getPrompt(misConceptions));
 			GameObject.Find("Datas").GetComponent<DatasControl>().getGameHistoryData(quesObj.question, quesObj.answer, userAnsList, false, misConceptions);
 		}
 		yield return new WaitForSeconds(2f);

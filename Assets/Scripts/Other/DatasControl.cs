@@ -17,6 +17,7 @@ public class DatasControl : MonoBehaviour {
 	public int chapter;		// keep the data of the moment user's chapter.
 	public int progress;	// keep the game progress of the user. 
 	public int nowStage;	// keep the data of the moment user's stage in the chapter.
+	public bool isChallengeModeOpen;
 	public Vector3 characterPosition;	// character's position when come back to the Chapter scene.
 	// Stage information saves.
 	public int stageGoal = 0;	// keep the data of the max stage plots number. 
@@ -223,7 +224,7 @@ public class DatasControl : MonoBehaviour {
 			misconception > misconception(P)
 			time > php
 		***/
-
+		string gameHistory = "";
 		string correctAnswer = "", userAnswer = "", misconception = "", q = "";
 		for(int i = 0; i < correctAns.Count; i++){
 			correctAnswer += JsonUtility.ToJson(correctAns[i]);
@@ -244,8 +245,10 @@ public class DatasControl : MonoBehaviour {
 		// print(isCorrect);
 		// print(misconception);
 		// print("-----  save end  -----");
-
-		string gameHistory = Login.user_id + "#" + nowStage + "#" + q + "#" + correctAnswer + "#" + userAnswer + "#" + isCorrect + "#" + misconception;
+		if(GameMode == "CHALLENGE")
+			gameHistory = Login.user_id + "#999#" + q + "#" + correctAnswer + "#" + userAnswer + "#" + isCorrect + "#" + misconception;
+		else
+			gameHistory = Login.user_id + "#" + nowStage + "#" + q + "#" + correctAnswer + "#" + userAnswer + "#" + isCorrect + "#" + misconception;
 		// print(gameHistory);
 		StartCoroutine(upload_HISTORY(gameHistory));
 	}
@@ -261,11 +264,5 @@ public class DatasControl : MonoBehaviour {
 		WWW www = new WWW(URL, form);
 		yield return www;
 		print(www.text);
-	}
-
-	public void enterChapter(){
-		// SceneManager.LoadScene("Chapter"+chapter.ToString());
-		string chapterScene = "Chapter"+chapter.ToString();
-		LoadingScene(chapterScene);
 	}
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ChapterEvents : MonoBehaviour {
 
@@ -32,9 +33,9 @@ public class ChapterEvents : MonoBehaviour {
 				GameObject.Find("Panel_TeachWork").SetActive(false);
 		}
 
-		// if(!GameObject.Find(Image_BossIcon_F).activeInHierarchy){
-		// 	NewModePrompt.SetActive(false);
-		// }
+		if(!gameDatas.isChallengeModeOpen){
+			NewModePrompt.SetActive(false);
+		}
 
 	}
 	
@@ -170,5 +171,9 @@ public class ChapterEvents : MonoBehaviour {
 
 	public void setProgress(){
 		gameDatas.cheat(16);
+	}
+
+	public void backToMain(){
+		SceneManager.LoadScene("MainPage");
 	}
 }
