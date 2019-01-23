@@ -62,7 +62,7 @@ public class Login : MonoBehaviour {
 				warningPanel.transform.GetChild(1).GetComponent<Text>().text = "登入失敗：此帳號尚未註冊";
 			else {
 				string[] userData = www.text.Split('@');
-				user_id = int.Parse(userData[0]);
+				int.TryParse(userData[0], out user_id);
 				user_progress = int.Parse(userData[1]);
 				user_isOpenChallenge = userData[2];
 				user_challProgress = userData[3];
