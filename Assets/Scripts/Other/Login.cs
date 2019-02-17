@@ -50,7 +50,8 @@ public class Login : MonoBehaviour {
 		}
 		WWW www = new WWW(URL, form);
 		yield return www;
-		print(www.text);
+
+		print(www.text + "\n");
 
 		warningPanel.SetActive(true);
 		if (www.text == "")
@@ -63,7 +64,7 @@ public class Login : MonoBehaviour {
 			else {
 				string[] userData = www.text.Split('@');
 				int.TryParse(userData[0], out user_id);
-				user_progress = int.Parse(userData[1]);
+				int.TryParse(userData[1], out user_progress);
 				user_isOpenChallenge = userData[2];
 				user_challProgress = userData[3];
 				print("user_id: " + user_id + " / user_progress: " + user_progress + " / user_isOpenChallenge: " + user_isOpenChallenge + " / user_challProgress: " + user_challProgress);
